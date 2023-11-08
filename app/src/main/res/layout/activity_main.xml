@@ -41,9 +41,7 @@
         android:background="@drawable/default_border"
         android:fontFamily="@font/jost_bold"
         android:text="GET STARTED"
-
         android:textColor="@color/green03"
-        app:backgroundTint="@color/green04"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

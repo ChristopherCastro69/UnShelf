@@ -13,10 +13,13 @@
         android:theme="@style/Theme.UnShelf"
         tools:targetApi="31">
         <activity
-            android:name=".Firebase.Customer_Register"
+            android:name=".Authentication.Seller_Register"
             android:exported="false" />
         <activity
-            android:name=".Firebase.Customer_Login"
+            android:name=".Authentication.Customer_Register"
+            android:exported="false" />
+        <activity
+            android:name=".Authentication.Customer_Login"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

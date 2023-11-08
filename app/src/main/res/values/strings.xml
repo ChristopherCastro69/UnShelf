@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">UnShelf</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="full_name">Full Name</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="by_signing_up_you_agree_to_unshelf_s_terms_of_service_privacy_policy"><![CDATA[By signing up, you agree to UnShelf’s Terms of Service & Privacy Policy]]></string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>
