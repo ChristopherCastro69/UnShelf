@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Authentication.Customer_Register">
+    tools:context=".authentication.Customer_Register">
 
 
     <LinearLayout
@@ -160,7 +160,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/backArrowImage"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -184,7 +184,7 @@
             android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/tf_seller"
             android:layout_width="87dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -194,7 +194,7 @@
             android:textSize="18dp" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/sellerButton"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
