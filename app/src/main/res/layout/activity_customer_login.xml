@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".authentication.Customer_Register">
+    tools:context=".Model.authentication.Customer_Register">
 
 
     <LinearLayout
@@ -25,25 +25,33 @@
         app:layout_constraintVertical_bias="0.215">
 
         <EditText
-            android:id="@+id/customer_username"
+            android:id="@+id/customer_email"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="0dp"
             android:background="@drawable/default_border"
-            android:hint="Username or phone number"
+            android:hint="Email"
 
             android:paddingStart="16dp" />
 
-        <EditText
-            android:id="@+id/customer_password"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutPassword"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/default_border"
-            android:hint="Password"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintTop_toBottomOf="@+id/tfCustomerName">
 
-            android:paddingStart="16dp"
-
-            />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/customerPassword"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/default_border"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                tools:ignore="TouchTargetSizeCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout3"
@@ -81,6 +89,15 @@
             android:text="Log In"
             android:textSize="16dp"
             android:textColor="@color/white"
+            />
+
+        <ProgressBar
+            android:layout_width="24dp"
+            android:layout_height="64dp"
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"
             />
 
         <ImageView

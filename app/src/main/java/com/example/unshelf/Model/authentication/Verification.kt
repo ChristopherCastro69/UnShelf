@@ -1,4 +1,4 @@
-package com.example.unshelf.authentication
+package com.example.unshelf.Model.authentication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".authentication.Customer_Register">
+    tools:context=".Model.authentication.Customer_Register">
 
 
     <LinearLayout
@@ -22,15 +24,17 @@
         app:layout_constraintStart_toStartOf="parent"
 
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        app:layout_constraintVertical_bias="0.215">
+        app:layout_constraintVertical_bias="0.215"
+
+        >
 
         <EditText
-            android:id="@+id/tfCustomerUsername"
+            android:id="@+id/tfCustomerEmail"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/default_border"
-            android:hint="@string/username"
+            android:hint="@string/email"
             android:paddingStart="10dp"
             tools:ignore="TouchTargetSizeCheck" />
 
@@ -48,34 +52,52 @@
             android:id="@+id/tfCustomer_Name"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             android:background="@drawable/default_border"
             android:hint="@string/full_name"
             android:paddingStart="16dp"
             tools:ignore="TouchTargetSizeCheck" />
 
-        <EditText
-            android:id="@+id/tfCustomerPassword"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutPassword"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/default_border"
-            android:hint="@string/password"
-            android:paddingStart="16dp"
-            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintTop_toBottomOf="@+id/tfCustomerName">
 
-        <EditText
-            android:id="@+id/tfConfirmPassword"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tfCustomerPassword"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/default_border"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                tools:ignore="TouchTargetSizeCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutConfirmPassword"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/default_border"
-            android:hint="@string/confirm_password"
-            android:paddingStart="16dp"
-            tools:ignore="TouchTargetSizeCheck" />
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintTop_toBottomOf="@+id/tfCustomerPassword">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tfConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/default_border"
+                android:hint="@string/confirm_password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                tools:ignore="TouchTargetSizeCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <Button
-            android:id="@+id/buttonLogin"
+            android:id="@+id/buttonSignUp"
             android:layout_width="160dp"
             android:layout_height="48dp"
             android:layout_marginStart="80dp"
@@ -85,6 +107,15 @@
             android:text="@string/sign_up"
             android:textSize="16sp"
             android:textColor="@color/white"
+            />
+
+        <ProgressBar
+            android:layout_width="24dp"
+            android:layout_height="64dp"
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"
             />
 
         <TextView
@@ -120,7 +151,7 @@
                 tools:ignore="TextSizeCheck" />
 
             <Button
-                android:id="@+id/buttonSignUp"
+                android:id="@+id/buttonLogin"
                 android:layout_width="100dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="40dp"
