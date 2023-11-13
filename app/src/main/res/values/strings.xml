@@ -52,4 +52,11 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+
+<!--    LUCKY SPACE-->
+    <string name="delivery_to">Delivery to</string>
+    <string name="delivery_address">Cebu Institute of Technology - University</string>
+    <string name="popular_restaurants">Popular Restaurants</string>
+
 </resources>
