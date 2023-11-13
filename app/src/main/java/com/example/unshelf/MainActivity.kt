@@ -6,7 +6,7 @@ import android.widget.Button
 import com.example.unshelf.Controller.UI_Tester_Controller
 import com.example.unshelf.Model.authentication.Customer_Login
 import com.example.unshelf.Model.authentication.Customer_Register
-import com.example.unshelf.View.RestaurantsNearMe
+import com.example.unshelf.View.RestaurantNearMe.RestaurantsNearMe
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

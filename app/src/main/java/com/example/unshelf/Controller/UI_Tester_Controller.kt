@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.widget.Button
-import com.example.unshelf.View.RestaurantsNearMe
+
 class UI_Tester_Controller {
     // Facilitates the testing of the user interfaces created in the app
     companion object {
