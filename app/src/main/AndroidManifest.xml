@@ -16,7 +16,7 @@
             android:name=".View.UI_Tester"
             android:exported="false" />
         <activity
-            android:name=".View.RestaurantsNearMe"
+            android:name=".View.RestaurantNearMe.RestaurantsNearMe"
             android:exported="false" />
         <activity
             android:name=".Model.authentication.Reset_Pass"

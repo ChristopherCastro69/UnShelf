@@ -5,7 +5,7 @@
     android:id="@+id/const_res_near_me"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.RestaurantsNearMe">
+    tools:context=".View.RestaurantNearMe.RestaurantsNearMe">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/const_header_bar"
@@ -112,9 +112,7 @@
         android:id="@+id/const_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingStart="16dp"
         android:paddingTop="16dp"
-        android:paddingEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -124,12 +122,22 @@
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:fontFamily="@font/jost_bold"
             android:text="@string/popular_restaurants"
             android:textColor="@color/green03"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPopularRestaurant"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

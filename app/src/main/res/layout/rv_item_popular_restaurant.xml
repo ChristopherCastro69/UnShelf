@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
@@ -15,20 +15,20 @@
         android:text="@string/time"
         android:textColor="@color/grey_light"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/imageView8"
-        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+        app:layout_constraintStart_toStartOf="@+id/ivStar"
+        app:layout_constraintTop_toBottomOf="@+id/tvRating" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView11"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTime"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView9">
+        app:layout_constraintTop_toTopOf="@+id/tvRestaurantName">
 
         <ImageView
-            android:id="@+id/imageView7"
+            android:id="@+id/ivThumbnail"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"
@@ -36,7 +36,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/tvRestaurantName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -49,7 +49,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/tvCuisine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -57,12 +57,12 @@
         android:text="@string/cuisine_type"
         android:textColor="@color/grey_light"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView15"
-        app:layout_constraintStart_toEndOf="@+id/textView15"
-        app:layout_constraintTop_toTopOf="@+id/textView15" />
+        app:layout_constraintBottom_toBottomOf="@+id/tvRating"
+        app:layout_constraintStart_toEndOf="@+id/tvRating"
+        app:layout_constraintTop_toTopOf="@+id/tvRating" />
 
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/tvRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -70,18 +70,18 @@
         android:text="@string/rating"
         android:textColor="@color/black"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-        app:layout_constraintStart_toEndOf="@+id/imageView8"
-        app:layout_constraintTop_toTopOf="@+id/imageView8" />
+        app:layout_constraintBottom_toBottomOf="@+id/ivStar"
+        app:layout_constraintStart_toEndOf="@+id/ivStar"
+        app:layout_constraintTop_toTopOf="@+id/ivStar" />
 
     <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/ivStar"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="7dp"
         android:layout_weight="1"
         android:contentDescription="@string/star"
-        app:layout_constraintStart_toStartOf="@+id/textView9"
-        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:layout_constraintStart_toStartOf="@+id/tvRestaurantName"
+        app:layout_constraintTop_toBottomOf="@+id/tvRestaurantName"
         app:srcCompat="@drawable/star_solid" />
 </androidx.constraintlayout.widget.ConstraintLayout>
