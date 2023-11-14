@@ -17,8 +17,8 @@ public class Products implements Serializable{
     @ColumnInfo(name = "product_name")
     private String productName;
 
-    @ColumnInfo(name = "decsription")
-    private Long phoneNumber;
+    @ColumnInfo(name = "description")
+    private String description;
 
     @ColumnInfo(name = "quantity")
     private Long quantity;
@@ -48,13 +48,7 @@ public class Products implements Serializable{
         this.productName = productName;
     }
 
-    public Long getPhoneNumber() {
-        return phoneNumber;
-    }
 
-    public void setPhoneNumber(Long phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
     public Long getQuantity() {
         return quantity;
