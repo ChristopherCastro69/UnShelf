@@ -27,7 +27,7 @@
         app:layout_constraintVertical_bias="0.215">
 
         <EditText
-            android:id="@+id/tfSellerUsername"
+            android:id="@+id/tfSellerEmail"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginBottom="10dp"
@@ -87,7 +87,7 @@
             tools:ignore="TouchTargetSizeCheck" />
 
         <Button
-            android:id="@+id/buttonLogin"
+            android:id="@+id/buttonSignUp"
             android:layout_width="160dp"
             android:layout_height="48dp"
             android:layout_marginStart="80dp"
@@ -97,6 +97,15 @@
             android:text="@string/sign_up"
             android:textSize="16sp"
             android:textColor="@color/white"
+            />
+
+        <ProgressBar
+            android:layout_width="24dp"
+            android:layout_height="64dp"
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"
             />
 
         <TextView
@@ -132,7 +141,7 @@
                 tools:ignore="TextSizeCheck" />
 
             <Button
-                android:id="@+id/buttonSignUp"
+                android:id="@+id/buttonLogin"
                 android:layout_width="100dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="40dp"

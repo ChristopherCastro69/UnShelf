@@ -52,5 +52,19 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-    <string name="title_activity_product_details">product_details</string>
+
+
+    <!--    LUCKY SPACE-->
+    <!--    rv_item_popular_restaurant strings-->
+    <string name="delivery_to">Delivery to</string>
+    <string name="delivery_address">Cebu Institute of Technology - University</string>
+    <string name="popular_restaurants">Popular Restaurants</string>
+    <string name="star">Star</string>
+    <string name="restaurant_name">Dunkin Donuts</string>
+    <string name="cuisine_type">Filipino</string>
+    <string name="rating">4.5</string>
+    <string name="time">25 mins</string>
+    <string name="search_hint">What are you craving for today?</string>
+
+
 </resources>

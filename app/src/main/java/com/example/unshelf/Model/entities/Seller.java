@@ -7,25 +7,28 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-@Entity(tableName = "customers")
-public class Customer implements Serializable {
+
+@Entity(tableName = "sellers")
+public class Seller implements Serializable{
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    @ColumnInfo(name = "customer_id")
-    private int customerId;
+    @ColumnInfo(name = "seller_id")
+    private int sellerID;
 
     @ColumnInfo(name = "email")
     private String email;
 
+    @ColumnInfo(name = "phone_number")
+    private Long phoneNumber;
     @ColumnInfo(name = "password")
     private String password;
 
-    @ColumnInfo(name = "phone_number")
-    private Long phoneNumber;
-
     @ColumnInfo(name = "full_name")
     private String fullName;
+
+    @ColumnInfo(name = "store_name")
+    private String storeName;
 
     @ColumnInfo(name = "address")
     private String address;
@@ -33,45 +36,47 @@ public class Customer implements Serializable {
     // Add other fields as needed
 
     // Constructor
-    public Customer(String email, String password, Long phoneNumber, String fullName, String address) {
+    public Seller(String email, String password, Long phoneNumber, String fullName, String storeName, String address) {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.fullName = fullName;
+        this.storeName = storeName;
         this.address = address;
     }
 
-    // Getter and Setter methods
+//Getters and Setters
 
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
+    public void setEmail(String Email){
         this.email = email;
     }
 
-    public String getPassword(){
-        return password;
+    public String getEmail(){
+        return email;
     }
 
-    public void setPassword(String password){
-        this.password = password;
+    public int getSellerID() {
+        return sellerID;
     }
+
+    public void setSellerID(int sellerID) {
+        this.sellerID = sellerID;
+    }
+
     public Long getPhoneNumber() {
         return phoneNumber;
     }
 
     public void setPhoneNumber(Long phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFullName() {
@@ -82,11 +87,19 @@ public class Customer implements Serializable {
         this.fullName = fullName;
     }
 
-    public String getAddress(){
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address){
+    public void setAddress(String address) {
         this.address = address;
     }
 }

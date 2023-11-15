@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:fontFamily="@font/jost_regular"
+        android:text="@string/time"
+        android:textColor="@color/grey_light"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/ivStar"
+        app:layout_constraintTop_toBottomOf="@+id/tvRating" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTime"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvRestaurantName">
+
+        <ImageView
+            android:id="@+id/ivThumbnail"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pancake" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvRestaurantName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/restaurant_name"
+        android:textColor="@color/green03"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/cardView2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvCuisine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/jost_regular"
+        android:text="@string/cuisine_type"
+        android:textColor="@color/grey_light"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvRating"
+        app:layout_constraintStart_toEndOf="@+id/tvRating"
+        app:layout_constraintTop_toTopOf="@+id/tvRating" />
+
+    <TextView
+        android:id="@+id/tvRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:fontFamily="@font/jost_regular"
+        android:text="@string/rating"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivStar"
+        app:layout_constraintStart_toEndOf="@+id/ivStar"
+        app:layout_constraintTop_toTopOf="@+id/ivStar" />
+
+    <ImageView
+        android:id="@+id/ivStar"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="7dp"
+        android:layout_weight="1"
+        android:contentDescription="@string/star"
+        app:layout_constraintStart_toStartOf="@+id/tvRestaurantName"
+        app:layout_constraintTop_toBottomOf="@+id/tvRestaurantName"
+        app:srcCompat="@drawable/star_solid" />
+</androidx.constraintlayout.widget.ConstraintLayout>

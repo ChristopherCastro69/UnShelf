@@ -46,7 +46,8 @@
             android:background="@drawable/default_border"
             android:hint="@string/phone_number"
             android:paddingStart="16dp"
-            tools:ignore="TouchTargetSizeCheck" />
+            tools:ignore="TouchTargetSizeCheck"
+            android:inputType="number"/>
 
         <EditText
             android:id="@+id/tfCustomer_Name"
