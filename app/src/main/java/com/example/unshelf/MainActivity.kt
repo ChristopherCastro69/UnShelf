@@ -3,10 +3,10 @@ package com.example.unshelf
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import com.example.unshelf.Controller.UI_Tester_Controller
-import com.example.unshelf.Model.authentication.Customer_Login
-import com.example.unshelf.Model.authentication.Customer_Register
-import com.example.unshelf.View.RestaurantNearMe.RestaurantsNearMe
+import com.example.unshelf.controller.UI_Tester_Controller
+import com.example.unshelf.model.authenticationTest.Customer_Login
+import com.example.unshelf.view.authentication.CustomerRegister
+import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         //! IMPORTANT: Just call the UI_Tester_Controller.UI_Test(intent, button, java.class) to
         UI_Tester_Controller.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
         UI_Tester_Controller.UI_Test(this, testBtnLogin, Customer_Login::class.java);
-        UI_Tester_Controller.UI_Test(this, testBtnRegister, Customer_Register::class.java);
+        UI_Tester_Controller.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
     }
 
 

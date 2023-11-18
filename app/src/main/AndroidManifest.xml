@@ -13,7 +13,7 @@
         android:theme="@style/Theme.UnShelf"
         tools:targetApi="31">
         <activity
-            android:name=".View.SplashScreen.SplashScreen"
+            android:name=".view.SplashScreen.SplashScreen"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,28 +22,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".View.UI_Tester"
+            android:name=".view.UI_Tester"
             android:exported="false" />
         <activity
-            android:name=".View.RestaurantNearMe.RestaurantsNearMe"
+            android:name=".view.RestaurantNearMe.RestaurantsNearMe"
             android:exported="false" />
         <activity
-            android:name=".Model.authentication.Reset_Pass"
+            android:name=".model.authenticationTest.Reset_Pass"
             android:exported="false" />
         <activity
-            android:name=".Model.authentication.Verification"
+            android:name=".model.authenticationTest.Verification"
             android:exported="false" />
         <activity
-            android:name=".Model.authentication.Reset_Password"
+            android:name=".model.authenticationTest.Reset_Password"
             android:exported="false" />
         <activity
-            android:name=".Model.authentication.Seller_Register"
+            android:name=".view.authentication.Seller_Register"
             android:exported="false" />
         <activity
-            android:name=".Model.authentication.Customer_Register"
+            android:name=".view.authentication.CustomerRegister"
             android:exported="false" />
         <activity
-            android:name=".Model.authentication.Customer_Login"
+            android:name=".model.authenticationTest.Customer_Login"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

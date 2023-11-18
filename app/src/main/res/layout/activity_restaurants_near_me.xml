@@ -5,7 +5,7 @@
     android:id="@+id/const_res_near_me"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.RestaurantNearMe.RestaurantsNearMe">
+    tools:context=".view.RestaurantNearMe.RestaurantsNearMe">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/const_header_bar"

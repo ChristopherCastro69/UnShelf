@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Model.Firebase.ChristophersWorkspace.Firebase.Sample">
+    tools:context=".model.Firebase.ChristophersWorkspace.Firebase.Sample">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
