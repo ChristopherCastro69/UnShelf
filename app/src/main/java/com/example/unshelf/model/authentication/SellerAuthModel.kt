@@ -5,7 +5,6 @@ import com.example.unshelf.model.entities.Customer
 import com.example.unshelf.model.entities.Product
 import com.example.unshelf.model.entities.Seller
 import com.example.unshelf.model.entities.Store
-import com.example.unshelf.model.entitiesdraft.ProductsDraft
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 

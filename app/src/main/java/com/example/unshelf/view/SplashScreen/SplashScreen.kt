@@ -19,7 +19,7 @@ class SplashScreen : AppCompatActivity() {
         val splashScreen = findViewById<ImageView>(splashscreen)
 
         val alphaAnimator = ObjectAnimator.ofFloat(splashScreen, "alpha", 0f, 1f)
-        alphaAnimator.duration = 1500
+        alphaAnimator.duration = 1000
 
         alphaAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {

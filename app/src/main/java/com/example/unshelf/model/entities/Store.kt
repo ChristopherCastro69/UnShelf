@@ -1,6 +1,5 @@
 package com.example.unshelf.model.entities
 
-import com.example.unshelf.model.entitiesdraft.ProductsDraft
 
 class Store (
     val sellerID : String,
