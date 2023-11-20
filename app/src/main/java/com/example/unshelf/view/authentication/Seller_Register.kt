@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.unshelf.controller.SellerAuthController
 import com.example.unshelf.databinding.ActivitySellerRegisterBinding
 import com.example.unshelf.model.authentication.SellerAuthModel
-import com.example.unshelf.model.authenticationTest.Customer_Login
 import com.example.unshelf.model.entities.Product
 import com.example.unshelf.model.entities.Seller
 
