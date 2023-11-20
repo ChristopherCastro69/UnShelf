@@ -4,7 +4,7 @@ import com.example.unshelf.model.authentication.CustomerAuthModel
 import com.example.unshelf.model.authentication.SellerAuthModel
 import com.example.unshelf.model.entities.Product
 
-class SellerAuthController (
+class SellerAuthController ( // Please modify class diagram and add this class as a controller
     private val sellerAuthModel: SellerAuthModel){
     fun createSellerAccount(
         email: String,
