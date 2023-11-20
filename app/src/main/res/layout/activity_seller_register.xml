@@ -44,7 +44,8 @@
             android:background="@drawable/default_border"
             android:hint="@string/phone_number"
             android:paddingStart="16dp"
-            tools:ignore="TouchTargetSizeCheck" />
+            tools:ignore="TouchTargetSizeCheck"
+            android:inputType="number"/>
 
         <EditText
             android:id="@+id/tfSeller_Name"
@@ -60,38 +61,55 @@
             android:id="@+id/tfSellerStore_Name"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             android:background="@drawable/default_border"
             android:hint="Store Name"
             android:paddingStart="16dp"
             tools:ignore="TouchTargetSizeCheck" />
 
-        <EditText
-            android:id="@+id/tfSellerPassword"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutPassword"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/default_border"
-            android:hint="@string/password"
-            android:paddingStart="16dp"
-            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintTop_toBottomOf="@+id/tfCustomerName">
 
-        <EditText
-            android:id="@+id/tfConfirmPassword"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tfSellerPassword"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/default_border"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                tools:ignore="TouchTargetSizeCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutConfirmPassword"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/default_border"
-            android:hint="@string/confirm_password"
-            android:paddingStart="16dp"
-            tools:ignore="TouchTargetSizeCheck" />
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintTop_toBottomOf="@+id/tfCustomerPassword">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tfConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/default_border"
+                android:hint="@string/confirm_password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                tools:ignore="TouchTargetSizeCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/buttonSignUp"
             android:layout_width="160dp"
             android:layout_height="48dp"
             android:layout_marginStart="80dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/bt_primary"
             android:fontFamily="@font/jost_medium"
             android:text="@string/sign_up"
@@ -112,12 +130,13 @@
             android:id="@+id/lblTerms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:fontFamily="@font/jost_medium"
             android:text="@string/by_signing_up_you_agree_to_unshelf_s_terms_of_service_privacy_policy"
             android:textAlignment="center"
-            android:textSize="13sp"
+            android:textSize="12sp"
             tools:ignore="TextSizeCheck" />
 
 
@@ -125,8 +144,9 @@
             android:id="@+id/linearLayout5"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+
             android:orientation="horizontal"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="0dp"
             >
 
 
@@ -191,7 +211,7 @@
 
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="140dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/jost_bold"
@@ -200,7 +220,7 @@
             android:textSize="18dp" />
 
         <View
-            android:layout_width="120dp"
+            android:layout_width="200dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
