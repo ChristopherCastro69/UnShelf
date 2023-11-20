@@ -102,7 +102,7 @@
             android:layout_width="160dp"
             android:layout_height="48dp"
             android:layout_marginStart="80dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/bt_primary"
             android:fontFamily="@font/jost_medium"
             android:text="@string/sign_up"

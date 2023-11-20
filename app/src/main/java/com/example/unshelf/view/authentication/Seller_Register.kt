@@ -23,6 +23,10 @@ class Seller_Register : AppCompatActivity() {
         binding = ActivitySellerRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.buttonLogin.setOnClickListener{
+            val intent = Intent(this, Seller_Login::class.java)
+            startActivity(intent)
+        }
         binding.buttonSignUp.setOnClickListener { createAccount() }
 
     }

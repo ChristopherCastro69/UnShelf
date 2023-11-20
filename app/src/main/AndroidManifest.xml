@@ -40,6 +40,9 @@
             android:name=".view.authentication.Seller_Register"
             android:exported="false" />
         <activity
+            android:name=".view.authentication.Seller_Login"
+            android:exported="false" />
+        <activity
             android:name=".view.authentication.CustomerRegister"
             android:exported="false" />
         <activity
