@@ -71,7 +71,7 @@
         android:layout_marginTop="256dp"
         android:text="Note:"
         android:textColor="#386641"
-        android:textStyle="b"
+        android:textStyle=""
 
         android:textSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
