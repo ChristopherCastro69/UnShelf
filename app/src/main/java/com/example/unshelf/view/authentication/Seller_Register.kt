@@ -29,7 +29,7 @@ class Seller_Register : AppCompatActivity() {
     }
 
     //    ------------> FUNCTIONS <--------------
-
+    // The functions involve logic, please transfer these to the controller
     fun createAccount() {
 
         val email: String = binding.tfSellerEmail.text.toString()

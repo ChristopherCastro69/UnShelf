@@ -36,6 +36,7 @@ class Customer_Login : AppCompatActivity() {
     }
 
 //    ----------> FUNCTIONS <---------
+    //functions that involve logic must belong to the controller
     fun loginUser() {
         val email: String = binding.customerEmail.text.toString()
         val password: String = binding.customerPassword.text.toString()

@@ -8,7 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class CustomerAuthModel() {
 
 
-    fun createCustomerAccountFirebase(
+    fun createCustomerAccountFirebase( // This involves logic, this is supposed to be in the controller
         email: String,
         password: String,
         phoneNumber: Long,

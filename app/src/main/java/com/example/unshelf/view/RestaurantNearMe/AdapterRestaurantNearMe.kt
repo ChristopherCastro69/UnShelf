@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unshelf.R
-
+//please modify class diagram and add this class as a view
 class AdapterRestaurantNearMe(private val restaurantsNearMeList: ArrayList<DataRestaurantNearMe>): RecyclerView.Adapter<AdapterRestaurantNearMe.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,

@@ -8,7 +8,7 @@ import com.example.unshelf.model.entities.Store
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class SellerAuthModel {
+class SellerAuthModel { // This is supposed to be in the controller
     fun createSellerAccountFirebase(
         email: String,
         password: String,

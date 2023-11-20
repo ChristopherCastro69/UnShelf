@@ -46,7 +46,7 @@ class CustomerRegister : AppCompatActivity() {
 
 
 //    ------------> FUNCTIONS <--------------
-
+// Functions involve logic, please transfer these to the controller
     fun createAccount() {
         val email: String = binding.tfCustomerEmail.text.toString()
         val password: String = binding.tfCustomerPassword.text.toString()
