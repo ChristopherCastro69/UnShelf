@@ -1,9 +1,8 @@
 package com.example.unshelf.controller
 
 import com.example.unshelf.model.authentication.CustomerAuthModel
-import com.example.unshelf.view.authentication.CustomerRegister
 
-class CustomerAuthController( // Please modify class diagram and add this class as a controller
+class CustomerRegisterController(
     private val customerAuthModel: CustomerAuthModel) {
 
     fun createCustomerAccount(

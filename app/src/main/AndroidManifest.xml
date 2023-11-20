@@ -43,7 +43,7 @@
             android:name=".view.authentication.CustomerRegister"
             android:exported="false" />
         <activity
-            android:name=".model.authenticationTest.Customer_Login"
+            android:name=".view.authentication.Customer_Login"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
