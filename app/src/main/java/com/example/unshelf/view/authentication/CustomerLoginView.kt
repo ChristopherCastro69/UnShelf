@@ -6,11 +6,14 @@ import android.content.Intent
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import com.example.unshelf.MainActivity
 import com.example.unshelf.databinding.ActivityCustomerLoginBinding
 
 class CustomerLoginView(private val context: Context, private val binding: ActivityCustomerLoginBinding) {
 
     // Interface to communicate with the controller
+
+
     interface LoginListener {
         fun onLoginClicked(email: String, password: String)
     }
@@ -27,9 +30,24 @@ class CustomerLoginView(private val context: Context, private val binding: Activ
             context.startActivity(intent)
         }
 
+        binding.buttonSeller.setOnClickListener{
+            val intent = Intent(context, Seller_Login::class.java)
+            context.startActivity(intent)
+        }
+
+        binding.lblSeller.setOnClickListener{
+            val intent = Intent(context, Seller_Login::class.java)
+            context.startActivity(intent)
+        }
+
+        binding.backButton.setOnClickListener{
+            val intent = Intent(context, MainActivity::class.java)
+            context.startActivity(intent)
+        }
         binding.buttonLogin.setOnClickListener {
             loginUser()
         }
+
     }
 
     private fun loginUser() {

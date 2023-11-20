@@ -28,22 +28,31 @@
             android:id="@+id/SellerEmail"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="0dp"
             android:background="@drawable/default_border"
-            android:hint="Username or phone number"
+            android:hint="Email"
 
             android:paddingStart="16dp" />
 
-        <EditText
-            android:id="@+id/tfSellerPassword"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutPassword"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/default_border"
-            android:hint="Password"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintTop_toBottomOf="@+id/tfCustomerName">
 
-            android:paddingStart="16dp"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tfSellerPassword"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/default_border"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                tools:ignore="TouchTargetSizeCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            />
 
         <LinearLayout
             android:id="@+id/linearLayout3"
@@ -184,7 +193,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/buttonBack"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -193,7 +202,7 @@
             app:srcCompat="@drawable/ic_back_arrow" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/lblSeller"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -203,7 +212,7 @@
             android:textSize="18dp" />
 
         <View
-            android:layout_width="120dp"
+            android:layout_width="200dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
 

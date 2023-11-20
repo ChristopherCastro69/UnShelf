@@ -193,7 +193,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/backButton"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -202,7 +202,7 @@
             app:srcCompat="@drawable/ic_back_arrow" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/lblLogin"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -217,7 +217,7 @@
             android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/lblSeller"
             android:layout_width="87dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -227,7 +227,7 @@
             android:textSize="18dp" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/buttonSeller"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
