@@ -13,8 +13,14 @@
         android:theme="@style/Theme.UnShelf"
         tools:targetApi="31">
         <activity
+            android:name=".StoreProfile"
+            android:exported="false" />
+        <activity
+            android:name=".SellerProfile"
+            android:exported="false" />
+        <activity
             android:name=".view.SplashScreen.SplashScreen"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
