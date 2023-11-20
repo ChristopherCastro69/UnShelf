@@ -66,5 +66,11 @@
     <string name="time">25 mins</string>
     <string name="search_hint">What are you craving for today?</string>
 
+    <!-- PABS -->
+    <string name="store_name"> Store Name</string>
+    <string name="rating_store">9.9</string>
+    <string name="follower_count">999 </string>
+    <string name="profile">Edit Profile</string>
+
 
 </resources>
