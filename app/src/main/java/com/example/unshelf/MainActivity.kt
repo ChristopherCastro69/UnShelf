@@ -7,6 +7,7 @@ import com.example.unshelf.controller.UI_Tester_Controller
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.authentication.CustomerRegister
 import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
+import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +28,8 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Controller.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
         UI_Tester_Controller.UI_Test(this, testBtnLogin, Customer_Login::class.java);
         UI_Tester_Controller.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
-        UI_Tester_Controller.UI_Test(this, testBtnPmain, product_main::class.java);
+//        UI_Tester_Controller.UI_Test(this, testBtnPmain, product_main::class.java);
+        UI_Tester_Controller.UI_Test(this, testBtnPmain, cart::class.java);
     }
 
 
