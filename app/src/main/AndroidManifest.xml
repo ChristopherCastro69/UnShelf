@@ -54,6 +54,10 @@
         <activity
             android:name=".view.authentication.Customer_Login"
             android:exported="false" />
+
+        <activity android:name=".view.product.product_main"
+            android:exported="false"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -69,13 +69,23 @@
             app:layout_constraintTop_toBottomOf="@+id/testBtnLogin" />
 
         <Button
-            android:id="@+id/testBtnPMain"
+            android:id="@+id/testBtnCart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:text="Cart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/testBtnRegister" />
+
+        <Button
+            android:id="@+id/testBtnPMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="68dp"
             android:text="PMAIN"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/testBtnRegister" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
