@@ -1,4 +1,4 @@
-package com.example.unshelf.model.authenticationTest
+package com.example.unshelf.view.authentication
 
 import android.content.Context
 import android.widget.Toast

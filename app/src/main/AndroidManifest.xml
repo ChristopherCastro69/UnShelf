@@ -31,13 +31,13 @@
             android:name=".view.RestaurantNearMe.RestaurantsNearMe"
             android:exported="false" />
         <activity
-            android:name=".model.authenticationTest.Reset_Pass"
+            android:name=".view.authentication.Reset_Pass"
             android:exported="false" />
         <activity
-            android:name=".model.authenticationTest.Verification"
+            android:name=".view.authentication.Verification"
             android:exported="false" />
         <activity
-            android:name=".model.authenticationTest.Reset_Password"
+            android:name=".view.authentication.Reset_Password"
             android:exported="false" />
         <activity
             android:name=".view.authentication.Seller_Register"
