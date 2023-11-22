@@ -31,16 +31,16 @@
             android:name=".view.RestaurantNearMe.RestaurantsNearMe"
             android:exported="false" />
         <activity
-            android:name=".model.authenticationTest.Reset_Pass"
+            android:name=".view.authentication.Reset_Pass"
             android:exported="false" />
         <activity
             android:name=".view.Wallet.WalletUI"
             android:exported="false" />
         <activity
-            android:name=".model.authenticationTest.Verification"
+            android:name=".view.authentication.Verification"
             android:exported="false" />
         <activity
-            android:name=".model.authenticationTest.Reset_Password"
+            android:name=".view.authentication.Reset_Password"
             android:exported="false" />
         <activity
             android:name=".view.authentication.Seller_Register"
@@ -57,6 +57,11 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
