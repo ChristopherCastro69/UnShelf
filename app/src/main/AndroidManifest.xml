@@ -34,6 +34,9 @@
             android:name=".view.authentication.Reset_Pass"
             android:exported="false" />
         <activity
+            android:name=".view.Wallet.WalletUI"
+            android:exported="false" />
+        <activity
             android:name=".view.authentication.Verification"
             android:exported="false" />
         <activity
@@ -51,6 +54,10 @@
         <activity
             android:name=".view.authentication.Customer_Login"
             android:exported="false" />
+
+        <activity android:name=".view.product.product_main"
+            android:exported="false"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

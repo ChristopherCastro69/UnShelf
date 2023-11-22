@@ -22,14 +22,16 @@ class MainActivity : AppCompatActivity() {
         val testBtnLogin = findViewById<Button>(R.id.testBtnLogin);
         val testBtnRegister = findViewById<Button>(R.id.testBtnRegister);
         val testBtnPmain = findViewById<Button>(R.id.testBtnPMain);
+        val testBtnCart = findViewById<Button>(R.id.testBtnCart)
 
         // CONTROLLER
         //! IMPORTANT: Just call the UI_Tester_Controller.UI_Test(intent, button, java.class) to
         UI_Tester_Controller.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
         UI_Tester_Controller.UI_Test(this, testBtnLogin, Customer_Login::class.java);
         UI_Tester_Controller.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
-//        UI_Tester_Controller.UI_Test(this, testBtnPmain, product_main::class.java);
-        UI_Tester_Controller.UI_Test(this, testBtnPmain, cart::class.java);
+        UI_Tester_Controller.UI_Test(this, testBtnPmain, product_main::class.java);
+//        UI_Tester_Controller.UI_Test(this, testBtnPmain, cart::class.java);
+        UI_Tester_Controller.UI_Test(this, testBtnCart, cart::class.java);
     }
 
 
