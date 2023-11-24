@@ -94,7 +94,12 @@ dependencies {
     implementation ("androidx.room:room-runtime:2.5.1")
     annotationProcessor ("androidx.room:room-compiler:2.5.1")
 
+    //for the preview of jetpack compose
+    implementation ("androidx.navigation:navigation-compose:2.4.0-alpha06")
+    val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
+    implementation(composeBom)
 
-
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.ui:ui-tooling-preview")
 
 }
