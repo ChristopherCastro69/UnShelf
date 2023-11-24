@@ -3,7 +3,7 @@ package com.example.unshelf.controller
 // SellerLoginController.kt
 import android.content.Context
 import android.content.Intent
-import com.example.unshelf.MainActivity
+import com.example.unshelf.view.MainActivity
 import com.example.unshelf.model.authentication.LoginAuthenticationManager
 import com.example.unshelf.view.authentication.SellerLoginView
 import com.example.unshelf.view.bottom_navigations.ui.MainNavigationActivity

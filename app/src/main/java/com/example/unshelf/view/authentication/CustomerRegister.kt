@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.unshelf.MainActivity
+import com.example.unshelf.view.MainActivity
 import com.example.unshelf.controller.CustomerRegisterController
 import com.example.unshelf.databinding.ActivityCustomerRegisterBinding
 import com.example.unshelf.model.authentication.CustomerAuthModel

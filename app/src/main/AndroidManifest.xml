@@ -43,7 +43,10 @@
             android:name=".view.authentication.Reset_Pass"
             android:exported="false" />
         <activity
-            android:name=".view.Wallet.WalletUI"
+            android:name=".view.Wallet.Balance"
+            android:exported="false" />
+        <activity
+            android:name=".view.Seller.SellerProfile"
             android:exported="false" />
         <activity
             android:name=".view.authentication.Verification"
@@ -67,14 +70,8 @@
             android:name=".view.product.product_main"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".view.MainActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>
