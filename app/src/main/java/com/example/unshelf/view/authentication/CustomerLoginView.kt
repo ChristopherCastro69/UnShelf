@@ -6,7 +6,7 @@ import android.content.Intent
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
-import com.example.unshelf.MainActivity
+import com.example.unshelf.view.MainActivity
 import com.example.unshelf.databinding.ActivityCustomerLoginBinding
 
 class CustomerLoginView(private val context: Context, private val binding: ActivityCustomerLoginBinding) {

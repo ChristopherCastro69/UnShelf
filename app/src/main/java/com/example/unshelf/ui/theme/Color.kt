@@ -15,7 +15,7 @@ val TeaGreen = Color(0xFFD3F0C1)
 
 val DarkYellowGreen = Color(0xFFA4E34E)
 val DarkPalmLeaf = Color(0xFF6A994E)
-val DarkDeepMossGreen = Color(0xFF5F8E66)
+val DarkDeepMossGreen = Color(0xFF184E20)
 val DarkChampagne = Color(0xFFFDF8E0)
 val DarkMiddleGreenYellow = Color(0xFFD0E396)
 val DarkWatermelonRed = Color(0xFFE08081)
@@ -23,5 +23,4 @@ val DarkMediumSpringBud = Color(0xFFE9F3B8)
 val DarkLaurelGreen = Color(0xFFC3E7B8)
 val DarkPistachio = Color(0xFFA4CA94)
 val DarkTeaGreen = Color(0xFFE3FCE3)
-
 
