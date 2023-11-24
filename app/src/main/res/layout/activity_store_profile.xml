@@ -138,56 +138,6 @@
             android:fontFamily="@font/jost_bold"/>
 
         <TextView
-            android:id="@+id/textView42"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Flash Deals"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/green03"
-            android:fontFamily="@font/jost_bold"/>
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:gravity="center|top"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imageView15"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:src="" />
-
-                <TextView
-                    android:id="@+id/textView44"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Price"
-                    android:fontFamily="@font/jost_bold"
-                    android:textColor="@color/green03"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textView45"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:fontFamily="@font/jost_regular"
-                    android:textColor="@color/green03"
-                    android:text="Quantity" />
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <TextView
             android:id="@+id/textView46"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -260,7 +210,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:fontFamily="@font/jost_bold"
             android:text="Store Details"
@@ -312,6 +262,17 @@
             android:layout_marginEnd="20dp"
             android:textColor="@color/grey_light"
             android:fontFamily="@font/jost_bold"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="150dp"
+            android:layout_marginEnd="150dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:text="Save" />
+
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
