@@ -1,14 +1,16 @@
-package com.example.unshelf
+package com.example.unshelf.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import com.example.unshelf.R
 import com.example.unshelf.controller.UI_Tester_Controller
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.authentication.CustomerRegister
 import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
 import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
+import com.example.unshelf.view.Wallet.Balance
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +24,8 @@ class MainActivity : AppCompatActivity() {
         val testBtnLogin = findViewById<Button>(R.id.testBtnLogin);
         val testBtnRegister = findViewById<Button>(R.id.testBtnRegister);
         val testBtnPmain = findViewById<Button>(R.id.testBtnPMain);
-        val testBtnCart = findViewById<Button>(R.id.testBtnCart)
+        val testBtnCart = findViewById<Button>(R.id.testBtnCart);
+        val testBtnWallet = findViewById<Button>(R.id.testBtnWallet);
 
         // CONTROLLER
         //! IMPORTANT: Just call the UI_Tester_Controller.UI_Test(intent, button, java.class) to
@@ -32,6 +35,8 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Controller.UI_Test(this, testBtnPmain, product_main::class.java);
 //        UI_Tester_Controller.UI_Test(this, testBtnPmain, cart::class.java);
         UI_Tester_Controller.UI_Test(this, testBtnCart, cart::class.java);
+        UI_Tester_Controller.UI_Test(this, testBtnWallet, Balance::class.java);
+
     }
 
 

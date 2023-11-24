@@ -7,7 +7,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
-import com.example.unshelf.MainActivity
+import com.example.unshelf.view.MainActivity
 import com.example.unshelf.R
 import com.example.unshelf.R.id.splashscreen
 

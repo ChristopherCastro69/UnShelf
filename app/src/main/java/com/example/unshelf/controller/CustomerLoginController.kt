@@ -1,7 +1,7 @@
 // CustomerLoginController.kt
 import android.content.Context
 import android.content.Intent
-import com.example.unshelf.MainActivity
+import com.example.unshelf.view.MainActivity
 import com.example.unshelf.model.authentication.LoginAuthenticationManager
 import com.example.unshelf.view.authentication.CustomerLoginView
 import com.google.android.gms.tasks.OnCompleteListener
