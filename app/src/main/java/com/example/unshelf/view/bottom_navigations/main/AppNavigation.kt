@@ -17,10 +17,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.ui.theme.WatermelonRed
 import com.example.unshelf.view.bottom_navigations.screens.Dashboard
 import com.example.unshelf.view.bottom_navigations.screens.Listings
 import com.example.unshelf.view.bottom_navigations.screens.Orders
 import com.example.unshelf.view.bottom_navigations.screens.Store
+
 
 @Preview
 @Composable
@@ -59,18 +62,38 @@ fun AppNavigation(){
                                 // Use custom icon if the resource ID is provided
                                 Icon(
                                     painter = painterResource(navItem.iconResId),
-                                    contentDescription = null
+                                    contentDescription = null,
+                                    tint = PalmLeaf,
+
+//                                    modifier = Modifier.tint(navItem.iconColor)
+
                                 )
                             } else {
                                 // Use default icon if no custom resource ID is provided
                                 Icon(
                                     imageVector = navItem.icon,
-                                    contentDescription = null
+                                    contentDescription = null,
+                                    tint = PalmLeaf
                                 )
                             }
                         },
                         label = {
-                            Text(text = navItem.label)
+//                            Text(
+//                                text = navItem.label,
+//                                color = navItem.textColor
+//                            )
+                            Text(
+                                text = navItem.label,
+                                color = if (currentDestination?.hierarchy?.any {
+                                        it.route == navItem.route
+                                    } == true) {
+                                    // Use a different color for the selected item
+                                        WatermelonRed
+                                } else {
+                                    // Use the default color for unselected items
+                                    PalmLeaf // Change this to your desired color
+                                }
+                            )
                         }
                     )
 
@@ -86,11 +109,12 @@ fun AppNavigation(){
             composable(route = Screens.DashboardScreen.name){
                 Dashboard()
             }
-            composable(route = Screens.ListingScreen.name){
-                Listings()
-            }
+
             composable(route = Screens.OrderScreen.name){
                 Orders()
+            }
+            composable(route = Screens.ListingScreen.name){
+                Listings()
             }
             composable(route = Screens.StoreScreen.name){
                 Store()
