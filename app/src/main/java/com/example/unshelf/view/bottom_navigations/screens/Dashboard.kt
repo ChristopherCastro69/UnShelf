@@ -1,6 +1,5 @@
 package com.example.unshelf.view.bottom_navigations.screens
 
-import android.text.Layout.Alignment
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text

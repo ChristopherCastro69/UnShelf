@@ -23,4 +23,4 @@ val DarkMediumSpringBud = Color(0xFFE9F3B8)
 val DarkLaurelGreen = Color(0xFFC3E7B8)
 val DarkPistachio = Color(0xFFA4CA94)
 val DarkTeaGreen = Color(0xFFE3FCE3)
-
+val White = Color(0xFFFFFFFF)
