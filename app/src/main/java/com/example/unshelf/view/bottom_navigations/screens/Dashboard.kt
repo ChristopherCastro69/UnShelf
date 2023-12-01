@@ -32,7 +32,7 @@
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    @Preview(showBackground = true, heightDp = 1050) // Adjust the height as needed
+    @Preview(showBackground = true, heightDp = 1050, widthDp = 390) // Adjust the height as needed
     @Composable
     fun DashboardPreview() {
         Dashboard()
@@ -155,11 +155,11 @@
                 }
 
                 Divider(
-                    color = Color.White,
+                    color = Color.Transparent,
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(1.dp)
-                        .padding(vertical = 4.dp)
+                        .padding(vertical = 2.dp)
                 )
 
                 Column(
@@ -191,7 +191,7 @@
             )
             Text(
                 text = title,
-                fontSize = 16.sp,
+                fontSize = 12.sp,
                 fontFamily = JostFontFamily,
                 fontWeight = FontWeight.Medium,
                 color = Color.White
