@@ -1,11 +1,11 @@
-package com.example.unshelf.controller
+package com.example.unshelf.helper
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.widget.Button
 
-class UI_Tester_Controller { // Please update class diagram and add this class as controller
+class UI_Tester_Helper { // Please update class diagram and add this class as controller
     // Facilitates the testing of the user interfaces created in the app
     companion object {
         @JvmStatic
