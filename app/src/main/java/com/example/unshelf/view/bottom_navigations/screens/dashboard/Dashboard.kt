@@ -1,4 +1,4 @@
-    package com.example.unshelf.view.bottom_navigations.screens
+    package com.example.unshelf.view.bottom_navigations.screens.dashboard
 
     import JostFontFamily
     import android.os.Build

@@ -1,6 +1,7 @@
 package com.example.unshelf.view.bottom_navigations.main
 
-import androidx.compose.foundation.background
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -21,22 +22,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.unshelf.ui.theme.Champagne
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.White
-import com.example.unshelf.view.bottom_navigations.screens.Dashboard
-import com.example.unshelf.view.bottom_navigations.screens.Listings
-import com.example.unshelf.view.bottom_navigations.screens.Orders
-import com.example.unshelf.view.bottom_navigations.screens.Store
+import com.example.unshelf.view.bottom_navigations.screens.dashboard.Dashboard
+import com.example.unshelf.view.bottom_navigations.screens.listings.Listings
+import com.example.unshelf.view.bottom_navigations.screens.orders.Orders
+import com.example.unshelf.view.bottom_navigations.screens.store.Store
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun AppNavigationPreview() {
     AppNavigation() // This will show a preview of your AppNavigation composable
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(){
     val navController = rememberNavController()
