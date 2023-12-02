@@ -7,3 +7,4 @@ class Customer(
     override val fullName: String,
     override val address: String,
 ) : User()
+

@@ -56,8 +56,8 @@ dependencies {
 
     //Jetpack Compose dependencies
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.activity:activity-compose:1.8.1")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -74,7 +74,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
-    implementation("com.google.firebase:firebase-auth:22.2.0")
+    implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation("com.google.firebase:firebase-database:20.3.0")
     implementation("com.google.firebase:firebase-firestore:24.9.1")
     testImplementation("junit:junit:4.13.2")
@@ -91,10 +91,21 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
 
     //room (for database)
-    implementation ("androidx.room:room-runtime:2.5.1")
-    annotationProcessor ("androidx.room:room-compiler:2.5.1")
+    implementation ("androidx.room:room-runtime:2.6.0")
+    annotationProcessor ("androidx.room:room-compiler:2.6.0")
 
+    //for the preview of jetpack compose
+    implementation ("androidx.navigation:navigation-compose:2.7.5")
+    val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
+    implementation(composeBom)
 
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.ui:ui-tooling-preview")
 
+    //this is for the icons section library
+    val compose_version = "1.5.4"
+    implementation("androidx.compose.ui:ui-graphics:$compose_version")
+    implementation ("androidx.compose.material:material-icons-extended:$compose_version")
+    implementation("androidx.compose.material:material-icons-extended:$compose_version")
 
 }
