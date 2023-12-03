@@ -11,24 +11,33 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Modifier.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.example.unshelf.R
@@ -39,10 +48,13 @@ import com.example.unshelf.view.Seller.SellerProfile
 class Balance: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             PageInAppBalance(this)
         }
     }
+
+
 }
 
 @Composable
@@ -77,7 +89,7 @@ fun PageInAppBalance(activity: Activity?) {
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBackIos,
                             contentDescription = "Back button",
                             tint = Color.White,
                             modifier = Modifier
@@ -224,12 +236,13 @@ fun PageInAppBalance(activity: Activity?) {
                 }
             }
             Spacer(modifier = Modifier.height(45.dp))
-            Column {
-                for(i in 1 .. 3) {
+            LazyColumn {
+                items(8) { index ->
                     PaymentMethodsList()
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
+
         }
 
     }
