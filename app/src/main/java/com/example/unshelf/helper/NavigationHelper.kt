@@ -1,11 +1,11 @@
-package com.example.unshelf.controller
+package com.example.unshelf.helper
 
 import android.app.Activity
 import android.content.Context
 import android.widget.Button
 import android.widget.ImageView
 
-class NavigationController {
+class NavigationHelper {
     // Controlls the navigation of pages within the application
 
     companion object {

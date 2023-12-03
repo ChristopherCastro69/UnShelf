@@ -1,8 +1,11 @@
-package com.example.unshelf.view.bottom_navigations.screens
+package com.example.unshelf.view.bottom_navigations.screens.listings
 
+import JostFontFamily
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -72,37 +76,51 @@ fun Listings() {
 
 @Composable
 fun TopBar() {
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF4CAF50)), // Replace with your desired background color
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = "Listings",
-            color = Color.White,
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.weight(1f))  // This spacer will push the elements to each end of the Row
-        Text(
-            text = "Add Items",
-            color = Color.White,
-            modifier = Modifier.align(Alignment.CenterVertically),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        IconButton(onClick = { /* TODO: Handle add action */ }) {
-            Icon(
-                painter = painterResource(id = R.drawable.button_plus), // Replace with your add icon resource
-                contentDescription = "Add",
-                tint = Color.White
+            .background(Color.Transparent) // Use your desired background color
+            .border(
+                width = 1.dp, // Set the border width
+                color = DeepMossGreen, // Set the border color
+                shape = RectangleShape // Use RectangleShape for a straight line
             )
+            .padding(bottom = 1.dp) // This is to offset the border's width from the content
+    ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(DeepMossGreen), // Replace with your desired background color
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Listings",
+                fontFamily = JostFontFamily,
+                color = Color.White,
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))  // This spacer will push the elements to each end of the Row
+            Text(
+                text = "Add Items",
+                color = Color.White,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            IconButton(onClick = { /* TODO: Handle add action */ }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.button_plus), // Replace with your add icon resource
+                    contentDescription = "Add",
+                    tint = Color.White
+                )
+            }
         }
     }
+
 }
 
 
@@ -117,7 +135,7 @@ fun FilterTabs() {
         Button(
 
             onClick = { /* TODO: Handle Active filter action */ },
-            colors = ButtonDefaults.buttonColors(MiddleGreenYellow) // Replace with your active tab color
+            colors = ButtonDefaults.buttonColors(MiddleGreenYellow), // Replace with your active tab color
         ) {
             Text(text = "Active")
         }

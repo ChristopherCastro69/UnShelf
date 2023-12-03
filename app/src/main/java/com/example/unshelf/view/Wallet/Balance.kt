@@ -3,12 +3,10 @@ package com.example.unshelf.view.Wallet
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 
-import com.example.unshelf.controller.UI_Tester_Controller
 import androidx.compose.foundation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
@@ -41,23 +40,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import androidx.core.content.ContextCompat.startActivity
-import androidx.navigation.NavController
 import com.example.unshelf.R
 import com.example.unshelf.ui.theme.DeepMossGreen
-import com.google.common.io.Files.append
-import com.example.unshelf.controller.NavigationController
-import com.example.unshelf.ui.theme.DarkDeepMossGreen
 import com.example.unshelf.ui.theme.WatermelonRed
 import com.example.unshelf.view.Seller.SellerProfile
 
 class Balance: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             PageInAppBalance(this)
         }
     }
+
+
 }
 
 @Composable
@@ -92,7 +89,7 @@ fun PageInAppBalance(activity: Activity?) {
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBackIos,
                             contentDescription = "Back button",
                             tint = Color.White,
                             modifier = Modifier
@@ -239,12 +236,13 @@ fun PageInAppBalance(activity: Activity?) {
                 }
             }
             Spacer(modifier = Modifier.height(45.dp))
-            Column {
-                for(i in 1 .. 3) {
+            LazyColumn {
+                items(8) { index ->
                     PaymentMethodsList()
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
+
         }
 
     }

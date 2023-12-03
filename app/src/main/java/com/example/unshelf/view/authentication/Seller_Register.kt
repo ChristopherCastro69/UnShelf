@@ -51,8 +51,8 @@ class Seller_Register : AppCompatActivity() {
                 69,
                 "hotfoods",
                 69.69,
-                "07/10/2024"
-                )
+                "07/10/2024",
+            )
         )
         val rating : Long = 0;
 

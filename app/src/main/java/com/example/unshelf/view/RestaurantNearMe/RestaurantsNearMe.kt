@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.unshelf.controller.NavigationController
+import com.example.unshelf.helper.NavigationHelper
 import com.example.unshelf.R
 
 class RestaurantsNearMe : AppCompatActivity() {
@@ -19,7 +19,7 @@ class RestaurantsNearMe : AppCompatActivity() {
         val ivBackBtn = findViewById<ImageView>(R.id.ivBackBtn);
 
         // CONTROLLER
-        NavigationController.GoBack(this, ivBackBtn);
+        NavigationHelper.GoBack(this, ivBackBtn);
 
         // placeholder recyclerview
         recyclerView = findViewById(R.id.rvPopularRestaurant);

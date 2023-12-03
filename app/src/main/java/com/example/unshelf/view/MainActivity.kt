@@ -4,13 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import com.example.unshelf.R
-import com.example.unshelf.controller.UI_Tester_Controller
+import com.example.unshelf.helper.UI_Tester_Helper
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.authentication.CustomerRegister
 import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
 import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
+import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.view.bottom_navigations.ui.MainNavigationActivity
 
 class MainActivity : AppCompatActivity() {
@@ -28,17 +29,19 @@ class MainActivity : AppCompatActivity() {
         val testBtnCart = findViewById<Button>(R.id.testBtnCart);
         val testBtnWallet = findViewById<Button>(R.id.testBtnWallet);
         val testSellerScreen = findViewById<Button>(R.id.testSellerScreen);
+        val testCheckoutScreen = findViewById<Button>(R.id.testCheckoutScreen);
 
         // CONTROLLER
         //! IMPORTANT: Just call the UI_Tester_Controller.UI_Test(intent, button, java.class) to
-        UI_Tester_Controller.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
-        UI_Tester_Controller.UI_Test(this, testBtnLogin, Customer_Login::class.java);
-        UI_Tester_Controller.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
-        UI_Tester_Controller.UI_Test(this, testBtnPmain, product_main::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnLogin, Customer_Login::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnPmain, product_main::class.java);
 //        UI_Tester_Controller.UI_Test(this, testBtnPmain, cart::class.java);
-        UI_Tester_Controller.UI_Test(this, testBtnCart, cart::class.java);
-        UI_Tester_Controller.UI_Test(this, testBtnWallet, Balance::class.java);
-        UI_Tester_Controller.UI_Test(this, testSellerScreen, MainNavigationActivity::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnCart, cart::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnWallet, Balance::class.java);
+        UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivity::class.java);
+        UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
     }
 
 
