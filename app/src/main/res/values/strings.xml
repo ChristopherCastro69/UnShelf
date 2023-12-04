@@ -71,6 +71,7 @@
     <string name="rating_store">9.9</string>
     <string name="follower_count">999 </string>
     <string name="profile">Edit Profile</string>
+    <string name="title_activity_google_map">GoogleMap</string>
 
 
 </resources>
