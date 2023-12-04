@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
+import com.example.unshelf.view.AddressManager.AddressManager
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.authentication.CustomerRegister
 import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
@@ -30,18 +31,20 @@ class MainActivity : AppCompatActivity() {
         val testBtnWallet = findViewById<Button>(R.id.testBtnWallet);
         val testSellerScreen = findViewById<Button>(R.id.testSellerScreen);
         val testCheckoutScreen = findViewById<Button>(R.id.testCheckoutScreen);
+        val testBtnSetUserLoc = findViewById<Button>(R.id.testBtnSetUserLoc);
 
-        // CONTROLLER
-        //! IMPORTANT: Just call the UI_Tester_Controller.UI_Test(intent, button, java.class) to
+        // HELPER FUNCTION: UI_Tester_Helper
+        //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
         UI_Tester_Helper.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnLogin, Customer_Login::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnPmain, product_main::class.java);
-//        UI_Tester_Controller.UI_Test(this, testBtnPmain, cart::class.java);
+//        UI_Tester_Helper.UI_Test(this, testBtnPmain, cart::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnCart, cart::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnWallet, Balance::class.java);
         UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivity::class.java);
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);
     }
 
 

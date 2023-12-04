@@ -55,6 +55,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+            android:id="@+id/testBtnSetUserLoc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="set user loc"
+            app:layout_constraintBottom_toBottomOf="@+id/testBtnNearMe"
+            app:layout_constraintStart_toEndOf="@+id/testBtnNearMe"
+            app:layout_constraintTop_toTopOf="@+id/testBtnNearMe" />
+
+        <Button
             android:id="@+id/testBtnLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
