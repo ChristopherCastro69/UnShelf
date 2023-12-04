@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -41,12 +42,6 @@
             android:name=".view.bottom_navigations.ui.MainNavigationActivity"
             android:exported="false" />
         <activity
-            android:name=".view.fragments.HelloWorldTest"
-            android:exported="false" />
-        <activity
-            android:name=".view.fragments.MainNavigation"
-            android:exported="false" />
-        <activity
             android:name=".view.SplashScreen.SplashScreen"
             android:exported="true">
             <intent-filter>
@@ -69,6 +64,12 @@
             android:exported="false" />
         <activity
             android:name=".view.Wallet.Balance"
+            android:exported="false" />
+        <activity
+            android:name=".view.Wallet.CheckoutUI"
+            android:exported="false" />
+        <activity
+            android:name=".view.Wallet.CheckoutRedirect"
             android:exported="false" />
         <activity
             android:name=".view.Seller.SellerProfile"

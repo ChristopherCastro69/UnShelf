@@ -111,5 +111,11 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics:$compose_version")
     implementation ("androidx.compose.material:material-icons-extended:$compose_version")
     implementation("androidx.compose.material:material-icons-extended:$compose_version")
+    //for payment
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
+    implementation("com.google.code.gson:gson:2.8.5")
+    //for image fetching from url
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
 
 }

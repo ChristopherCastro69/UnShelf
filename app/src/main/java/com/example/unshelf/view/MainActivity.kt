@@ -11,6 +11,7 @@ import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
 import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
+import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.view.bottom_navigations.ui.MainNavigationActivity
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         val testBtnCart = findViewById<Button>(R.id.testBtnCart);
         val testBtnWallet = findViewById<Button>(R.id.testBtnWallet);
         val testSellerScreen = findViewById<Button>(R.id.testSellerScreen);
+        val testCheckoutScreen = findViewById<Button>(R.id.testCheckoutScreen);
 
         // CONTROLLER
         //! IMPORTANT: Just call the UI_Tester_Controller.UI_Test(intent, button, java.class) to
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testBtnCart, cart::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnWallet, Balance::class.java);
         UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivity::class.java);
+        UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
     }
 
 
