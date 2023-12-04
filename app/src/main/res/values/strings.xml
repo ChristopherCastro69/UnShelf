@@ -66,6 +66,13 @@
     <string name="time">25 mins</string>
     <string name="search_hint">What are you craving for today?</string>
 
+    <!--    address manager-->
+    <string name="share_current_loc">Share my current location</string>
+    <string name="enter_address_manually">Enter address manually</string>
+    <string name="find_restaurants_near_you">Find restaurants and shops near you!</string>
+    <string name="desc_allow_loc_access">By allowing access, you can search for restaurants and shops near you and receive more accurate deals.</string>
+    <string name="confirm_loc">Confirm location</string>
+
     <!-- PABS -->
     <string name="store_name"> Store Name</string>
     <string name="rating_store">9.9</string>
