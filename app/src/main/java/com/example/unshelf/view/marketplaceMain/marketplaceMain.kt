@@ -93,7 +93,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val luckySalad: Product = Product(
@@ -105,7 +106,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val topsShirmp: Product = Product(
@@ -117,7 +119,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val jethroPunko: Product = Product(
@@ -129,7 +132,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val hernAmpalaya: Product = Product(
@@ -141,7 +145,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         dataList_SO.add(hernAmpalaya)
@@ -161,7 +166,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val luckySalad: Product = Product(
@@ -173,7 +179,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val topsShirmp: Product = Product(
@@ -185,7 +192,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val jethroPunko: Product = Product(
@@ -197,7 +205,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val hernAmpalaya: Product = Product(
@@ -209,7 +218,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         dataList_BD.add(hernAmpalaya)
@@ -229,7 +239,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val luckySalad: Product = Product(
@@ -241,7 +252,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val topsShirmp: Product = Product(
@@ -253,7 +265,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val jethroPunko: Product = Product(
@@ -265,7 +278,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         val hernAmpalaya: Product = Product(
@@ -277,7 +291,8 @@ class marketplaceMain : AppCompatActivity() {
             140,
             listOf(),
             "12-12-12",
-            10
+            10,
+            69
         )
 
         dataList_DG.add(hernAmpalaya)

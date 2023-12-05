@@ -1,6 +1,8 @@
 package com.example.unshelf.view.SellerBottomNav.screens.listings
 
+// or, if you're using StateFlow or LiveData:
 import JostFontFamily
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,6 +26,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,55 +39,69 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.WatermelonRed
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
+
+
+var productID = mutableStateOf<String?>(null)
 data class Product(
-    val imageRes: Int,
+    val thumbnail: String,
     val name: String,
     val quantity: Int,
     val price: Double
 )
 
+// ViewModel to handle fetching products
+
+
+@Composable
+fun ProductList(products: List<Product>) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFE8F5E9)) // Adjust the background color as needed
+    ) {
+        items(products) { product ->
+            ProductCard(product)
+        }
+    }
+}
 // Sample data
-val productList = listOf(
-    Product(R.drawable.loaf, "Loaf", 42, 69.00),
-    Product(R.drawable.loaf, "Loaf", 42, 89.00),
-    Product(R.drawable.loaf, "Loaf", 42, 69.00),
-    Product(R.drawable.loaf, "Loaf", 42, 89.00),
-    Product(R.drawable.loaf, "Loaf", 42, 89.00),
-    Product(R.drawable.loaf, "Loaf", 42, 89.00),
-    Product(R.drawable.loaf, "Loaf", 42, 89.00),
-    Product(R.drawable.loaf, "Loaf", 42, 89.00),
-    Product(R.drawable.loaf, "Loaf", 42, 89.00),
-    Product(R.drawable.loaf, "Loaf", 42, 89.00),
-    Product(R.drawable.loaf, "Loaf", 42, 89.00),
 
-
-    // Add more products as per your data
-)
 @Preview(showBackground = true)
 @Composable
 fun PreviewListings() {
     // Mock NavController for the preview
     val navController = rememberNavController()
 
-    // Your Listings Composable
-    Listings(navController)
+
+    // Pass the mockSellerId to the Listings composable
+    Listings(navController, sellerId.value, storeId.value)
 }
 
 
 @Composable
-fun Listings(navController: NavController) {
+fun Listings(navController: NavController, sellerId: String, storeId: String) {
     Column {
 
         TopBar(navController)
         FilterTabs()
-        ProductList()
+        ProductList(sellerId = sellerId, storeId = storeId)
     }
 }
 
@@ -123,7 +142,11 @@ fun TopBar(navController: NavController) {
                 fontWeight = FontWeight.Bold
             )
 
-            IconButton(onClick = {navController.navigate("addProduct") }) {
+            IconButton(onClick = {
+                productID.value = null  // Set productID to null for adding a new product
+                navController.navigate("addProduct")},
+
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_plus), // Replace with your add icon resource
                     contentDescription = "Add",
@@ -170,19 +193,28 @@ fun FilterTabs() {
 }
 
 @Composable
-fun ProductList() {
+fun ProductList(sellerId: String, storeId: String) {
+    // Use a ViewModel to manage the state and business logic
+    val productViewModel: ProductViewModel = viewModel()
+
+    // Call a function in your ViewModel to fetch products for the given sellerId
+    LaunchedEffect(sellerId) {
+        productViewModel.fetchProductsForSeller(sellerId, storeId)
+    }
+
+    // Observe the product list from your ViewModel
+    val products = productViewModel.products.collectAsState()
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE8F5E9)) // Adjust the background color as needed
     ) {
-        items(productList) { product ->
+        items(products.value) { product ->
             ProductCard(product)
         }
     }
 }
-
-
 @Composable
 fun ProductCard(product: Product) {
     Card(
@@ -196,8 +228,9 @@ fun ProductCard(product: Product) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.background(Color.White)
         ) {
+            val painter = rememberAsyncImagePainter(model = product.thumbnail)
             Image(
-                painter = painterResource(id = product.imageRes),
+                painter = painter,
                 contentDescription = product.name,
                 modifier = Modifier
                     .size(80.dp)
@@ -217,7 +250,7 @@ fun ProductCard(product: Product) {
                 Text(text = "Quantity: ${product.quantity}", color = Color.Gray)
                 Text(text = "₱${product.price}", color = Color.Gray)
             }
-            IconButton(onClick = { /* TODO: Handle edit action */ }) {
+            IconButton(onClick = { "addProduct/${productID.value}" }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_edit),
                     contentDescription = "Edit",
@@ -237,3 +270,31 @@ fun ProductCard(product: Product) {
 }
 
 
+class ProductViewModel : ViewModel() {
+    private val _products = MutableStateFlow<List<Product>>(listOf())
+    val products = _products.asStateFlow()
+
+    fun fetchProductsForSeller(sellerId: String, storeId: String) {
+        val db = Firebase.firestore
+        db.collection("sellers").document(sellerId)
+            .collection("store").document(storeId)
+            .collection("products")
+            .get()
+            .addOnSuccessListener { documents ->
+                val productList = documents.map { document ->
+                    // Log the product ID
+                    Log.d("ProductViewModel", "Product ID: ${document.id}")
+                    productID.value = document.id
+
+                    val name = document.getString("productName") ?: "Unknown"
+                    val quantity = document.getLong("quantity")?.toInt() ?: 0
+                    val price = document.getDouble("marketPrice") ?: 0.0
+                    val thumbnailUri = document.getString("thumbnail") ?: ""
+                    Product(thumbnail = thumbnailUri, name = name, quantity = quantity, price = price)   }
+                _products.value = productList
+            }
+            .addOnFailureListener { exception ->
+                Log.w("ProductViewModel", "Error getting documents: ", exception)
+            }
+    }
+}

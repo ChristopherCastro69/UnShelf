@@ -12,6 +12,7 @@ class Product(
     val hashtags: List<String>,   // Changed from String to List<String>
     val expirationDate: String,      // Changed from String to Date
     val discount: Long,
+    val quantity: Int // Added quantity field
     )
 
 
