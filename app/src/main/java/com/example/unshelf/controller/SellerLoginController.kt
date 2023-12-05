@@ -3,10 +3,9 @@ package com.example.unshelf.controller
 // SellerLoginController.kt
 import android.content.Context
 import android.content.Intent
-import com.example.unshelf.view.MainActivity
 import com.example.unshelf.model.authentication.LoginAuthenticationManager
 import com.example.unshelf.view.authentication.SellerLoginView
-import com.example.unshelf.view.bottom_navigations.ui.MainNavigationActivity
+import com.example.unshelf.view.SellerBottomNav.ui.MainNavigationActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult

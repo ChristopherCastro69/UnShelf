@@ -9,6 +9,8 @@
     <color name="rose">#BC4749</color>
     <color name="pale">#F2E8CF</color>
     <color name="black">#FF000000</color>
+    <color name="black01">#122113</color>
+    <color name="black02">#1A3D21</color>
     <color name="white">#FFFFFFFF</color>
     <color name="less_white">#EFEFEF</color>
     <color name="star_yellow">#FFD645</color>

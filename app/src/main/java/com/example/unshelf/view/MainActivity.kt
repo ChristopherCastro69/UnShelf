@@ -13,7 +13,8 @@ import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
 import com.example.unshelf.view.Wallet.CheckoutUI
-import com.example.unshelf.view.bottom_navigations.ui.MainNavigationActivity
+import com.example.unshelf.view.SellerBottomNav.ui.MainNavigationActivity
+import com.example.unshelf.view.marketplaceMain.marketplaceMain
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         val testSellerScreen = findViewById<Button>(R.id.testSellerScreen);
         val testCheckoutScreen = findViewById<Button>(R.id.testCheckoutScreen);
         val testBtnSetUserLoc = findViewById<Button>(R.id.testBtnSetUserLoc);
+        val testBtnMenu = findViewById<Button>(R.id.testBtnPMain2)
 
         // HELPER FUNCTION: UI_Tester_Helper
         //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
@@ -45,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivity::class.java);
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnMenu, marketplaceMain::class.java);
     }
 
 

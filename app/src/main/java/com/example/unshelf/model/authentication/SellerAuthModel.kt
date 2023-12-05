@@ -16,9 +16,8 @@ class SellerAuthModel { // This is supposed to be in the controller
         fullName: String,
         address: String,
         storeName: String,
-        productList: List<Product>,
         rating: Long,
-        sellerID : String,
+        followers:Int,
         adminVerified: String,
 
         callback: (Boolean, String?) -> Unit)
@@ -31,7 +30,7 @@ class SellerAuthModel { // This is supposed to be in the controller
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Create a Customer object with the provided details
+                    // Create a Seller object with the provided details
                     val seller = Seller(
                         email,
                         password,
@@ -42,42 +41,38 @@ class SellerAuthModel { // This is supposed to be in the controller
                         adminVerified)
 
                     val store = Store(
-                        sellerID,
-                        storeName,
+                        address,
                         rating,
-                        productList,
-                        adminVerified
-                    )
+                        followers,
+                        adminVerified)
+
                     // Get the current user's UID
                     val uid = firebaseAuth.currentUser!!.uid
 
-                    // Store the customer details in Firestore under the "Customers" collection
-                    firestore.collection("sellers").document(uid)
-                        .set(seller)
+                    // Store the seller details in Firestore under the "sellers" collection
+                    val sellerDocument = firestore.collection("sellers").document(uid)
+                    sellerDocument.set(seller)
                         .addOnSuccessListener {
-                            callback(true, "Account Successfully Created. Check email for verification")
-                            firebaseAuth.currentUser!!.sendEmailVerification()
-                            firebaseAuth.signOut()
+                            // Create a store with auto-generated ID in the stores sub-collection
+                            sellerDocument.collection("store").add(store)
+                                .addOnSuccessListener { documentReference ->
+                                    // The store is successfully created, and Firestore has generated an ID
+                                    callback(true, "Seller Account and Store Successfully Created. Check email for verification. Store ID: ${documentReference.id}")
+                                    firebaseAuth.currentUser!!.sendEmailVerification()
+                                    firebaseAuth.signOut()
+                                }
+                                .addOnFailureListener { e ->
+                                    callback(false, "Failed to store store details: ${e.localizedMessage}")
+                                }
                         }
                         .addOnFailureListener { e ->
                             callback(false, "Failed to store seller details: ${e.localizedMessage}")
                         }
-                    // Store the customer details in Firestore under the "Customers" collection
-                    firestore.collection("stores").document(uid)
-                        .set(store)
-                        .addOnSuccessListener {
-                            callback(true, "Store Successfully Created. Awaiting approval")
-                            firebaseAuth.signOut()
-                        }
-                        .addOnFailureListener { e ->
-                            callback(false, "Failed to store details: ${e.localizedMessage}")
-                        }
-
                 } else {
                     callback(false, task.exception?.localizedMessage ?: "Unknown error")
-
                 }
             }
+
 
 
     }

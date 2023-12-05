@@ -54,7 +54,8 @@ android {
 }
 
 dependencies {
-
+    implementation("com.github.bumptech.glide:glide:4.13.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
     //Jetpack Compose dependencies
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -95,8 +96,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
 
     //room (for database)
-    implementation ("androidx.room:room-runtime:2.6.0")
-    annotationProcessor ("androidx.room:room-compiler:2.6.0")
+    implementation ("androidx.room:room-runtime:2.6.1")
+    annotationProcessor ("androidx.room:room-compiler:2.6.1")
 
     //for the preview of jetpack compose
     implementation ("androidx.navigation:navigation-compose:2.7.5")
@@ -114,8 +115,16 @@ dependencies {
     //for payment
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
-    implementation("com.google.code.gson:gson:2.8.5")
+    implementation("com.google.code.gson:gson:2.9.0")
     //for image fetching from url
     implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+
+    //For the date
+    implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    implementation ("androidx.compose.material3:material3:1.2.0-alpha12")
+
+
+    implementation("androidx.navigation:navigation-compose:2.7.5")
 
 }

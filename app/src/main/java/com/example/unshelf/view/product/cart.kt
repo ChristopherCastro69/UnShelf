@@ -1,12 +1,15 @@
 package com.example.unshelf.view.product
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unshelf.R
 import com.example.unshelf.view.RestaurantNearMe.AdapterRestaurantNearMe
 import com.example.unshelf.view.RestaurantNearMe.DataRestaurantNearMe
+import com.example.unshelf.view.marketplaceMain.marketplaceMain
 
 class cart : AppCompatActivity() {
 
@@ -23,6 +26,13 @@ class cart : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
 
+        val backBtn = findViewById<ImageView>(R.id.cart_backBtn)
+
+        backBtn.setOnClickListener {
+            val intent = Intent(this, marketplaceMain::class.java)
+            startActivity(intent)
+        }
+
         recyclerView = findViewById(R.id.rvCart);
         recyclerView.layoutManager = LinearLayoutManager(this);
         recyclerView.setHasFixedSize(true);
@@ -34,10 +44,10 @@ class cart : AppCompatActivity() {
     private fun getData() {
         for (i in 0 until 10) {
             val data = CartItemData(
-                "Lucky's Fruits",
-                "Fruit Salad",
+                "Sample",
+                "ASSD",
                 2,
-                "Mango",
+                "ASSD",
                 260.00
             )
             dataList.add(data)
