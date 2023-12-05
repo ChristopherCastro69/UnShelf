@@ -1,4 +1,4 @@
-package com.example.unshelf.view.bottom_navigations.main
+package com.example.unshelf.view.SellerBottomNav.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -25,11 +25,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.White
-import com.example.unshelf.view.bottom_navigations.screens.dashboard.AddProducts
-import com.example.unshelf.view.bottom_navigations.screens.dashboard.Dashboard
-import com.example.unshelf.view.bottom_navigations.screens.listings.Listings
-import com.example.unshelf.view.bottom_navigations.screens.orders.Orders
-import com.example.unshelf.view.bottom_navigations.screens.store.Store
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.AddProducts
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.Dashboard
+import com.example.unshelf.view.SellerBottomNav.screens.listings.Listings
+import com.example.unshelf.view.SellerBottomNav.screens.orders.Orders
+import com.example.unshelf.view.SellerBottomNav.screens.store.Store
 
 
 @RequiresApi(Build.VERSION_CODES.O)

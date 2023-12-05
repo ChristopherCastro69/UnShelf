@@ -1,4 +1,4 @@
-package com.example.unshelf.view.bottom_navigations.screens.dashboard
+package com.example.unshelf.view.SellerBottomNav.screens.dashboard
 
 import JostFontFamily
 import android.app.Activity
@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -77,7 +79,6 @@ import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.firestore
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -170,6 +171,7 @@ fun AddProducts() {
         }
     }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProdName(){
     Column(modifier = Modifier
@@ -190,10 +192,20 @@ fun ProdName(){
             label = { Text("Write a product name.") },
             modifier = Modifier
                 .fillMaxWidth(),
-//                .padding(8.dp),
+//                .padding(4.dp), // You can adjust padding as needed
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
+            singleLine = true, // Add this line if you want the TextField to be single line
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                containerColor = Color(0xFFF0F0F0), // Apply the background color here
+                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Transparent,
+                cursorColor = Color.Black
+            ),
+            shape = RoundedCornerShape(4.dp) // Apply rounded shape here
         )
+
+
     }
 }
 
@@ -266,7 +278,7 @@ fun Thumbnail() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+//            .padding(16.dp)
             .background(Color.Transparent), // This is the green background color
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -289,7 +301,9 @@ fun Thumbnail() {
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .size(250.dp) // Size of the circle
+                .height(250.dp)
+//                .fillMaxHeight()
+//                .size(250.dp) // Size of the circle
                 .background(DeepMossGreen, RectangleShape) // White circle
                 .border(2.dp, Color.Gray, RectangleShape)
                 .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
@@ -319,7 +333,7 @@ fun Thumbnail() {
             Button(
                 onClick = { imageUri.value = null },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 4.dp)
             ) {
                 Text("Remove Thumbnail", color = Color.White)
             }
@@ -361,26 +375,32 @@ fun ProductGallery() {
             modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-                .padding(16.dp),
+//                .padding(16.dp),
         ) {
             galleryImageUris.forEach { uri ->
                 Image(
                     painter = rememberAsyncImagePainter(uri),
                     contentDescription = "Selected Product Image",
                     modifier = Modifier
-                        .size(130.dp)
-                        .padding(end = 8.dp)
-                        .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+//                        .size(130.dp)
+//                        .padding(end = 8.dp)
+//                        .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+                        .fillMaxWidth()  // Makes the image stretch to fill the width of its container
+                        .aspectRatio(1f) // Maintains the aspect ratio of the image
+
                 )
+
+
+
             }
 
             // Button to add new images
             Box(
                 modifier = Modifier
-                    .size(130.dp)
+                    .size(150.dp)
+                    .height(100.dp)
                     .padding(16.dp)
-                    .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
-                    .background(Color.White)
+                    .background(DeepMossGreen,  shape = RoundedCornerShape(10.dp))
                     .clickable {
                         val intent = Intent(Intent.ACTION_PICK)
                         intent.type = "image/*"
@@ -391,7 +411,7 @@ fun ProductGallery() {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add Image",
-                    tint = Color.Black,
+                    tint = Color.White,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -427,13 +447,21 @@ fun ProductDescription() {
 //                .padding(8.dp),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
+            singleLine = false, // Add this line if you want the TextField to be single line
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                containerColor = Color(0xFFF0F0F0), // Apply the background color here
+                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Transparent,
+                cursorColor = Color.Black
+            ),
+            shape = RoundedCornerShape(4.dp)
       )
 
         Row(
             modifier = Modifier
                 .wrapContentWidth()
-                .background(Color.Transparent)
-                .padding(8.dp),
+                .background(Color.Transparent),
+//                .padding(8.dp),
 
 //            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -470,7 +498,7 @@ fun HashtagAddButton(onAdd: () -> Unit, text: String, onTextChange: (String) -> 
         modifier = Modifier
             .padding(12.dp)
             .background(
-                DeepMossGreen,
+                PalmLeaf,
                 RoundedCornerShape(16.dp)
             )  // Set the background color of the Box, not the TextField
 
@@ -511,7 +539,8 @@ fun HashtagChip(text: String) {
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .wrapContentWidth()
-            .background(Color(0xFFE0E0E0), RoundedCornerShape(16.dp))
+            .border(2.dp, Color.Green, RoundedCornerShape(16.dp)) // Set the border color to green
+            .background(Color.Transparent, RoundedCornerShape(16.dp)) // Set the background to transparent
             .padding(16.dp)
     ) {
         Text(text, fontSize = 12.sp, color = Color(0xFF555555))
@@ -541,15 +570,17 @@ fun Marketprice() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+//            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
-                cursorColor = Color.Black,
-                focusedIndicatorColor = Color.Gray, // You can change this color to match your design
-                unfocusedIndicatorColor = Color.Gray // You can change this color to match your design
+            singleLine = true, // Add this line if you want the TextField to be single line
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                containerColor = Color(0xFFF0F0F0), // Apply the background color here
+                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Transparent,
+                cursorColor = Color.Black
             ),
-            singleLine = true
+            shape = RoundedCornerShape(4.dp) // Apply rounded shape here
         )
     }
 }
@@ -571,7 +602,15 @@ fun Voucher() {
             modifier = Modifier
                 .weight(1f)
                 .padding(end = 8.dp),
-            singleLine = true
+            textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
+            singleLine = true, // Add this line if you want the TextField to be single line
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                containerColor = Color(0xFFF0F0F0), // Apply the background color here
+                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Transparent,
+                cursorColor = Color.Black
+            ),
+            shape = RoundedCornerShape(4.dp) // Apply rounded shape here
         )
 
         OutlinedTextField(
@@ -582,7 +621,16 @@ fun Voucher() {
                 .weight(1f)
                 .padding(start = 8.dp),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            singleLine = true
+            textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
+            singleLine = true, // Add this line if you want the TextField to be single line
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                containerColor = Color(0xFFF0F0F0), // Apply the background color here
+                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Transparent,
+                cursorColor = Color.Black
+            ),
+            shape = RoundedCornerShape(4.dp) // Apply rounded shape here
+
         )
     }
 }
@@ -609,7 +657,7 @@ fun ExpirationDate() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(onClick = { dateDialogState.show() },
-                colors = ButtonDefaults.buttonColors(containerColor = DeepMossGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
         ) {
             Text(text = "Expiration Date")
         }
@@ -665,7 +713,7 @@ fun AddButton(sellerId: String, storeId: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = DeepMossGreen)
+        colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
     ) {
         Text(
             text = "Add Product",

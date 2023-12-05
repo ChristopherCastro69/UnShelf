@@ -1,4 +1,4 @@
-package com.example.unshelf.view.bottom_navigations.main
+package com.example.unshelf.view.SellerBottomNav.main
 
 enum class Screens {
     DashboardScreen,

@@ -1,4 +1,4 @@
-package com.example.unshelf.view.bottom_navigations.screens.store
+package com.example.unshelf.view.SellerBottomNav.screens.store
 
 import JostFontFamily
 import androidx.compose.foundation.Image

@@ -13,7 +13,7 @@ import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
 import com.example.unshelf.view.Wallet.CheckoutUI
-import com.example.unshelf.view.bottom_navigations.ui.MainNavigationActivity
+import com.example.unshelf.view.SellerBottomNav.ui.MainNavigationActivity
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 
 class MainActivity : AppCompatActivity() {
