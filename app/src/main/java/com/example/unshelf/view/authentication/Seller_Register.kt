@@ -43,28 +43,10 @@ class Seller_Register : AppCompatActivity() {
         val address : String = "Cebu City"
         val storeName : String = binding.tfSellerStoreName.text.toString()
         val adminVerified : String = "Pending"
-        val sellerID : String = "null"
-        val productList: List<Product> = listOf(
-            Product(
-                "Jethro's Juicy Hotdogs",
-                "Lameh Keyo!",
-                69,
-                "hotfoods",
-                69.69,
-                "07/10/2024",
-            )
-        )
-        val rating : Long = 0;
 
-        val seller = Seller(
-            email,
-            password,
-            phoneNumber,
-            fullName,
-            storeName,
-            address,
-            adminVerified
-        )
+        val rating : Long = 0;
+        val followers : Int = 0;
+
 
         val isValidated: Boolean = SellerAuthModel().validateData(email, password, confirmPassword)
         if (!isValidated) {
@@ -78,9 +60,8 @@ class Seller_Register : AppCompatActivity() {
             fullName,
             address,
             storeName,
-            productList,
             rating,
-            sellerID,
+            followers,
             adminVerified){ success, message ->
             changeInProgress(false)
             // Handle the result of account creation

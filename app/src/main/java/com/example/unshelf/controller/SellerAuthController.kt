@@ -13,9 +13,9 @@ class SellerAuthController ( // Please modify class diagram and add this class a
         fullName: String,
         address: String,
         storeName: String,
-        productList: List<Product>,
+
         rating: Long,
-        sellerID : String,
+        followers: Int,
         adminVerified: String,
         callback: (Boolean, String?) -> Unit
     ) {
@@ -26,9 +26,8 @@ class SellerAuthController ( // Please modify class diagram and add this class a
             fullName,
             address,
             storeName,
-            productList,
             rating,
-            sellerID,
+            followers,
             adminVerified,
             callback
 

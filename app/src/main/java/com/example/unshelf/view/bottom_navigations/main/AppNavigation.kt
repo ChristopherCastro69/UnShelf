@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.White
+import com.example.unshelf.view.bottom_navigations.screens.dashboard.AddProducts
 import com.example.unshelf.view.bottom_navigations.screens.dashboard.Dashboard
 import com.example.unshelf.view.bottom_navigations.screens.listings.Listings
 import com.example.unshelf.view.bottom_navigations.screens.orders.Orders
@@ -140,10 +141,13 @@ fun AppNavigation(){
                 Orders()
             }
             composable(route = Screens.ListingScreen.name){
-                Listings()
+                Listings(navController)
             }
             composable(route = Screens.StoreScreen.name){
                 Store()
+            }
+            composable(route = "addProduct") {
+                AddProducts() // AddProducts composable
             }
         }
     }

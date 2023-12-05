@@ -34,6 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.unshelf.R
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MiddleGreenYellow
@@ -63,19 +65,29 @@ val productList = listOf(
 
     // Add more products as per your data
 )
-
 @Preview(showBackground = true)
 @Composable
-fun Listings() {
+fun PreviewListings() {
+    // Mock NavController for the preview
+    val navController = rememberNavController()
+
+    // Your Listings Composable
+    Listings(navController)
+}
+
+
+@Composable
+fun Listings(navController: NavController) {
     Column {
-        TopBar()
+
+        TopBar(navController)
         FilterTabs()
         ProductList()
     }
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -111,7 +123,7 @@ fun TopBar() {
                 fontWeight = FontWeight.Bold
             )
 
-            IconButton(onClick = { /* TODO: Handle add action */ }) {
+            IconButton(onClick = {navController.navigate("addProduct") }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_plus), // Replace with your add icon resource
                     contentDescription = "Add",

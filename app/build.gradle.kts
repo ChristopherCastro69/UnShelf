@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -64,6 +63,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -83,8 +83,6 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-//  GOOGLE dependencies
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
     //For phone verification
 
     // Import the BoM for the Firebase platform
@@ -95,8 +93,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
 
     //room (for database)
-    implementation ("androidx.room:room-runtime:2.6.0")
-    annotationProcessor ("androidx.room:room-compiler:2.6.0")
+    implementation ("androidx.room:room-runtime:2.6.1")
+    annotationProcessor ("androidx.room:room-compiler:2.6.1")
 
     //for the preview of jetpack compose
     implementation ("androidx.navigation:navigation-compose:2.7.5")
@@ -114,8 +112,16 @@ dependencies {
     //for payment
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
-    implementation("com.google.code.gson:gson:2.8.5")
+    implementation("com.google.code.gson:gson:2.9.0")
     //for image fetching from url
     implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+
+    //For the date
+    implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    implementation ("androidx.compose.material3:material3:1.2.0-alpha12")
+
+
+    implementation("androidx.navigation:navigation-compose:2.7.5")
 
 }
