@@ -12,8 +12,10 @@ class AddressManager : AppCompatActivity() {
         setContentView(R.layout.activity_address_manager)
 
         val btnShareCurrAddress = findViewById<Button>(R.id.btnShareCurrAddress);
+        val btnManualAddress = findViewById<Button>(R.id.btnManualAddress);
 
         UI_Tester_Helper.UI_Test(this, btnShareCurrAddress, UserAddress::class.java);
+        UI_Tester_Helper.UI_Test(this, btnManualAddress, UserAddress::class.java);
     }
 
 
