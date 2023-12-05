@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         val testBtnWallet = findViewById<Button>(R.id.testBtnWallet);
         val testSellerScreen = findViewById<Button>(R.id.testSellerScreen);
         val testCheckoutScreen = findViewById<Button>(R.id.testCheckoutScreen);
-        val testBtnSetUserLoc = findViewById<Button>(R.id.testBtnSetUserLoc);
         val testBtnMenu = findViewById<Button>(R.id.testBtnPMain2)
+        val testBtnSetUserLoc = findViewById<Button>(R.id.testBtnSetUserLoc); // user address
 
         // HELPER FUNCTION: UI_Tester_Helper
         //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
