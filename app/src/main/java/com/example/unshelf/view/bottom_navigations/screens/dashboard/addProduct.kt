@@ -34,7 +34,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -78,6 +77,7 @@ import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.firestore
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -113,6 +113,7 @@ fun AddProducts() {
         fetchUserDetails { sId, stId ->
             sellerId.value = sId
             storeId.value = stId
+            Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
         }
     }
 
@@ -126,7 +127,8 @@ fun AddProducts() {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Product Details",
+                    Text(
+                        "Product Details",
                         color = Color.White,
                         fontFamily = JostFontFamily,
                         fontWeight = FontWeight.Medium,
@@ -688,6 +690,7 @@ fun PreviewAddProducts() {
 // ----> FUNCTIONS TO CLOUD FIRESTORE <-----
 
 fun saveProductToFirestore(sellerId: String, storeId: String, product: Product) {
+
     val db = Firebase.firestore
     val productRef = db.collection("sellers").document(sellerId)
         .collection("store").document(storeId)
@@ -706,24 +709,28 @@ fun saveProductToFirestore(sellerId: String, storeId: String, product: Product) 
 
 
 fun fetchUserDetails(onComplete: (String, String) -> Unit) {
-    // Get the current authenticated user's ID
     val userId = Firebase.auth.currentUser?.uid ?: return
 
-    // Query Firestore to get seller and store details
-    Firebase.firestore.collection("sellers").document(userId).get()
-        .addOnSuccessListener { document ->
-            // Retrieve seller ID and store ID from the Firestore document
-            val sellerId = document.getString("sellerId") ?: ""
-            val storeId = document.getString("storeId") ?: ""
+    // Assuming 'userId' is your 'sellerId'
+    val sellerId = userId
+
+    // Query Firestore to get the store ID
+    Firebase.firestore.collection("sellers").document(sellerId)
+        .collection("store").get()
+        .addOnSuccessListener { querySnapshot ->
+            // Assuming you need the first store's ID
+            val storeId = querySnapshot.documents.firstOrNull()?.id ?: ""
             Log.d("UserDetails", "Seller ID: $sellerId, Store ID: $storeId")
 
-            // Use the callback to return the seller ID and store ID
+            // Return the seller ID and store ID
             onComplete(sellerId, storeId)
         }
         .addOnFailureListener {
-            Log.e("Firestore", "Error fetching user details", it)
+            Log.e("Firestore", "Error fetching store details", it)
         }
 }
+
+
 
 
 

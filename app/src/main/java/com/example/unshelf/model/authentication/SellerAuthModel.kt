@@ -53,11 +53,11 @@ class SellerAuthModel { // This is supposed to be in the controller
                     val sellerDocument = firestore.collection("sellers").document(uid)
                     sellerDocument.set(seller)
                         .addOnSuccessListener {
-                            // Create a stores sub-collection under the seller document
-                            sellerDocument.collection("store").document(storeName)
-                                .set(store)
-                                .addOnSuccessListener {
-                                    callback(true, "Seller Account and Store Successfully Created. Check email for verification")
+                            // Create a store with auto-generated ID in the stores sub-collection
+                            sellerDocument.collection("store").add(store)
+                                .addOnSuccessListener { documentReference ->
+                                    // The store is successfully created, and Firestore has generated an ID
+                                    callback(true, "Seller Account and Store Successfully Created. Check email for verification. Store ID: ${documentReference.id}")
                                     firebaseAuth.currentUser!!.sendEmailVerification()
                                     firebaseAuth.signOut()
                                 }
