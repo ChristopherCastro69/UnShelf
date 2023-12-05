@@ -101,6 +101,15 @@
             app:layout_constraintTop_toBottomOf="@+id/testBtnCart" />
 
         <Button
+            android:id="@+id/testBtnPMain2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="240dp"
+            android:text="PMAIN"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/testBtnCart" />
+
+        <Button
             android:id="@+id/testBtnWallet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
