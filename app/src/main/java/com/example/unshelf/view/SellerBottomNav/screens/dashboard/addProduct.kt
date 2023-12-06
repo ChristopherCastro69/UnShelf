@@ -51,6 +51,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -83,6 +84,7 @@ import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 // First, define your Product data class to match the Firestore structure
 
@@ -108,8 +110,73 @@ var productQuantity = mutableStateOf("")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @RequiresApi(Build.VERSION_CODES.O)
-fun AddProducts() {
+fun AddProducts(productId: String? = null) {
     Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
+
+    if (productId != null) {
+        LaunchedEffect(productId) {
+            val db = Firebase.firestore
+            val docRef = db.collection("sellers").document(sellerId.value)
+                .collection("store").document(storeId.value)
+                .collection("products").document(productId)
+
+            docRef.get().addOnSuccessListener { document ->
+                if (document != null) {
+                    productName.value = document.getString("productName") ?: ""
+                    selectedCategory.value = document.getString("category") ?: "Grocery"
+                    val thumbnailString = document.getString("thumbnail")
+                    if (!thumbnailString.isNullOrEmpty()) {
+                        imageUri.value = Uri.parse(thumbnailString)
+                    } else {
+                        // Handle the case where thumbnail string is null or empty
+                        // Maybe set a default imageUri or leave it null based on your app's logic
+                    }
+
+                    productDescription.value = document.getString("description") ?: ""
+
+                    // Convert String to Long for marketPrice
+                    marketPrice.value = document.getDouble("marketPrice")?.toString() ?: ""
+
+                    // Convert String to List<String> for galleryImageUris
+                    val galleryImages = document.getString("gallery")?.split(",") ?: listOf()
+                    galleryImageUris.clear()
+                    galleryImages.forEach { uriString ->
+                        galleryImageUris.add(Uri.parse(uriString))
+                    }
+
+                    // Handle hashtags as List<String>
+                    val hashtags = document.get("hashtags") as? List<String> ?: listOf()
+                    productHashtags.clear()
+                    productHashtags.addAll(hashtags)
+
+                    // Handle expirationDate
+                    val expirationDateString = document.getString("expirationDate") ?: ""
+                    if (expirationDateString.isNotEmpty()) {
+                        try {
+                            pickedDate.value = LocalDate.parse(expirationDateString, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+                        } catch (e: DateTimeParseException) {
+                            Log.e("AddProduct", "Error parsing date: $expirationDateString", e)
+                            // Set to default date or handle the error as needed
+                            pickedDate.value = LocalDate.now()
+                        }
+                    } else {
+                        pickedDate.value = LocalDate.now() // Or your default date
+                    }
+
+                    // Handle discount
+                    discountPercent.value = document.getLong("discount")?.toString() ?: ""
+
+                    // Handle quantity
+                    productQuantity.value = document.getLong("quantity")?.toString() ?: ""
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }.addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+            }
+
+        }
+    }
 
     if (productAdditionSuccess.value) {
         Toast.makeText(LocalContext.current, "Product added successfully", Toast.LENGTH_LONG).show()
@@ -159,7 +226,7 @@ fun AddProducts() {
             QuantityInput()
             ExpirationDate()
             // Pass the current value of sellerId and storeId to AddButton
-            AddButton(sellerId = sellerId.value, storeId = storeId.value)
+            AddButton(sellerId = sellerId.value, storeId = storeId.value, productId = productId)
             }
 
         }
@@ -719,47 +786,48 @@ fun ExpirationDate() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddButton(sellerId: String, storeId: String) {
+fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
+    val buttonText = if (productId == null) "Add Product" else "Update Product"
 
     Button(
         onClick = {
-            Log.d("AddButton", "Button clicked with Seller ID: $sellerId, Store ID: $storeId")
-            // Call the function to save the product to Firestore
-            if (sellerId.isNotBlank() && storeId.isNotBlank()){
-                // Convert global states to match the types in the Product class
-                val product = Product(
-                    productName = productName.value,
-                    categories = listOf(selectedCategory.value), // Assuming a single category for simplicity
-                    thumbnail = imageUri.value.toString(), // Convert Uri to String
-                    gallery = galleryImageUris.joinToString(",") { it.toString() }, // Convert List<Uri> to comma-separated String
-                    description = productDescription.value,
-                    marketPrice = marketPrice.value.toLongOrNull() ?: 0L,
-                    hashtags = productHashtags.toList(),
-                    expirationDate = stringDate.value,
-                    discount = discountPercent.value.toLongOrNull() ?: 0L,
-                    quantity = productQuantity.value.toIntOrNull() ?: 0
-
-                )
-
-                saveProductToFirestore(sellerId, storeId, product)
+            val product = Product(
+                productName = productName.value,
+                categories = listOf(selectedCategory.value),
+                thumbnail = imageUri.value.toString(),
+                gallery = galleryImageUris.joinToString(",") { it.toString() },
+                description = productDescription.value,
+                marketPrice = marketPrice.value.toLongOrNull() ?: 0L,
+                hashtags = productHashtags.toList(),
+                expirationDate = stringDate.value,
+                discount = discountPercent.value.toLongOrNull() ?: 0L,
+                quantity = productQuantity.value.toIntOrNull() ?: 0
+            )
+            if(productId == null){
+                // Call function to add or update product based on productId
+                saveProductToFirestore(sellerId, storeId, product, productId)
             }
-            else {
-                Log.d("AddButton", "Seller ID or Store ID is missing")
+         else{
+                updateProductToFirestore(sellerId, storeId, product, productId)
             }
+
+
         },
+        // Other Button properties
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
     ) {
         Text(
-            text = "Add Product",
+            text = buttonText,
             color = Color.White,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
     }
 }
+
 //Hello
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 1500)
@@ -774,25 +842,60 @@ fun PreviewAddProducts() {
 
 // ----> FUNCTIONS TO CLOUD FIRESTORE <-----
 
-fun saveProductToFirestore(sellerId: String, storeId: String, product: Product) {
-
+fun saveProductToFirestore(sellerId: String, storeId: String, product: Product, productId: String? = null) {
     val db = Firebase.firestore
-    val productRef = db.collection("sellers").document(sellerId)
-        .collection("store").document(storeId)
-        .collection("products")
+    val productRef = if (productId == null) {
+        // Adding a new product
+        db.collection("sellers").document(sellerId)
+            .collection("store").document(storeId)
+            .collection("products").document()
+    } else {
+        // Updating an existing product
+        db.collection("sellers").document(sellerId)
+            .collection("store").document(storeId)
+            .collection("products").document(productId)
+    }
 
-    productRef.add(product)
+    productRef.set(product)
         .addOnSuccessListener {
-            Log.d("Firestore", "Product added successfully")
-            productAdditionSuccess.value = true // Set success state to true
+            Log.d("Firestore", "Product added/updated successfully")
+            productAdditionSuccess.value = true
         }
-        .addOnFailureListener {
-            Log.e("Firestore", "Error adding product", it)
-            productAdditionSuccess.value = false // Optionally handle failure
+        .addOnFailureListener { e ->
+            Log.e("Firestore", "Error adding/updating product", e)
+            productAdditionSuccess.value = false
         }
 }
 
 
+fun updateProductToFirestore(sellerId: String, storeId: String, product: Product, productId: String) {
+    val db = Firebase.firestore
+
+    val productRef = db.collection("sellers").document(sellerId)
+        .collection("store").document(storeId)
+        .collection("products").document(productId)
+
+    productRef.update(
+        mapOf(
+            "productName" to product.productName,
+            "categories" to product.categories,
+            "thumbnail" to product.thumbnail,
+            "gallery" to product.gallery,
+            "description" to product.description,
+            "marketPrice" to product.marketPrice,
+            "hashtags" to product.hashtags,
+            "expirationDate" to product.expirationDate,
+            "discount" to product.discount,
+            "quantity" to product.quantity
+        )
+    ).addOnSuccessListener {
+        Log.d("Firestore", "Product updated successfully")
+        productAdditionSuccess.value = true
+    }.addOnFailureListener { e ->
+        Log.e("Firestore", "Error updating product", e)
+        productAdditionSuccess.value = false
+    }
+}
 
 
 

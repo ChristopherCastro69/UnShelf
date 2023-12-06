@@ -30,6 +30,7 @@ import com.example.unshelf.view.SellerBottomNav.screens.dashboard.Dashboard
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
 import com.example.unshelf.view.SellerBottomNav.screens.listings.Listings
+import com.example.unshelf.view.SellerBottomNav.screens.listings.productID
 
 import com.example.unshelf.view.SellerBottomNav.screens.orders.Orders
 import com.example.unshelf.view.SellerBottomNav.screens.store.Store
@@ -151,9 +152,11 @@ fun AppNavigation(){
             composable(route = Screens.StoreScreen.name){
                 Store()
             }
-            composable(route = "addProduct") {
-                AddProducts() // AddProducts composable
+            composable("addProduct/{productId}") { backStackEntry ->
+                val productId = backStackEntry.arguments?.getString("productId")
+                AddProducts(productId) // Adjust according to your actual implementation
             }
+
         }
     }
 
