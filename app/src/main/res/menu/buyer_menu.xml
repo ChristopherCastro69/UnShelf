@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:icon="@drawable/home_buyer_ic"
+        android:title="Home"
+        android:iconTint="@color/green03"/>
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:icon="@drawable/notif_buyer_ic"
+        android:title="Notifications" />
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:icon="@drawable/near_me_buyer_ic"
+        android:title="Near Me" />
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:icon="@drawable/profile_buyer_ic"
+        android:title="Profile" />
+</menu>
