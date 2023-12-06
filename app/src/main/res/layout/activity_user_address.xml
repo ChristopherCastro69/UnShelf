@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btnConfirmLocation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -76,13 +76,13 @@
                 android:id="@+id/imageView22"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/textView56"
+                app:layout_constraintBottom_toBottomOf="@+id/tvCity"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView51"
+                app:layout_constraintTop_toTopOf="@+id/tvSpecificAddress"
                 app:srcCompat="@drawable/location" />
 
             <TextView
-                android:id="@+id/textView51"
+                android:id="@+id/tvSpecificAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -93,13 +93,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView56"
+                android:id="@+id/tvCity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="City/Province"
                 android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="@+id/textView51"
-                app:layout_constraintTop_toBottomOf="@+id/textView51" />
+                app:layout_constraintStart_toStartOf="@+id/tvSpecificAddress"
+                app:layout_constraintTop_toBottomOf="@+id/tvSpecificAddress" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

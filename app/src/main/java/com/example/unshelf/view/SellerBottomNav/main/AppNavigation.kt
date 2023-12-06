@@ -27,7 +27,10 @@ import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.White
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.AddProducts
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.Dashboard
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
 import com.example.unshelf.view.SellerBottomNav.screens.listings.Listings
+
 import com.example.unshelf.view.SellerBottomNav.screens.orders.Orders
 import com.example.unshelf.view.SellerBottomNav.screens.store.Store
 
@@ -36,7 +39,9 @@ import com.example.unshelf.view.SellerBottomNav.screens.store.Store
 @Preview
 @Composable
 fun AppNavigationPreview() {
+
     AppNavigation() // This will show a preview of your AppNavigation composable
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -141,7 +146,7 @@ fun AppNavigation(){
                 Orders()
             }
             composable(route = Screens.ListingScreen.name){
-                Listings(navController)
+                Listings(navController, sellerId.value, storeId.value)
             }
             composable(route = Screens.StoreScreen.name){
                 Store()
@@ -154,3 +159,5 @@ fun AppNavigation(){
 
 
 }
+
+

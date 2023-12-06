@@ -2,6 +2,7 @@
 
     import JostFontFamily
     import android.os.Build
+    import android.util.Log
     import androidx.annotation.RequiresApi
     import androidx.compose.foundation.Image
     import androidx.compose.foundation.background
@@ -11,6 +12,8 @@
 
     import androidx.compose.material3.*
     import androidx.compose.runtime.Composable
+    import androidx.compose.runtime.LaunchedEffect
+    import androidx.compose.runtime.mutableStateOf
     import androidx.compose.ui.Alignment
     import androidx.compose.ui.Modifier
 
@@ -27,21 +30,33 @@
     import androidx.compose.ui.unit.sp
     import com.example.unshelf.R
     import com.example.unshelf.ui.theme.DeepMossGreen
+    import com.google.firebase.Firebase
+    import com.google.firebase.auth.auth
+    import com.google.firebase.firestore.firestore
     import java.time.LocalDate
     import java.time.format.DateTimeFormatter
 
-
+    var sellerId = mutableStateOf("")
+    var storeId = mutableStateOf("")
     @RequiresApi(Build.VERSION_CODES.O)
     @Preview(showBackground = true, heightDp = 1050, widthDp = 390) // Adjust the height as needed
     @Composable
     fun DashboardPreview() {
         Dashboard()
+
     }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun Dashboard() {
+        LaunchedEffect(key1 = Unit) {
+            fetchUserDetails { sId, stId ->
+                sellerId.value = sId
+                storeId.value = stId
+                Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
+            }
+        }
         val scrollState = rememberScrollState()
 
         Column(modifier = Modifier
@@ -322,4 +337,26 @@
         val currentDate = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
         return currentDate.format(formatter)
+    }
+
+    fun fetchUserDetails(onComplete: (String, String) -> Unit) {
+        val userId = Firebase.auth.currentUser?.uid ?: return
+
+        // Assuming 'userId' is your 'sellerId'
+        val sellerId = userId
+
+        // Query Firestore to get the store ID
+        Firebase.firestore.collection("sellers").document(sellerId)
+            .collection("store").get()
+            .addOnSuccessListener { querySnapshot ->
+                // Assuming you need the first store's ID
+                val storeId = querySnapshot.documents.firstOrNull()?.id ?: ""
+                Log.d("UserDetails", "Seller ID: $sellerId, Store ID: $storeId")
+
+                // Return the seller ID and store ID
+                onComplete(sellerId, storeId)
+            }
+            .addOnFailureListener {
+                Log.e("Firestore", "Error fetching store details", it)
+            }
     }

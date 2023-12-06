@@ -20,8 +20,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,6 +35,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -51,7 +51,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -64,6 +63,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
@@ -75,10 +75,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.model.entities.Product
-import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -101,22 +99,17 @@ var discountPercent = mutableStateOf("")
 var pickedDate = mutableStateOf(LocalDate.now())
 
 val stringDate = mutableStateOf("")
-var sellerId = mutableStateOf("")
-var storeId = mutableStateOf("")
+
 var productAdditionSuccess = mutableStateOf(false)
+var productQuantity = mutableStateOf("")
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @RequiresApi(Build.VERSION_CODES.O)
 fun AddProducts() {
-    LaunchedEffect(key1 = Unit) {
-        fetchUserDetails { sId, stId ->
-            sellerId.value = sId
-            storeId.value = stId
-            Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
-        }
-    }
+    Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
 
     if (productAdditionSuccess.value) {
         Toast.makeText(LocalContext.current, "Product added successfully", Toast.LENGTH_LONG).show()
@@ -163,6 +156,7 @@ fun AddProducts() {
             ProductDescription()
             Marketprice()
             Voucher()
+            QuantityInput()
             ExpirationDate()
             // Pass the current value of sellerId and storeId to AddButton
             AddButton(sellerId = sellerId.value, storeId = storeId.value)
@@ -292,7 +286,7 @@ fun Thumbnail() {
                     .fillMaxWidth()
                     .size(250.dp) // Size of the circle
                     .clip(RectangleShape)
-                    .border(2.dp, DeepMossGreen, RectangleShape)
+                    .border(2.dp, PalmLeaf, RectangleShape)
                     .border(2.dp, Color.Gray, RectangleShape)
                     .clickable { launcher.launch("image/*") } // Change thumbnail on click
             )
@@ -304,7 +298,7 @@ fun Thumbnail() {
                 .height(250.dp)
 //                .fillMaxHeight()
 //                .size(250.dp) // Size of the circle
-                .background(DeepMossGreen, RectangleShape) // White circle
+                .background(PalmLeaf, RectangleShape) // White circle
                 .border(2.dp, Color.Gray, RectangleShape)
                 .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
         ) {
@@ -347,8 +341,6 @@ fun Thumbnail() {
 
 @Composable
 fun ProductGallery() {
-
-    val imageUris = remember { mutableStateListOf<Uri>() }
     val pickImageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = { result ->
@@ -375,32 +367,48 @@ fun ProductGallery() {
             modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-//                .padding(16.dp),
         ) {
-            galleryImageUris.forEach { uri ->
-                Image(
-                    painter = rememberAsyncImagePainter(uri),
-                    contentDescription = "Selected Product Image",
-                    modifier = Modifier
-//                        .size(130.dp)
-//                        .padding(end = 8.dp)
-//                        .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
-                        .fillMaxWidth()  // Makes the image stretch to fill the width of its container
-                        .aspectRatio(1f) // Maintains the aspect ratio of the image
-
-                )
-
-
-
+            galleryImageUris.forEachIndexed { index, uri ->
+                Box {
+                    Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = "Selected Product Image",
+                        modifier = Modifier
+                            .size(150.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop // Adjust the scaling to fit the size of the container
+                    )
+                    // Position the delete button on the bottom right of the image
+                    IconButton(
+                        onClick = {
+                            // Remove the image from the list based on index
+                            galleryImageUris.removeAt(index)
+                        },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(24.dp)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.5f),
+                                shape = CircleShape
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Image",
+                            tint = Color.White
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(8.dp))
             }
 
             // Button to add new images
             Box(
                 modifier = Modifier
                     .size(150.dp)
-                    .height(100.dp)
                     .padding(16.dp)
-                    .background(DeepMossGreen,  shape = RoundedCornerShape(10.dp))
+                    .background(PalmLeaf, shape = RoundedCornerShape(10.dp))
                     .clickable {
                         val intent = Intent(Intent.ACTION_PICK)
                         intent.type = "image/*"
@@ -540,10 +548,13 @@ fun HashtagChip(text: String) {
         modifier = Modifier
             .wrapContentWidth()
             .border(2.dp, Color.Green, RoundedCornerShape(16.dp)) // Set the border color to green
-            .background(Color.Transparent, RoundedCornerShape(16.dp)) // Set the background to transparent
+            .background(
+                Color.Transparent,
+                RoundedCornerShape(16.dp)
+            ) // Set the background to transparent
             .padding(16.dp)
     ) {
-        Text(text, fontSize = 12.sp, color = Color(0xFF555555))
+        Text(text, fontSize = 12.sp, color = PalmLeaf)
     }
 }
 
@@ -635,6 +646,30 @@ fun Voucher() {
     }
 }
 
+@Composable
+fun QuantityInput() {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp)
+    ) {
+        Text(
+            text = "Quantity",
+            fontFamily = JostFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Black
+        )
+        OutlinedTextField(
+            value = productQuantity.value,
+            onValueChange = { productQuantity.value = it },
+            label = { Text("Enter quantity") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
+            singleLine = true
+        )
+    }
+}
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -701,7 +736,9 @@ fun AddButton(sellerId: String, storeId: String) {
                     marketPrice = marketPrice.value.toLongOrNull() ?: 0L,
                     hashtags = productHashtags.toList(),
                     expirationDate = stringDate.value,
-                    discount = discountPercent.value.toLongOrNull() ?: 0L
+                    discount = discountPercent.value.toLongOrNull() ?: 0L,
+                    quantity = productQuantity.value.toIntOrNull() ?: 0
+
                 )
 
                 saveProductToFirestore(sellerId, storeId, product)
@@ -756,27 +793,7 @@ fun saveProductToFirestore(sellerId: String, storeId: String, product: Product) 
 }
 
 
-fun fetchUserDetails(onComplete: (String, String) -> Unit) {
-    val userId = Firebase.auth.currentUser?.uid ?: return
 
-    // Assuming 'userId' is your 'sellerId'
-    val sellerId = userId
-
-    // Query Firestore to get the store ID
-    Firebase.firestore.collection("sellers").document(sellerId)
-        .collection("store").get()
-        .addOnSuccessListener { querySnapshot ->
-            // Assuming you need the first store's ID
-            val storeId = querySnapshot.documents.firstOrNull()?.id ?: ""
-            Log.d("UserDetails", "Seller ID: $sellerId, Store ID: $storeId")
-
-            // Return the seller ID and store ID
-            onComplete(sellerId, storeId)
-        }
-        .addOnFailureListener {
-            Log.e("Firestore", "Error fetching store details", it)
-        }
-}
 
 
 
