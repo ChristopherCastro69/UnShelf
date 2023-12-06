@@ -1,3 +1,4 @@
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +48,8 @@ import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.view.Seller.SellerProfile
+import com.example.unshelf.view.product.product_main
 import java.time.format.TextStyle
 
 @Preview
@@ -196,6 +200,7 @@ fun ProductGroup(){
 
 @Composable
 fun ProductUI() {
+    val context = LocalContext.current
     Box{
         Box(
             modifier = Modifier
@@ -221,6 +226,10 @@ fun ProductUI() {
                     .clip(RoundedCornerShape(10.dp))
                     .border(1.dp, color = MediumSpringBud, shape = RoundedCornerShape(10.dp))
                     .align(Alignment.Center)
+                    .clickable{
+                        val intent = Intent(context, product_main::class.java)
+                        context.startActivity(intent)
+                    }
             )
 
             Text(
@@ -233,7 +242,7 @@ fun ProductUI() {
                     .padding(bottom = 10.dp)
             )
         }
-        Box(modifier = Modifier.offset(y=30.dp,x=-155.dp)) {
+        Box(modifier = Modifier.offset(y=30.dp,x=0.dp)) {
             Image(
                 painterResource(id = R.drawable.ic_banner),
                 contentDescription = "banner",
