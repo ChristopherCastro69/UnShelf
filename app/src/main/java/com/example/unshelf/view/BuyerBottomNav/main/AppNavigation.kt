@@ -28,6 +28,8 @@ import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.White
 import com.example.unshelf.view.BuyerBottomNav.screens.NearMe
+import com.example.unshelf.view.BuyerBottomNav.screens.PreviewProfileScreen
+import com.example.unshelf.view.BuyerBottomNav.screens.Profile
 
 
 @Preview
@@ -119,6 +121,7 @@ fun BuyerAppNavigation(){
             }
             composable(route = BuyerScreens.Profile.name){
                 //Listings(navController, sellerId.value, storeId.value)
+                PreviewProfileScreen()
             }
             // composable("addProduct/{productId}") { backStackEntry ->
             //     val productId = backStackEntry.arguments?.getString("productId")
