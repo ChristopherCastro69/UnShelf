@@ -2,7 +2,9 @@ package com.example.unshelf.view.SellerBottomNav.screens.listings
 
 // or, if you're using StateFlow or LiveData:
 import JostFontFamily
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Product
+import com.example.unshelf.model.entities.ProductWithID
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.WatermelonRed
@@ -60,12 +64,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 
 var productID = mutableStateOf<String?>(null)
-//data class Product(
-//    val thumbnail: String,
-//    val name: String,
-//    val quantity: Int,
-//    val price: Double
-//)
+
 
 // ViewModel to handle fetching products
 
@@ -186,6 +185,7 @@ fun FilterTabs() {
 fun ProductList(sellerId: String, storeId: String, navController: NavController) {
     // Use a ViewModel to manage the state and business logic
     val productViewModel: ProductViewModel = viewModel()
+    val context = LocalContext.current
 
     // Call a function in your ViewModel to fetch products for the given sellerId
     LaunchedEffect(sellerId) {
@@ -201,12 +201,12 @@ fun ProductList(sellerId: String, storeId: String, navController: NavController)
             .background(Color(0xFFE8F5E9)) // Adjust the background color as needed
     ) {
         items(products.value) { product ->
-            ProductCard(product, navController)
+            ProductCard(product, navController, productViewModel, context)
         }
     }
 }
 @Composable
-fun ProductCard(product: Product, navController: NavController) {
+fun ProductCard(product: ProductWithID, navController: NavController, productViewModel: ProductViewModel, context: Context) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -240,7 +240,7 @@ fun ProductCard(product: Product, navController: NavController) {
                 Text(text = "Quantity: ${product.quantity}", color = Color.Gray)
                 Text(text = "₱${product.marketPrice}", color = Color.Gray)
             }
-            IconButton(onClick = { navController.navigate("addProduct/${productID.value}")
+            IconButton(onClick = { navController.navigate("addProduct/${product.id}")
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_edit),
@@ -249,7 +249,8 @@ fun ProductCard(product: Product, navController: NavController) {
                 )
             }
 
-            IconButton(onClick = { /* TODO: Handle delete action */ }) {
+            IconButton(onClick = {   productViewModel.deleteProduct(sellerId.value, storeId.value, product.id, context)
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_delete),
                     contentDescription = "Delete",
@@ -262,7 +263,7 @@ fun ProductCard(product: Product, navController: NavController) {
 
 
 class ProductViewModel : ViewModel() {
-    private val _products = MutableStateFlow<List<Product>>(listOf())
+    private val _products = MutableStateFlow<List<ProductWithID>>(listOf())
     val products = _products.asStateFlow()
 
     fun fetchProductsForSeller(sellerId: String, storeId: String) {
@@ -275,7 +276,8 @@ class ProductViewModel : ViewModel() {
                 val productList = documents.map { document ->
                     // Log the product ID
                     Log.d("ProductViewModel", "Product ID: ${document.id}")
-                    productID.value = document.id
+
+                    val id = document.id
                     val categories = document.get("categories") as? List<String> ?: listOf("Unknown")
                     val description = document.getString("description") ?: "Unknown"
                     val discount = document.getLong("discount") ?: 0L
@@ -286,7 +288,7 @@ class ProductViewModel : ViewModel() {
                     val quantity = document.getLong("quantity")?.toInt() ?: 0
                     val price = document.getDouble("marketPrice")?.toLong() ?: 0L
                     val thumbnailUri = document.getString("thumbnail") ?: ""
-                    Product(name, categories, thumbnailUri, gallery, description, price, hashtags, expirationDate, discount, quantity)
+                    ProductWithID(id, name, categories, thumbnailUri, gallery, description, price, hashtags, expirationDate, discount, quantity)
                 }
                 _products.value = productList
             }
@@ -294,6 +296,25 @@ class ProductViewModel : ViewModel() {
                 Log.w("ProductViewModel", "Error getting documents: ", exception)
             }
     }
+
+    fun deleteProduct(sellerId: String, storeId: String, productId: String, context: Context) {
+        val db = Firebase.firestore
+        db.collection("sellers").document(sellerId)
+            .collection("store").document(storeId)
+            .collection("products").document(productId)
+            .delete()
+            .addOnSuccessListener {
+                Log.d("ProductViewModel", "Product successfully deleted: $productId")
+                Toast.makeText(context, "Product successfully deleted", Toast.LENGTH_SHORT).show()
+                fetchProductsForSeller(sellerId, storeId) // Refresh the product list
+            }
+            .addOnFailureListener { e ->
+                Log.w("ProductViewModel", "Error deleting product: $productId", e)
+                Toast.makeText(context, "Error deleting product", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
 
 
 }

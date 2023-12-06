@@ -789,11 +789,20 @@ fun ExpirationDate() {
 @Composable
 fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
     Log.d("Text Button", "Button clicked. Product ID: $productId")
-    val buttonText = if (productId == null) "Add Product" else "Update Product"
+    var flag = false
+    var buttonText = "Update Product"
+
+    if (productId == "null"){
+        flag = true
+        buttonText = "Add Product"
+        // Log the flag value
+        Log.d("AddButton", "Flag value: $flag, Product ID: $productId")
+    }
 
     Button(
         onClick = {
-            Log.d("AddButton", "Button clicked. Product ID: $productId")
+            Log.d("AddButton", "Button clicked. Product ID: $productId, Flag: $flag")
+
             val product = Product(
                 productName = productName.value,
                 categories = listOf(selectedCategory.value),
@@ -806,12 +815,13 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
                 discount = discountPercent.value.toLongOrNull() ?: 0L,
                 quantity = productQuantity.value.toIntOrNull() ?: 0
             )
-            if(productId == null){
-                saveProductToFirestore(sellerId, storeId, product)
-            } else {
-                updateProductToFirestore(sellerId, storeId, product, productId)
-            }
 
+            if(flag){
+                saveProductToFirestore(sellerId, storeId, product)
+            }
+            else{
+                updateProductToFirestore(sellerId, storeId, product, productId.toString())
+            }
 
 
         },
