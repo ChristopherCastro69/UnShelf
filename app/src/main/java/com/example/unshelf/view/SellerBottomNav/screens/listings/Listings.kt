@@ -45,6 +45,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.WatermelonRed
@@ -59,28 +60,17 @@ import kotlinx.coroutines.flow.asStateFlow
 
 
 var productID = mutableStateOf<String?>(null)
-data class Product(
-    val thumbnail: String,
-    val name: String,
-    val quantity: Int,
-    val price: Double
-)
+//data class Product(
+//    val thumbnail: String,
+//    val name: String,
+//    val quantity: Int,
+//    val price: Double
+//)
 
 // ViewModel to handle fetching products
 
 
-@Composable
-fun ProductList(products: List<Product>) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFE8F5E9)) // Adjust the background color as needed
-    ) {
-        items(products) { product ->
-            ProductCard(product)
-        }
-    }
-}
+
 // Sample data
 
 @Preview(showBackground = true)
@@ -101,7 +91,7 @@ fun Listings(navController: NavController, sellerId: String, storeId: String) {
 
         TopBar(navController)
         FilterTabs()
-        ProductList(sellerId = sellerId, storeId = storeId)
+        ProductList(sellerId = sellerId, storeId = storeId, navController)
     }
 }
 
@@ -144,7 +134,7 @@ fun TopBar(navController: NavController) {
 
             IconButton(onClick = {
                 productID.value = null  // Set productID to null for adding a new product
-                navController.navigate("addProduct")},
+                navController.navigate("addProduct/${productID.value}")},
 
             ) {
                 Icon(
@@ -193,7 +183,7 @@ fun FilterTabs() {
 }
 
 @Composable
-fun ProductList(sellerId: String, storeId: String) {
+fun ProductList(sellerId: String, storeId: String, navController: NavController) {
     // Use a ViewModel to manage the state and business logic
     val productViewModel: ProductViewModel = viewModel()
 
@@ -211,12 +201,12 @@ fun ProductList(sellerId: String, storeId: String) {
             .background(Color(0xFFE8F5E9)) // Adjust the background color as needed
     ) {
         items(products.value) { product ->
-            ProductCard(product)
+            ProductCard(product, navController)
         }
     }
 }
 @Composable
-fun ProductCard(product: Product) {
+fun ProductCard(product: Product, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -231,7 +221,7 @@ fun ProductCard(product: Product) {
             val painter = rememberAsyncImagePainter(model = product.thumbnail)
             Image(
                 painter = painter,
-                contentDescription = product.name,
+                contentDescription = product.productName,
                 modifier = Modifier
                     .size(80.dp)
                     .padding(8.dp)
@@ -242,15 +232,16 @@ fun ProductCard(product: Product) {
                     .padding(start = 8.dp)
             ) {
                 Text(
-                    text = product.name,
+                    text = product.productName,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold, // Set the font weight to bold
                     fontFamily = FontFamily.Serif
                 )
                 Text(text = "Quantity: ${product.quantity}", color = Color.Gray)
-                Text(text = "₱${product.price}", color = Color.Gray)
+                Text(text = "₱${product.marketPrice}", color = Color.Gray)
             }
-            IconButton(onClick = { "addProduct/${productID.value}" }) {
+            IconButton(onClick = { navController.navigate("addProduct/${productID.value}")
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_edit),
                     contentDescription = "Edit",
@@ -285,16 +276,24 @@ class ProductViewModel : ViewModel() {
                     // Log the product ID
                     Log.d("ProductViewModel", "Product ID: ${document.id}")
                     productID.value = document.id
-
+                    val categories = document.get("categories") as? List<String> ?: listOf("Unknown")
+                    val description = document.getString("description") ?: "Unknown"
+                    val discount = document.getLong("discount") ?: 0L
+                    val expirationDate = document.getString("expirationDate") ?: "0/00/0000"
+                    val gallery = document.getString("gallery") ?: ""  // Assuming gallery is a single String
+                    val hashtags = document.get("hashtags") as? List<String> ?: listOf()
                     val name = document.getString("productName") ?: "Unknown"
                     val quantity = document.getLong("quantity")?.toInt() ?: 0
-                    val price = document.getDouble("marketPrice") ?: 0.0
+                    val price = document.getDouble("marketPrice")?.toLong() ?: 0L
                     val thumbnailUri = document.getString("thumbnail") ?: ""
-                    Product(thumbnail = thumbnailUri, name = name, quantity = quantity, price = price)   }
+                    Product(name, categories, thumbnailUri, gallery, description, price, hashtags, expirationDate, discount, quantity)
+                }
                 _products.value = productList
             }
             .addOnFailureListener { exception ->
                 Log.w("ProductViewModel", "Error getting documents: ", exception)
             }
     }
+
+
 }

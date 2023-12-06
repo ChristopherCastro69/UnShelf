@@ -73,6 +73,24 @@
     <string name="desc_allow_loc_access">By allowing access, you can search for restaurants and shops near you and receive more accurate deals.</string>
     <string name="confirm_loc">Confirm location</string>
 
+<!--    Cx Order History-->
+    <string name="cx_order_hist">Orders</string>
+    <string name="cx_order_search">Search order ID, name, or description</string>
+    <string name="cx_filters_txt">Filters</string>
+    <string name="cx_product">Product</string>
+    <string name="cx_order_id">Order ID: </string>
+    <string name="cx_product_date">0/00/0000</string>
+    <string name="cx_order_status">Order status</string>
+    <string name="cx_order_amount">399.00</string>
+
+<!--    order status-->
+    <string name="order_pending">Pending</string>
+    <string name="order_approved">Approved</string>
+    <string name="order_cancelled">Cancelled</string>
+    <string name="order_refunded">Refunded</string>
+    <string name="order_paid">Paid</string>
+
+
     <!-- PABS -->
     <string name="store_name"> Store Name</string>
     <string name="rating_store">9.9</string>

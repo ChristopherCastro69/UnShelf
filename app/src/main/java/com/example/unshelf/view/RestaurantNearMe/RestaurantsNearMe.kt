@@ -33,9 +33,9 @@ class RestaurantsNearMe : AppCompatActivity() {
     private fun getData() {
         for (i in 0 until 10) {
             val restaurant = DataRestaurantNearMe(
-                R.drawable.pancake,
+                R.drawable.fruit_salad_img,
                 R.drawable.star_solid,
-                "Jethro's Wet Pancake",
+                "Jethro's Salad",
                 "4.5",
                 "Filipino",
                 "25 mins"
