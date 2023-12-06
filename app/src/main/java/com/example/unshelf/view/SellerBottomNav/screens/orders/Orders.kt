@@ -2,6 +2,7 @@ package com.example.unshelf.view.SellerBottomNav.screens.orders
 
 import JostFontFamily
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -80,6 +81,7 @@ fun Orders() {
                         Icon(Icons.Filled.ArrowBack, "Menu", tint = Color.White)
                     }
                 },
+
                 actions = {
                     IconButton(onClick = { /* TODO: Handle menu action */ }) {
                         Icon(Icons.Filled.Menu, "Menu", tint = Color.White)
