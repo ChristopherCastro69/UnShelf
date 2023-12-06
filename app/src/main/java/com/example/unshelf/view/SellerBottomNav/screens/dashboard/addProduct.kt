@@ -113,6 +113,10 @@ var productQuantity = mutableStateOf("")
 fun AddProducts(productId: String? = null) {
     Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
 
+    imageUri.value?.let {
+        DisplayImage(imageUri = it)
+    }
+
     if (productId != null) {
         LaunchedEffect(productId) {
             Log.d("AddProducts", "Current Product ID: $productId")
@@ -437,6 +441,9 @@ fun ProductGallery() {
                 .horizontalScroll(rememberScrollState())
         ) {
             galleryImageUris.forEachIndexed { index, uri ->
+                if (!uri.toString().isNullOrEmpty()) {
+                    DisplayImage(imageUri = uri)
+                }
                 Box {
                     Image(
                         painter = rememberAsyncImagePainter(uri),
@@ -905,7 +912,13 @@ fun updateProductToFirestore(sellerId: String, storeId: String, product: Product
 }
 
 
-
-
-
+@Composable
+fun DisplayImage(imageUri: Uri) {
+    val painter = rememberAsyncImagePainter(model = imageUri)
+    Image(
+        painter = painter,
+        contentDescription = "Loaded Image",
+        modifier = Modifier.size(100.dp) // Adjust size as needed
+    )
+}
 
