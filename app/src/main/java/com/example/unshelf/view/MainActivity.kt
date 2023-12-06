@@ -13,7 +13,7 @@ import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
 import com.example.unshelf.view.Wallet.CheckoutUI
-import com.example.unshelf.view.SellerBottomNav.ui.MainNavigationActivity
+import com.example.unshelf.view.SellerBottomNav.ui.MainNavigationActivitySeller
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 
 class MainActivity : AppCompatActivity() {
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 //        UI_Tester_Helper.UI_Test(this, testBtnPmain, cart::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnCart, cart::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnWallet, Balance::class.java);
-        UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivity::class.java);
+        UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivitySeller::class.java);
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnMenu, marketplaceMain::class.java);

@@ -1,3 +1,4 @@
+/*
 package com.example.unshelf.view.SellerBottomNav.ui
 
 import android.os.Build
@@ -8,7 +9,7 @@ import androidx.annotation.RequiresApi
 import com.example.unshelf.view.SellerBottomNav.main.AppNavigation
 
 
-class MainNavigationActivitySeller : AppCompatActivity() {
+class MainNavigationActivityBuyer : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,4 +17,4 @@ class MainNavigationActivitySeller : AppCompatActivity() {
             AppNavigation()
         }
     }
-}
+}*/
