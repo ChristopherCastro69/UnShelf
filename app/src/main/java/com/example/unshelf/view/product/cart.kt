@@ -2,6 +2,7 @@ package com.example.unshelf.view.product
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +28,8 @@ class cart : AppCompatActivity() {
         setContentView(R.layout.activity_cart)
 
         val backBtn = findViewById<ImageView>(R.id.cart_backBtn)
-
+        val cartBtn = findViewById<Button>(R.id.cart_checkout_btn)
+        
         backBtn.setOnClickListener {
             val intent = Intent(this, marketplaceMain::class.java)
             startActivity(intent)

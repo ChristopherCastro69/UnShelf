@@ -1,8 +1,11 @@
 package com.example.unshelf.view.marketplaceMain
 
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unshelf.R
@@ -10,6 +13,7 @@ import com.example.unshelf.model.entities.Product
 import com.example.unshelf.view.product.AdapterCartItem
 import com.example.unshelf.view.product.CartItemData
 import com.example.unshelf.view.product.product_main
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class marketplaceMain : AppCompatActivity() {
 
@@ -80,6 +84,8 @@ class marketplaceMain : AppCompatActivity() {
                 startActivity(intent)
             }
         })
+
+
 
     }
 
