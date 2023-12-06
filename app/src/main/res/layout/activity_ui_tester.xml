@@ -58,7 +58,7 @@
             android:id="@+id/testBtnSetUserLoc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="5dp"
             android:text="set user loc"
             app:layout_constraintBottom_toBottomOf="@+id/testBtnNearMe"
             app:layout_constraintStart_toEndOf="@+id/testBtnNearMe"
@@ -135,6 +135,16 @@
             android:text="Checkout Screen"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/testSellerScreen" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="cx orders"
+            app:layout_constraintBottom_toBottomOf="@+id/testBtnSetUserLoc"
+            app:layout_constraintStart_toEndOf="@+id/testBtnSetUserLoc"
+            app:layout_constraintTop_toTopOf="@+id/testBtnSetUserLoc" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
