@@ -17,6 +17,9 @@
         android:theme="@style/Theme.UnShelf"
         tools:targetApi="31">
         <activity
+            android:name=".view.fireprac"
+            android:exported="false" />
+        <activity
             android:name=".view.CxOrderHistory.CxOrderHistory"
             android:exported="false" />
         <activity

@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         val testCheckoutScreen = findViewById<Button>(R.id.testCheckoutScreen);
         val testBtnMenu = findViewById<Button>(R.id.testBtnPMain2)
         val testBtnSetUserLoc = findViewById<Button>(R.id.testBtnSetUserLoc); // user address
-
+        val testFire = findViewById<Button>(R.id.btnfire);
         // HELPER FUNCTION: UI_Tester_Helper
         //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
         UI_Tester_Helper.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
@@ -48,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnMenu, marketplaceMain::class.java);
+
+//        CENASPRACT
+        UI_Tester_Helper.UI_Test(this, testFire, fireprac::class.java);
     }
 
 
