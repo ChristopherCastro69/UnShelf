@@ -1,4 +1,4 @@
-package com.example.unshelf.view.SellerBottomNav.ui
+package com.example.unshelf.controller.seller.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -9,7 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.example.unshelf.view.SellerBottomNav.main.AppNavigation
+import com.example.unshelf.controller.seller.main.AppNavigation
 
 
 class MainNavigationActivitySeller : AppCompatActivity() {
