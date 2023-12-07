@@ -1,4 +1,4 @@
-package com.example.unshelf.view.SellerBottomNav.main
+package com.example.unshelf.controller.seller.main
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info

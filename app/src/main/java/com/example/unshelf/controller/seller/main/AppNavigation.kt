@@ -1,4 +1,4 @@
-package com.example.unshelf.view.SellerBottomNav.main
+package com.example.unshelf.controller.seller.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi

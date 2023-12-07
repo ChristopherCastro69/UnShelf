@@ -29,10 +29,8 @@
     import androidx.compose.ui.unit.dp
     import androidx.compose.ui.unit.sp
     import com.example.unshelf.R
+    import com.example.unshelf.model.firestore.seller.dashboardmodel.fetchUserDetails
     import com.example.unshelf.ui.theme.DeepMossGreen
-    import com.google.firebase.Firebase
-    import com.google.firebase.auth.auth
-    import com.google.firebase.firestore.firestore
     import java.time.LocalDate
     import java.time.format.DateTimeFormatter
 
@@ -339,24 +337,3 @@
         return currentDate.format(formatter)
     }
 
-    fun fetchUserDetails(onComplete: (String, String) -> Unit) {
-        val userId = Firebase.auth.currentUser?.uid ?: return
-
-        // Assuming 'userId' is your 'sellerId'
-        val sellerId = userId
-
-        // Query Firestore to get the store ID
-        Firebase.firestore.collection("sellers").document(sellerId)
-            .collection("store").get()
-            .addOnSuccessListener { querySnapshot ->
-                // Assuming you need the first store's ID
-                val storeId = querySnapshot.documents.firstOrNull()?.id ?: ""
-                Log.d("UserDetails", "Seller ID: $sellerId, Store ID: $storeId")
-
-                // Return the seller ID and store ID
-                onComplete(sellerId, storeId)
-            }
-            .addOnFailureListener {
-                Log.e("Firestore", "Error fetching store details", it)
-            }
-    }

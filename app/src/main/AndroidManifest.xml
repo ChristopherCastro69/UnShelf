@@ -43,7 +43,7 @@
             android:name=".view.marketplaceMain.marketplaceMain"
             android:exported="false" />
         <activity
-            android:name=".view.SellerBottomNav.ui.MainNavigationActivitySeller"
+            android:name=".controller.seller.ui.MainNavigationActivitySeller"
             android:exported="false" />
         <activity
             android:name=".view.BuyerBottomNav.ui.MainNavigationActivityBuyer"
