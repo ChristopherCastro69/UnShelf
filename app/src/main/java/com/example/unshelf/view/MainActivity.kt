@@ -6,6 +6,8 @@ import android.widget.Button
 import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
 import com.example.unshelf.view.AddressManager.AddressManager
+import com.example.unshelf.view.BuyerBottomNav.main.BuyerAppNavigation
+import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.authentication.CustomerRegister
 import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
@@ -13,7 +15,7 @@ import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
 import com.example.unshelf.view.Wallet.CheckoutUI
-import com.example.unshelf.view.SellerBottomNav.ui.MainNavigationActivity
+import com.example.unshelf.view.SellerBottomNav.ui.MainNavigationActivitySeller
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +36,8 @@ class MainActivity : AppCompatActivity() {
         val testCheckoutScreen = findViewById<Button>(R.id.testCheckoutScreen);
         val testBtnMenu = findViewById<Button>(R.id.testBtnPMain2)
         val testBtnSetUserLoc = findViewById<Button>(R.id.testBtnSetUserLoc); // user address
-        val testFire = findViewById<Button>(R.id.btnfire);
+        val testBtnBuyer = findViewById<Button>(R.id.testBtnBuyer)
+
         // HELPER FUNCTION: UI_Tester_Helper
         //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
         UI_Tester_Helper.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
@@ -44,13 +47,11 @@ class MainActivity : AppCompatActivity() {
 //        UI_Tester_Helper.UI_Test(this, testBtnPmain, cart::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnCart, cart::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnWallet, Balance::class.java);
-        UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivity::class.java);
+        UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivitySeller::class.java);
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnMenu, marketplaceMain::class.java);
-
-//        CENASPRACT
-        UI_Tester_Helper.UI_Test(this, testFire, fireprac::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnBuyer, MainNavigationActivityBuyer::class.java);
     }
 
 

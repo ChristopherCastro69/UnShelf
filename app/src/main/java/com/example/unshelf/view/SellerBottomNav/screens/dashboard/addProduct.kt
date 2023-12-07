@@ -113,8 +113,13 @@ var productQuantity = mutableStateOf("")
 fun AddProducts(productId: String? = null) {
     Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
 
+    imageUri.value?.let {
+        DisplayImage(imageUri = it)
+    }
+
     if (productId != null) {
         LaunchedEffect(productId) {
+            Log.d("AddProducts", "Current Product ID: $productId")
             val db = Firebase.firestore
             val docRef = db.collection("sellers").document(sellerId.value)
                 .collection("store").document(storeId.value)
@@ -436,6 +441,9 @@ fun ProductGallery() {
                 .horizontalScroll(rememberScrollState())
         ) {
             galleryImageUris.forEachIndexed { index, uri ->
+                if (!uri.toString().isNullOrEmpty()) {
+                    DisplayImage(imageUri = uri)
+                }
                 Box {
                     Image(
                         painter = rememberAsyncImagePainter(uri),
@@ -787,10 +795,21 @@ fun ExpirationDate() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
-    val buttonText = if (productId == null) "Add Product" else "Update Product"
+    Log.d("Text Button", "Button clicked. Product ID: $productId")
+    var flag = false
+    var buttonText = "Update Product"
+
+    if (productId == "null"){
+        flag = true
+        buttonText = "Add Product"
+        // Log the flag value
+        Log.d("AddButton", "Flag value: $flag, Product ID: $productId")
+    }
 
     Button(
         onClick = {
+            Log.d("AddButton", "Button clicked. Product ID: $productId, Flag: $flag")
+
             val product = Product(
                 productName = productName.value,
                 categories = listOf(selectedCategory.value),
@@ -803,12 +822,12 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
                 discount = discountPercent.value.toLongOrNull() ?: 0L,
                 quantity = productQuantity.value.toIntOrNull() ?: 0
             )
-            if(productId == null){
-                // Call function to add or update product based on productId
-                saveProductToFirestore(sellerId, storeId, product, productId)
+
+            if(flag){
+                saveProductToFirestore(sellerId, storeId, product)
             }
-         else{
-                updateProductToFirestore(sellerId, storeId, product, productId)
+            else{
+                updateProductToFirestore(sellerId, storeId, product, productId.toString())
             }
 
 
@@ -842,33 +861,28 @@ fun PreviewAddProducts() {
 
 // ----> FUNCTIONS TO CLOUD FIRESTORE <-----
 
-fun saveProductToFirestore(sellerId: String, storeId: String, product: Product, productId: String? = null) {
+fun saveProductToFirestore(sellerId: String, storeId: String, product: Product) {
+    Log.d("Firestore", "Adding new product")
     val db = Firebase.firestore
-    val productRef = if (productId == null) {
-        // Adding a new product
-        db.collection("sellers").document(sellerId)
-            .collection("store").document(storeId)
-            .collection("products").document()
-    } else {
-        // Updating an existing product
-        db.collection("sellers").document(sellerId)
-            .collection("store").document(storeId)
-            .collection("products").document(productId)
-    }
 
-    productRef.set(product)
+    // Create a new document reference without specifying the ID for a new product
+    val newProductRef = db.collection("sellers").document(sellerId)
+        .collection("store").document(storeId)
+        .collection("products").document() // Firestore generates a new ID
+
+    newProductRef.set(product)
         .addOnSuccessListener {
-            Log.d("Firestore", "Product added/updated successfully")
+            Log.d("Firestore", "New product added successfully")
             productAdditionSuccess.value = true
         }
         .addOnFailureListener { e ->
-            Log.e("Firestore", "Error adding/updating product", e)
+            Log.e("Firestore", "Error adding new product", e)
             productAdditionSuccess.value = false
         }
 }
 
-
 fun updateProductToFirestore(sellerId: String, storeId: String, product: Product, productId: String) {
+    Log.d("Firestore", "Updating product. Product ID: $productId")
     val db = Firebase.firestore
 
     val productRef = db.collection("sellers").document(sellerId)
@@ -898,7 +912,13 @@ fun updateProductToFirestore(sellerId: String, storeId: String, product: Product
 }
 
 
-
-
-
+@Composable
+fun DisplayImage(imageUri: Uri) {
+    val painter = rememberAsyncImagePainter(model = imageUri)
+    Image(
+        painter = painter,
+        contentDescription = "Loaded Image",
+        modifier = Modifier.size(100.dp) // Adjust size as needed
+    )
+}
 

@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <application
         android:allowBackup="true"
@@ -44,7 +46,10 @@
             android:name=".view.marketplaceMain.marketplaceMain"
             android:exported="false" />
         <activity
-            android:name=".view.SellerBottomNav.ui.MainNavigationActivity"
+            android:name=".view.SellerBottomNav.ui.MainNavigationActivitySeller"
+            android:exported="false" />
+        <activity
+            android:name=".view.BuyerBottomNav.ui.MainNavigationActivityBuyer"
             android:exported="false" />
         <activity
             android:name=".view.SplashScreen.SplashScreen"

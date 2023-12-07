@@ -31,13 +31,14 @@ class cart : AppCompatActivity() {
         val backBtn = findViewById<ImageView>(R.id.cart_backBtn)
         val cartBtn = findViewById<Button>(R.id.cart_checkout_btn)
 
-        cartBtn.setOnClickListener {
-            val intent = Intent(this, CheckoutUI::class.java)
+        
+        backBtn.setOnClickListener {
+            val intent = Intent(this, marketplaceMain::class.java)
             startActivity(intent)
         }
 
-        backBtn.setOnClickListener {
-            val intent = Intent(this, marketplaceMain::class.java)
+        cartBtn.setOnClickListener {
+            val intent = Intent(this, CheckoutUI::class.java)
             startActivity(intent)
         }
 
