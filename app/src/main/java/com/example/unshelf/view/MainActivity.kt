@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         val testBtnMenu = findViewById<Button>(R.id.testBtnPMain2)
         val testBtnSetUserLoc = findViewById<Button>(R.id.testBtnSetUserLoc); // user address
         val testBtnBuyer = findViewById<Button>(R.id.testBtnBuyer)
+        val testFirePRac = findViewById<Button>(R.id.btnfire)
 
         // HELPER FUNCTION: UI_Tester_Helper
         //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
@@ -52,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnMenu, marketplaceMain::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnBuyer, MainNavigationActivityBuyer::class.java);
+        UI_Tester_Helper.UI_Test(this, testFirePRac, fireprac::class.java);
     }
 
 

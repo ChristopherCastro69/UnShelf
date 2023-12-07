@@ -4,9 +4,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.FireUser
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class fireprac : AppCompatActivity() {
@@ -20,6 +22,8 @@ class fireprac : AppCompatActivity() {
         setContentView(R.layout.activity_fireprac)
 
         val submitBtn = findViewById<Button>(R.id.fire_submit)
+        val fireUser = findViewById<EditText>(R.id.fire_user)  // Change to TextView
+        val firePass = findViewById<EditText>(R.id.fire_pass)  // Change to TextView
 
         // Get a reference to the Firestore database
         val db = FirebaseFirestore.getInstance()
@@ -43,5 +47,8 @@ class fireprac : AppCompatActivity() {
                     Log.w(TAG, "Error adding document", e)
                 }
         }
+
+
     }
 }
+

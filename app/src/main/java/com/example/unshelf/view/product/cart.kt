@@ -12,6 +12,7 @@ import com.example.unshelf.view.RestaurantNearMe.AdapterRestaurantNearMe
 import com.example.unshelf.view.RestaurantNearMe.DataRestaurantNearMe
 import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
+import com.google.firebase.auth.FirebaseAuth
 
 class cart : AppCompatActivity() {
 
@@ -48,6 +49,23 @@ class cart : AppCompatActivity() {
 
         dataList = arrayListOf<CartItemData>();
         getData();
+
+        val currentUser = FirebaseAuth.getInstance().currentUser
+
+        if (currentUser != null) {
+            // User is signed in
+            val uid = currentUser.uid
+            val email = currentUser.email
+
+
+            // You can also get other user information as needed
+            // For example, currentUser.displayName, currentUser.photoUrl, etc.
+
+            // Use the user information as needed
+            // ...
+        } else {
+            // No user is signed in
+        }
     }
 
     private fun getData() {

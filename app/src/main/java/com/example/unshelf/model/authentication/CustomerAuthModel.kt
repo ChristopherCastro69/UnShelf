@@ -1,21 +1,23 @@
 package com.example.unshelf.model.authentication
 
 import android.util.Patterns
+import com.example.unshelf.model.entities.Cart
 import com.example.unshelf.model.entities.Customer
+import com.example.unshelf.model.entities.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CustomerAuthModel() {
 
 
-    fun createCustomerAccountFirebase( // This involves logic, this is supposed to be in the controller
+    fun createCustomerAccountFirebase(
         email: String,
         password: String,
         phoneNumber: Long,
         fullName: String,
         address: String,
-        callback: (Boolean, String?) -> Unit)
-    {
+        callback: (Boolean, String?) -> Unit
+    ) {
         // Initialize Firebase
         val firebaseAuth = FirebaseAuth.getInstance()
         val firestore = FirebaseFirestore.getInstance()
@@ -30,7 +32,8 @@ class CustomerAuthModel() {
                         password,
                         phoneNumber,
                         fullName,
-                        address)
+                        address
+                    )
 
                     // Get the current user's UID
                     val uid = firebaseAuth.currentUser!!.uid
@@ -39,9 +42,20 @@ class CustomerAuthModel() {
                     firestore.collection("customers").document(uid)
                         .set(customer)
                         .addOnSuccessListener {
-                            callback(true, "Account Successfully Created. Check email for verification")
-                            firebaseAuth.currentUser!!.sendEmailVerification()
-                            firebaseAuth.signOut()
+                            // Create a Cart object (you can customize this based on your Cart class)
+                            val cart = Cart(uid, arrayListOf<Product>())
+
+                            // Store the cart details in Firestore under the "Carts" collection
+                            firestore.collection("carts").document(uid)
+                                .set(cart)
+                                .addOnSuccessListener {
+                                    callback(true, "Account Successfully Created. Check email for verification")
+                                    firebaseAuth.currentUser!!.sendEmailVerification()
+                                    firebaseAuth.signOut()
+                                }
+                                .addOnFailureListener { e ->
+                                    callback(false, "Failed to store cart details: ${e.localizedMessage}")
+                                }
                         }
                         .addOnFailureListener { e ->
                             callback(false, "Failed to store customer details: ${e.localizedMessage}")
@@ -51,6 +65,7 @@ class CustomerAuthModel() {
                 }
             }
     }
+
 
 
     fun validateData(email: String?, password: String, confirmPassword: String?): Boolean {
