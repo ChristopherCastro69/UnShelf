@@ -1,6 +1,10 @@
 package com.example.unshelf.view.SellerBottomNav.screens.orders
 
 import JostFontFamily
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ModifierInfo
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,9 +31,18 @@ import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.ui.theme.WatermelonRed
 
 
+class OrderApprovalView: ComponentActivity(){
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
+        setContent {
+            OrderApproval()
+        }
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderApproval() {
+    val context = LocalContext.current;
     Scaffold(
         topBar = {
             TopAppBar(
@@ -44,7 +58,7 @@ fun OrderApproval() {
                 ),
 
                 navigationIcon = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {val intent = Intent(context,Order::class.java) }) {
                         Icon(Icons.Filled.ArrowBack, "Menu", tint = Color.White)
                     }
                 },
@@ -63,7 +77,7 @@ fun OrderApproval() {
                         fontFamily = JostFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp)
-                    Text(text = "P399.00",
+                    Text(text = "Total: P399.00",
                         fontFamily = JostFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp)

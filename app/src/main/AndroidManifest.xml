@@ -105,6 +105,11 @@
         <activity
             android:name=".view.MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".view.SellerBottomNav.screens.orders.OrderView"
+            android:exported="false"/>
+        <activity
+            android:name=".view.SellerBottomNav.screens.orders.OrderApprovalView"
+            android:exported="false"/>
     </application>
-
 </manifest>
