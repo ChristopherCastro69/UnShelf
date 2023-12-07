@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.unshelf.R
 import com.example.unshelf.view.RestaurantNearMe.AdapterRestaurantNearMe
 import com.example.unshelf.view.RestaurantNearMe.DataRestaurantNearMe
+import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 
 class cart : AppCompatActivity() {
@@ -29,9 +30,15 @@ class cart : AppCompatActivity() {
 
         val backBtn = findViewById<ImageView>(R.id.cart_backBtn)
         val cartBtn = findViewById<Button>(R.id.cart_checkout_btn)
+
         
         backBtn.setOnClickListener {
             val intent = Intent(this, marketplaceMain::class.java)
+            startActivity(intent)
+        }
+
+        cartBtn.setOnClickListener {
+            val intent = Intent(this, CheckoutUI::class.java)
             startActivity(intent)
         }
 

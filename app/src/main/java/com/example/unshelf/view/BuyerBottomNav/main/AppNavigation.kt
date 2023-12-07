@@ -1,7 +1,9 @@
 package com.example.unshelf.view.BuyerBottomNav.main
 
+import Marketplace
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -25,6 +27,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.White
+import com.example.unshelf.view.BuyerBottomNav.screens.NearMe
+import com.example.unshelf.view.BuyerBottomNav.screens.PreviewProfileScreen
+import com.example.unshelf.view.BuyerBottomNav.screens.Profile
 
 
 @Preview
@@ -46,6 +51,7 @@ fun BuyerAppNavigation(){
 
             NavigationBar (
                 containerColor = Color.White,
+                modifier = Modifier.height(60.dp),
                 tonalElevation = 5.dp,
 
 
@@ -107,14 +113,15 @@ fun BuyerAppNavigation(){
             modifier = Modifier
                 .padding(paddingValues)){
             composable(route = BuyerScreens.Marketplace.name){
-                //Dashboard()
+                Marketplace()
             }
 
             composable(route = BuyerScreens.NearMe.name){
-                //Orders()
+                NearMe()
             }
             composable(route = BuyerScreens.Profile.name){
                 //Listings(navController, sellerId.value, storeId.value)
+                PreviewProfileScreen()
             }
             // composable("addProduct/{productId}") { backStackEntry ->
             //     val productId = backStackEntry.arguments?.getString("productId")

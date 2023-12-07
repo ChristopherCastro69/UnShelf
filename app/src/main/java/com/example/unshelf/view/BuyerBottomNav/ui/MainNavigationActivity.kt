@@ -1,12 +1,11 @@
-/*
-package com.example.unshelf.view.SellerBottomNav.ui
+package com.example.unshelf.view.BuyerBottomNav.ui
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import com.example.unshelf.view.SellerBottomNav.main.AppNavigation
+import com.example.unshelf.view.BuyerBottomNav.main.BuyerAppNavigation
 
 
 class MainNavigationActivityBuyer : AppCompatActivity() {
@@ -14,7 +13,7 @@ class MainNavigationActivityBuyer : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent{
-            AppNavigation()
+            BuyerAppNavigation()
         }
     }
-}*/
+}

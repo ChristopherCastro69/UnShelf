@@ -6,6 +6,8 @@ import android.widget.Button
 import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
 import com.example.unshelf.view.AddressManager.AddressManager
+import com.example.unshelf.view.BuyerBottomNav.main.BuyerAppNavigation
+import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.authentication.CustomerRegister
 import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         val testCheckoutScreen = findViewById<Button>(R.id.testCheckoutScreen);
         val testBtnMenu = findViewById<Button>(R.id.testBtnPMain2)
         val testBtnSetUserLoc = findViewById<Button>(R.id.testBtnSetUserLoc); // user address
+        val testBtnBuyer = findViewById<Button>(R.id.testBtnBuyer)
 
         // HELPER FUNCTION: UI_Tester_Helper
         //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
@@ -48,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnMenu, marketplaceMain::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnBuyer, MainNavigationActivityBuyer::class.java);
     }
 
 

@@ -46,6 +46,9 @@
             android:name=".controller.seller.ui.MainNavigationActivitySeller"
             android:exported="false" />
         <activity
+            android:name=".view.BuyerBottomNav.ui.MainNavigationActivityBuyer"
+            android:exported="false" />
+        <activity
             android:name=".view.SplashScreen.SplashScreen"
             android:exported="true">
             <intent-filter>
