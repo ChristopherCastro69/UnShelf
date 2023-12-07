@@ -17,6 +17,7 @@ import com.example.unshelf.view.Wallet.Balance
 import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
+import com.example.unshelf.view.StartUI.MainUI
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         // BUTTONS
         // define the buttons here
         // IMPORTANT: always prefix your buttons with a test, e.g., testBtnName to distinguish that it is a test button. DO THIS in the ID definition as well.
+        val testBtnMain = findViewById<Button>(R.id.testBtnMain)
         val testBtnNearMe = findViewById<Button>(R.id.testBtnNearMe)
         val testBtnLogin = findViewById<Button>(R.id.testBtnLogin);
         val testBtnRegister = findViewById<Button>(R.id.testBtnRegister);
@@ -40,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         // HELPER FUNCTION: UI_Tester_Helper
         //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
+        UI_Tester_Helper.UI_Test(this, testBtnMain, MainUI::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnLogin, Customer_Login::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
