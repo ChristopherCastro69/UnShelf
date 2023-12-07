@@ -79,5 +79,26 @@ class CustomerAuthModel() {
         return password == confirmPassword
     }
 
+    class FirestoreDataManager {
 
+        private val db = FirebaseFirestore.getInstance()
+
+        fun fetchDataFromFirestore(collectionName: String, callback: (Boolean, List<Map<String, Any>>?) -> Unit) {
+            val dataList = mutableListOf<Map<String, Any>>()
+
+            db.collection(collectionName)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        // Convert each document to a map and add it to the list
+                        val dataMap = document.data
+                        dataList.add(dataMap)
+                    }
+                    callback(true, dataList)
+                }
+                .addOnFailureListener { e ->
+                    callback(false, null)
+                }
+        }
+    }
 }
