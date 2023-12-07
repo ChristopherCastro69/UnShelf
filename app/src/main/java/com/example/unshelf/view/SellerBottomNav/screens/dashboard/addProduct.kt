@@ -76,6 +76,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.model.entities.Product
+import com.example.unshelf.model.firestore.seller.dashboardmodel.DisplayImage
+import com.example.unshelf.model.firestore.seller.dashboardmodel.saveProductToFirestore
+import com.example.unshelf.model.firestore.seller.dashboardmodel.updateProductToFirestore
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
@@ -362,7 +365,10 @@ fun Thumbnail() {
                     .border(2.dp, Color.Gray, RectangleShape)
                     .clickable { launcher.launch("image/*") } // Change thumbnail on click
             )
-        } ?: Box(
+        }
+        // Check if an image URI is available and call DisplayImage
+
+            ?: Box(
             // If no image is selected, show the 'add' icon
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -442,7 +448,7 @@ fun ProductGallery() {
         ) {
             galleryImageUris.forEachIndexed { index, uri ->
                 if (!uri.toString().isNullOrEmpty()) {
-                    DisplayImage(imageUri = uri)
+                   // DisplayImage(imageUri = uri)
                 }
                 Box {
                     Image(
@@ -861,64 +867,8 @@ fun PreviewAddProducts() {
 
 // ----> FUNCTIONS TO CLOUD FIRESTORE <-----
 
-fun saveProductToFirestore(sellerId: String, storeId: String, product: Product) {
-    Log.d("Firestore", "Adding new product")
-    val db = Firebase.firestore
-
-    // Create a new document reference without specifying the ID for a new product
-    val newProductRef = db.collection("sellers").document(sellerId)
-        .collection("store").document(storeId)
-        .collection("products").document() // Firestore generates a new ID
-
-    newProductRef.set(product)
-        .addOnSuccessListener {
-            Log.d("Firestore", "New product added successfully")
-            productAdditionSuccess.value = true
-        }
-        .addOnFailureListener { e ->
-            Log.e("Firestore", "Error adding new product", e)
-            productAdditionSuccess.value = false
-        }
-}
-
-fun updateProductToFirestore(sellerId: String, storeId: String, product: Product, productId: String) {
-    Log.d("Firestore", "Updating product. Product ID: $productId")
-    val db = Firebase.firestore
-
-    val productRef = db.collection("sellers").document(sellerId)
-        .collection("store").document(storeId)
-        .collection("products").document(productId)
-
-    productRef.update(
-        mapOf(
-            "productName" to product.productName,
-            "categories" to product.categories,
-            "thumbnail" to product.thumbnail,
-            "gallery" to product.gallery,
-            "description" to product.description,
-            "marketPrice" to product.marketPrice,
-            "hashtags" to product.hashtags,
-            "expirationDate" to product.expirationDate,
-            "discount" to product.discount,
-            "quantity" to product.quantity
-        )
-    ).addOnSuccessListener {
-        Log.d("Firestore", "Product updated successfully")
-        productAdditionSuccess.value = true
-    }.addOnFailureListener { e ->
-        Log.e("Firestore", "Error updating product", e)
-        productAdditionSuccess.value = false
-    }
-}
 
 
-@Composable
-fun DisplayImage(imageUri: Uri) {
-    val painter = rememberAsyncImagePainter(model = imageUri)
-    Image(
-        painter = painter,
-        contentDescription = "Loaded Image",
-        modifier = Modifier.size(100.dp) // Adjust size as needed
-    )
-}
+
+
 

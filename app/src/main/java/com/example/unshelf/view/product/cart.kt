@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unshelf.R
+import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.RestaurantNearMe.AdapterRestaurantNearMe
 import com.example.unshelf.view.RestaurantNearMe.DataRestaurantNearMe
 import com.example.unshelf.view.Wallet.CheckoutUI
@@ -33,7 +34,7 @@ class cart : AppCompatActivity() {
 
         
         backBtn.setOnClickListener {
-            val intent = Intent(this, marketplaceMain::class.java)
+            val intent = Intent(this, MainNavigationActivityBuyer::class.java)
             startActivity(intent)
         }
 

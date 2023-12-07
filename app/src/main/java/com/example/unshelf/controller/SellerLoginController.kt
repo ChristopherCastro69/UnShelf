@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.example.unshelf.model.authentication.LoginAuthenticationManager
-import com.example.unshelf.view.SellerBottomNav.ui.MainNavigationActivitySeller
+import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
 import com.example.unshelf.view.authentication.SellerLoginView
 
 import com.google.android.gms.tasks.OnCompleteListener

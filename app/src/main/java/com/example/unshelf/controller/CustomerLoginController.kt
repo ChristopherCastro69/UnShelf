@@ -3,6 +3,7 @@ import android.content.Context
 import android.content.Intent
 import com.example.unshelf.view.MainActivity
 import com.example.unshelf.model.authentication.LoginAuthenticationManager
+import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.authentication.CustomerLoginView
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -24,7 +25,7 @@ class CustomerLoginController(private val context: Context, private val view: Cu
                 val firebaseAuth = model.firebaseAuth
                 if (firebaseAuth.currentUser!!.isEmailVerified) {
                     // go to main activity
-                    val intent = Intent(context, MainActivity::class.java)
+                    val intent = Intent(context, MainNavigationActivityBuyer::class.java)
                     context.startActivity(intent)
                 } else {
                     view.showToast("Email not verified, Please verify your email.")
