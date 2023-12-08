@@ -111,6 +111,10 @@
         <activity
             android:name=".view.MainActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".view.productView.CartActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>

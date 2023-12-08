@@ -11,13 +11,14 @@ import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.authentication.CustomerRegister
 import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
-import com.example.unshelf.view.product.cart
+
 import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
 import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 import com.example.unshelf.view.StartUI.MainUI
+import com.example.unshelf.view.productView.CartActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val testBtnMenu = findViewById<Button>(R.id.testBtnPMain2)
         val testBtnSetUserLoc = findViewById<Button>(R.id.testBtnSetUserLoc); // user address
         val testBtnBuyer = findViewById<Button>(R.id.testBtnBuyer)
-        val testFirePRac = findViewById<Button>(R.id.btnfire)
+
 
         // HELPER FUNCTION: UI_Tester_Helper
         //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
@@ -49,14 +50,14 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnPmain, product_main::class.java);
 //        UI_Tester_Helper.UI_Test(this, testBtnPmain, cart::class.java);
-        UI_Tester_Helper.UI_Test(this, testBtnCart, cart::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnCart, CartActivity::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnWallet, Balance::class.java);
         UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivitySeller::class.java);
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnMenu, marketplaceMain::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnBuyer, MainNavigationActivityBuyer::class.java);
-        UI_Tester_Helper.UI_Test(this, testFirePRac, fireprac::class.java);
+
     }
 
 

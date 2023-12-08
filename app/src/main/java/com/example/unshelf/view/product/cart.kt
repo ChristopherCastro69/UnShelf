@@ -58,13 +58,19 @@ class cart : AppCompatActivity() {
         // Replace "Product" with the actual name of your Firestore collection
         val db = Firebase.firestore
 
-        db.collection("Product").document("1RpWybxUiNepjFTcJWvR").get()
-            .addOnSuccessListener {document ->
-                productName = document.getString("Name") ?: ""
-                price = document.getDouble("price") ?: 0.00
-                Log.d("Debug", "Name ${productName}\n Price ${price}")
+        db.collection("Product").get()
+            .addOnSuccessListener {documents ->
+                for (document in documents) {
+                    val sellerName = "SellerName" // Replace this with the actual field name
+                    val productName = document.getString("Name") ?: ""
+                    val quantity = document.getLong("quantity")?.toInt() ?: 0
+                    val price = document.getDouble("price") ?: 0.00
 
-                getData()
+                    // Create a CartItemData object and add it to dataList
+                    val cartItemData = CartItemData(sellerName, productName, quantity, "sample", price)
+                    dataList.add(cartItemData)
+                }
+                recyclerView.adapter = AdapterCartItem(dataList)
             }
             .addOnFailureListener {
                 Log.d("ERROR:", "Failed to retrieve product data", it)
