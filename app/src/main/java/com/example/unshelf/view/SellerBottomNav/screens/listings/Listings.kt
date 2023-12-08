@@ -3,8 +3,6 @@ package com.example.unshelf.view.SellerBottomNav.screens.listings
 // or, if you're using StateFlow or LiveData:
 import JostFontFamily
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,7 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -55,12 +52,6 @@ import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.WatermelonRed
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-
 
 
 var productID = mutableStateOf<String?>(null)
@@ -218,7 +209,10 @@ fun ProductCard(product: Product, navController: NavController, productViewModel
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.background(Color.White)
         ) {
-            val painter = rememberAsyncImagePainter(model = product.thumbnail)
+            // Assuming 'product.thumbnail' contains the URL of the image
+            val imageUrl = product.thumbnail
+            val painter = rememberAsyncImagePainter(model = imageUrl)
+
             Image(
                 painter = painter,
                 contentDescription = product.productName,

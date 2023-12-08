@@ -13,6 +13,8 @@ import com.example.unshelf.view.SellerBottomNav.screens.listings.productAddition
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.storage
+import java.util.UUID
 
 fun fetchUserDetails(onComplete: (String, String) -> Unit) {
     val userId = Firebase.auth.currentUser?.uid ?: return
@@ -102,5 +104,33 @@ fun DisplayImage(imageUri: Uri) {
         contentDescription = "Loaded Image",
         modifier = Modifier.size(100.dp) // Adjust size as needed
     )
+}
+
+
+fun uploadImage(uri: Uri, onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit) {
+    val storageRef = Firebase.storage.reference
+    val fileName = "images/${UUID.randomUUID()}.jpg" // Unique file name
+    val imageRef = storageRef.child(fileName)
+
+    Log.d("ImageUpload", "Starting upload for: $uri")
+    imageRef.putFile(uri)
+        .addOnSuccessListener { taskSnapshot ->
+            Log.d("ImageUpload", "Upload succeeded. Bytes Transferred: ${taskSnapshot.bytesTransferred}")
+            imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                Log.d("ImageUpload", "Image URL: $downloadUri")
+                onSuccess(downloadUri.toString())
+            }.addOnFailureListener { exception ->
+                Log.e("ImageUpload", "Failed to get download URL", exception)
+                onFailure(exception)
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.e("ImageUpload", "Upload failed", exception)
+            onFailure(exception)
+        }
+        .addOnProgressListener { taskSnapshot ->
+            val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount)
+            Log.d("ImageUpload", "Upload is $progress% done")
+        }
 }
 

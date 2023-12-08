@@ -79,6 +79,7 @@ import com.example.unshelf.model.entities.Product
 import com.example.unshelf.model.firestore.seller.dashboardmodel.DisplayImage
 import com.example.unshelf.model.firestore.seller.dashboardmodel.saveProductToFirestore
 import com.example.unshelf.model.firestore.seller.dashboardmodel.updateProductToFirestore
+import com.example.unshelf.model.firestore.seller.dashboardmodel.uploadImage
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
@@ -343,8 +344,16 @@ fun Thumbnail() {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        imageUri.value = uri
+        uri?.let {
+            uploadImage(it, onSuccess = { downloadUrl ->
+                // Here you can store the downloadUrl in Firestore along with other product details
+                imageUri.value = Uri.parse(downloadUrl)
+            }, onFailure = { exception ->
+                // Handle upload failure
+            })
+        }
     }
+
 
     Column(
         modifier = Modifier
