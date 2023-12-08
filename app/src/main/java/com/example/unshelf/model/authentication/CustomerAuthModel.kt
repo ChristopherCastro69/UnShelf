@@ -8,7 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class CustomerAuthModel() {
 
 
-    fun createCustomerAccountFirebase( // This involves logic, this is supposed to be in the controller
+    fun createCustomerAccountFirebase(
         email: String,
         password: String,
         phoneNumber: Long,
@@ -16,28 +16,26 @@ class CustomerAuthModel() {
         address: String,
         callback: (Boolean, String?) -> Unit)
     {
-        // Initialize Firebase
         val firebaseAuth = FirebaseAuth.getInstance()
         val firestore = FirebaseFirestore.getInstance()
 
-        // Firebase authentication logic
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Create a Customer object with the provided details
+                    // Get the current user's UID, which will be used as the customerID
+                    val uid = firebaseAuth.currentUser!!.uid
+
+                    // Create a Customer object with the UID as the customerID
                     val customer = Customer(
+                        uid, // Use Firebase Auth UID as the customerID
                         email,
                         password,
                         phoneNumber,
                         fullName,
                         address)
 
-                    // Get the current user's UID
-                    val uid = firebaseAuth.currentUser!!.uid
-
-                    // Store the customer details in Firestore under the "Customers" collection
-                    firestore.collection("customers").document(uid)
-                        .set(customer)
+                    // Store the customer details in Firestore under the "customers" collection
+                    firestore.collection("customers").document(uid).set(customer)
                         .addOnSuccessListener {
                             callback(true, "Account Successfully Created. Check email for verification")
                             firebaseAuth.currentUser!!.sendEmailVerification()

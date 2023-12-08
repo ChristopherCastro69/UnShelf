@@ -25,12 +25,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.White
-import com.example.unshelf.view.SellerBottomNav.screens.dashboard.AddProducts
+import com.example.unshelf.view.SellerBottomNav.screens.listings.AddProducts
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.Dashboard
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
 import com.example.unshelf.view.SellerBottomNav.screens.listings.Listings
-import com.example.unshelf.view.SellerBottomNav.screens.listings.productID
 
 import com.example.unshelf.view.SellerBottomNav.screens.orders.Orders
 import com.example.unshelf.view.SellerBottomNav.screens.store.Store

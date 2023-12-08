@@ -8,7 +8,7 @@ import com.example.unshelf.model.entities.Store
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class SellerAuthModel { // This is supposed to be in the controller
+class SellerAuthModel {
     fun createSellerAccountFirebase(
         email: String,
         password: String,
@@ -17,52 +17,43 @@ class SellerAuthModel { // This is supposed to be in the controller
         address: String,
         storeName: String,
         rating: Long,
-        followers:Int,
+        followers: Int,
         adminVerified: String,
-
         callback: (Boolean, String?) -> Unit)
     {
-        // Initialize Firebase
         val firebaseAuth = FirebaseAuth.getInstance()
         val firestore = FirebaseFirestore.getInstance()
 
-        // Firebase authentication logic
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Create a Seller object with the provided details
-                    val seller = Seller(
-                        email,
-                        password,
-                        phoneNumber,
-                        fullName,
-                        address,
-                        storeName,
-                        adminVerified)
-
-                    val store = Store(
-                        address,
-                        rating,
-                        followers,
-                        adminVerified)
-
-                    // Get the current user's UID
                     val uid = firebaseAuth.currentUser!!.uid
+                    val seller = Seller(uid, email, password, phoneNumber, fullName, address, storeName, adminVerified)
 
-                    // Store the seller details in Firestore under the "sellers" collection
                     val sellerDocument = firestore.collection("sellers").document(uid)
                     sellerDocument.set(seller)
                         .addOnSuccessListener {
-                            // Create a store with auto-generated ID in the stores sub-collection
-                            sellerDocument.collection("store").add(store)
-                                .addOnSuccessListener { documentReference ->
-                                    // The store is successfully created, and Firestore has generated an ID
-                                    callback(true, "Seller Account and Store Successfully Created. Check email for verification. Store ID: ${documentReference.id}")
-                                    firebaseAuth.currentUser!!.sendEmailVerification()
-                                    firebaseAuth.signOut()
+                            // Create a store in the 'stores' collection with an auto-generated ID
+                            val newStore = Store("", uid, address, rating, followers, adminVerified)
+                            val storeDocument = firestore.collection("stores").document() // Firestore generates the ID
+
+                            storeDocument.set(newStore)
+                                .addOnSuccessListener {
+                                    // Set the storeID to the auto-generated ID
+                                    newStore.storeID = storeDocument.id
+                                    // Update the newStore object in Firestore with the set storeID
+                                    storeDocument.set(newStore)
+                                        .addOnSuccessListener {
+                                            callback(true, "Seller Account and Store Successfully Created. Store ID: ${newStore.storeID}")
+                                            firebaseAuth.currentUser!!.sendEmailVerification()
+                                            firebaseAuth.signOut()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            callback(false, "Failed to update store with storeID: ${e.localizedMessage}")
+                                        }
                                 }
                                 .addOnFailureListener { e ->
-                                    callback(false, "Failed to store store details: ${e.localizedMessage}")
+                                    callback(false, "Failed to create store: ${e.localizedMessage}")
                                 }
                         }
                         .addOnFailureListener { e ->
@@ -72,9 +63,6 @@ class SellerAuthModel { // This is supposed to be in the controller
                     callback(false, task.exception?.localizedMessage ?: "Unknown error")
                 }
             }
-
-
-
     }
 
     fun validateData(email: String?, password: String, confirmPassword: String?): Boolean {

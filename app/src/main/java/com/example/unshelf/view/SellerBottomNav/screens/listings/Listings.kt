@@ -49,7 +49,6 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Product
-import com.example.unshelf.model.entities.ProductWithID
 import com.example.unshelf.model.firestore.seller.listingsModel.ProductViewModel
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MiddleGreenYellow
@@ -207,7 +206,7 @@ fun ProductList(sellerId: String, storeId: String, navController: NavController)
     }
 }
 @Composable
-fun ProductCard(product: ProductWithID, navController: NavController, productViewModel: ProductViewModel, context: Context) {
+fun ProductCard(product: Product, navController: NavController, productViewModel: ProductViewModel, context: Context) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -239,9 +238,9 @@ fun ProductCard(product: ProductWithID, navController: NavController, productVie
                     fontFamily = FontFamily.Serif
                 )
                 Text(text = "Quantity: ${product.quantity}", color = Color.Gray)
-                Text(text = "₱${product.marketPrice}", color = Color.Gray)
+                Text(text = "₱${product.price}", color = Color.Gray)
             }
-            IconButton(onClick = { navController.navigate("addProduct/${product.id}")
+            IconButton(onClick = { navController.navigate("addProduct/${product.productID}")
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_edit),
@@ -250,7 +249,7 @@ fun ProductCard(product: ProductWithID, navController: NavController, productVie
                 )
             }
 
-            IconButton(onClick = {   productViewModel.deleteProduct(sellerId.value, storeId.value, product.id, context)
+            IconButton(onClick = {   productViewModel.deleteProduct(sellerId.value, storeId.value, product.productID, context)
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_delete),

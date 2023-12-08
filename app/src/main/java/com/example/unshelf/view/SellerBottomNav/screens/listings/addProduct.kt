@@ -1,4 +1,4 @@
-package com.example.unshelf.view.SellerBottomNav.screens.dashboard
+package com.example.unshelf.view.SellerBottomNav.screens.listings
 
 import JostFontFamily
 import android.app.Activity
@@ -80,6 +80,8 @@ import com.example.unshelf.model.firestore.seller.dashboardmodel.DisplayImage
 import com.example.unshelf.model.firestore.seller.dashboardmodel.saveProductToFirestore
 import com.example.unshelf.model.firestore.seller.dashboardmodel.updateProductToFirestore
 import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -90,7 +92,9 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 // First, define your Product data class to match the Firestore structure
-
+var product = mutableStateOf("")
+var sellerId = mutableStateOf("")
+val sellerID = mutableStateListOf("")
 var productName = mutableStateOf("")
 var selectedCategory = mutableStateOf("Grocery") // Default to the first item in your categories list
 var imageUri = mutableStateOf<Uri?>(null)
@@ -107,8 +111,7 @@ val stringDate = mutableStateOf("")
 
 var productAdditionSuccess = mutableStateOf(false)
 var productQuantity = mutableStateOf("")
-
-
+var status = mutableStateOf(false)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,9 +127,7 @@ fun AddProducts(productId: String? = null) {
         LaunchedEffect(productId) {
             Log.d("AddProducts", "Current Product ID: $productId")
             val db = Firebase.firestore
-            val docRef = db.collection("sellers").document(sellerId.value)
-                .collection("store").document(storeId.value)
-                .collection("products").document(productId)
+            val docRef = db.collection("products").document(productId)
 
             docRef.get().addOnSuccessListener { document ->
                 if (document != null) {
@@ -143,19 +144,19 @@ fun AddProducts(productId: String? = null) {
                     productDescription.value = document.getString("description") ?: ""
 
                     // Convert String to Long for marketPrice
-                    marketPrice.value = document.getDouble("marketPrice")?.toString() ?: ""
+                    marketPrice.value = document.getDouble("price")?.toString() ?: ""
 
                     // Convert String to List<String> for galleryImageUris
-                    val galleryImages = document.getString("gallery")?.split(",") ?: listOf()
-                    galleryImageUris.clear()
-                    galleryImages.forEach { uriString ->
-                        galleryImageUris.add(Uri.parse(uriString))
-                    }
+//                    val galleryImages = document.getString("gallery")?.split(",") ?: listOf()
+//                    galleryImageUris.clear()
+//                    galleryImages.forEach { uriString ->
+//                        galleryImageUris.add(Uri.parse(uriString))
+//                    }
 
-                    // Handle hashtags as List<String>
-                    val hashtags = document.get("hashtags") as? List<String> ?: listOf()
-                    productHashtags.clear()
-                    productHashtags.addAll(hashtags)
+//                    // Handle hashtags as List<String>
+//                    val hashtags = document.get("hashtags") as? List<String> ?: listOf()
+//                    productHashtags.clear()
+//                    productHashtags.addAll(hashtags)
 
                     // Handle expirationDate
                     val expirationDateString = document.getString("expirationDate") ?: ""
@@ -227,7 +228,7 @@ fun AddProducts(productId: String? = null) {
             ProdName()
             Category()
             Thumbnail()
-            ProductGallery()
+//            ProductGallery()
             ProductDescription()
             Marketprice()
             Voucher()
@@ -235,10 +236,11 @@ fun AddProducts(productId: String? = null) {
             ExpirationDate()
             // Pass the current value of sellerId and storeId to AddButton
             AddButton(sellerId = sellerId.value, storeId = storeId.value, productId = productId)
-            }
-
         }
+
     }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -254,7 +256,7 @@ fun ProdName(){
             fontSize = 16.sp,
             color = Color.Black,
 
-        )
+            )
         OutlinedTextField(
             value = productName.value,
             onValueChange = { productName.value = it },
@@ -369,24 +371,24 @@ fun Thumbnail() {
         // Check if an image URI is available and call DisplayImage
 
             ?: Box(
-            // If no image is selected, show the 'add' icon
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
+                // If no image is selected, show the 'add' icon
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
 //                .fillMaxHeight()
 //                .size(250.dp) // Size of the circle
-                .background(PalmLeaf, RectangleShape) // White circle
-                .border(2.dp, Color.Gray, RectangleShape)
-                .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Thumbnail",
-                tint = Color.White,
-                modifier = Modifier.size(24.dp) // Size of the plus icon
-            )
-        }
+                    .background(PalmLeaf, RectangleShape) // White circle
+                    .border(2.dp, Color.Gray, RectangleShape)
+                    .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Thumbnail",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp) // Size of the plus icon
+                )
+            }
 
         Spacer(modifier = Modifier.height(10.dp)) // Spacing between the circle and text
 
@@ -448,7 +450,7 @@ fun ProductGallery() {
         ) {
             galleryImageUris.forEachIndexed { index, uri ->
                 if (!uri.toString().isNullOrEmpty()) {
-                   // DisplayImage(imageUri = uri)
+                    // DisplayImage(imageUri = uri)
                 }
                 Box {
                     Image(
@@ -526,7 +528,7 @@ fun ProductDescription() {
             fontSize = 16.sp,
             color = Color.Black,
 
-        )
+            )
         OutlinedTextField(
             value = productDescription.value,
             onValueChange = { productDescription.value = it },
@@ -544,29 +546,8 @@ fun ProductDescription() {
                 cursorColor = Color.Black
             ),
             shape = RoundedCornerShape(4.dp)
-      )
+        )
 
-        Row(
-            modifier = Modifier
-                .wrapContentWidth()
-                .background(Color.Transparent),
-//                .padding(8.dp),
-
-//            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Hashtags list
-            productHashtags.forEach { hashtag ->
-                HashtagChip(hashtag)
-            }
-            // Hashtag add button
-            HashtagAddButton(onAdd = {
-                if (hashtagText.isNotBlank()) {
-                    productHashtags.add(hashtagText)
-                    hashtagText = ""
-                }
-            }, text = hashtagText, onTextChange = { hashtagText = it })
-        }
     }
 }
 
@@ -610,7 +591,7 @@ fun HashtagAddButton(onAdd: () -> Unit, text: String, onTextChange: (String) -> 
                     .background(Color.Transparent)
                     .width(100.dp)
 
-            // Set a fixed width for the TextField
+                // Set a fixed width for the TextField
             )
             IconButton(onClick = {
                 onAdd()
@@ -773,7 +754,7 @@ fun ExpirationDate() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(onClick = { dateDialogState.show() },
-                colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
+            colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
         ) {
             Text(text = "Expiration Date")
         }
@@ -801,7 +782,9 @@ fun ExpirationDate() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
-    Log.d("Text Button", "Button clicked. Product ID: $productId")
+    Log.d("AddButton", "Button clicked. Product ID: $productId, Seller ID: $sellerId, Store ID: $storeId")
+
+
     var flag = false
     var buttonText = "Update Product"
 
@@ -816,19 +799,34 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
         onClick = {
             Log.d("AddButton", "Button clicked. Product ID: $productId, Flag: $flag")
 
+//            val product = Product(
+//                productName = productName.value,
+//                categories = listOf(selectedCategory.value),
+//                thumbnail = imageUri.value.toString(),
+//                gallery = galleryImageUris.joinToString(",") { it.toString() },
+//                description = productDescription.value,
+//                marketPrice = marketPrice.value.toLongOrNull() ?: 0L,
+//                hashtags = productHashtags.toList(),
+//                expirationDate = stringDate.value,
+//                discount = discountPercent.value.toLongOrNull() ?: 0L,
+//                quantity = productQuantity.value.toIntOrNull() ?: 0
+//            )
+
             val product = Product(
+                productId ?: "",
+                sellerId,
+                storeId,
                 productName = productName.value,
+                quantity = productQuantity.value.toIntOrNull() ?: 0,
+                price = marketPrice.value.toLongOrNull() ?: 0L,
+                sellingPrice = marketPrice.value.toLongOrNull() ?: 0L,
+                discount = discountPercent.value.toLongOrNull() ?: 0L,
                 categories = listOf(selectedCategory.value),
                 thumbnail = imageUri.value.toString(),
-                gallery = galleryImageUris.joinToString(",") { it.toString() },
                 description = productDescription.value,
-                marketPrice = marketPrice.value.toLongOrNull() ?: 0L,
-                hashtags = productHashtags.toList(),
                 expirationDate = stringDate.value,
-                discount = discountPercent.value.toLongOrNull() ?: 0L,
-                quantity = productQuantity.value.toIntOrNull() ?: 0
+                isActive = if (productQuantity.value.toIntOrNull() ?: 0 > 0) true else false
             )
-
             if(flag){
                 saveProductToFirestore(sellerId, storeId, product)
             }

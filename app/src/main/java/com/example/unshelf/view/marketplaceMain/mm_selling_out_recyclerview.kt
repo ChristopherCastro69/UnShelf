@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Product
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+//import com.bumptech.glide.Glide
+//import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 class mm_selling_out_recyclerview(private val datalist: ArrayList<Product>) : RecyclerView.Adapter<mm_selling_out_recyclerview.MyViewHolder>() {
 
     interface OnItemClickListener {
@@ -33,14 +33,14 @@ class mm_selling_out_recyclerview(private val datalist: ArrayList<Product>) : Re
         holder.itemView.setOnClickListener {
             onItemClickListener?.onItemClick(position)
         }
-        Glide.with(holder.itemView.context)
-            .load(R.drawable.fruit_salad_img) // Replace with the actual image URL or resource
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(holder.rvProductImage)
-
-        holder.rvPrice.text = "₱" + datalist[position].marketPrice.toString()
-        holder.rvProductName.text = datalist[position].productName
-        holder.rvDiscount.text =  "10% off"
+//        Glide.with(holder.itemView.context)
+//            .load(R.drawable.fruit_salad_img) // Replace with the actual image URL or resource
+//            .transition(DrawableTransitionOptions.withCrossFade())
+//            .into(holder.rvProductImage)
+//
+//        holder.rvPrice.text = "₱" + datalist[position].marketPrice.toString()
+//        holder.rvProductName.text = datalist[position].productName
+//        holder.rvDiscount.text =  "10% off"
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)  {
