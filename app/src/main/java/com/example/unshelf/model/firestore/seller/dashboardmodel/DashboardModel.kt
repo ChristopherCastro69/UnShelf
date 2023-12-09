@@ -9,45 +9,59 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.model.entities.Product
-import com.example.unshelf.view.SellerBottomNav.screens.dashboard.productAdditionSuccess
+import com.example.unshelf.view.SellerBottomNav.screens.listings.productAdditionSuccess
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.storage
+import java.util.UUID
 
 fun fetchUserDetails(onComplete: (String, String) -> Unit) {
     val userId = Firebase.auth.currentUser?.uid ?: return
-
-    // Assuming 'userId' is your 'sellerId'
     val sellerId = userId
 
-    // Query Firestore to get the store ID
-    Firebase.firestore.collection("sellers").document(sellerId)
-        .collection("store").get()
+    // Query Firestore 'stores' collection to find the store corresponding to the sellerId
+    Firebase.firestore.collection("stores")
+        .whereEqualTo("sellerID", sellerId) // Assuming the store documents have a 'sellerID' field
+        .get()
         .addOnSuccessListener { querySnapshot ->
-            // Assuming you need the first store's ID
-            val storeId = querySnapshot.documents.firstOrNull()?.id ?: ""
-            Log.d("UserDetails", "Seller ID: $sellerId, Store ID: $storeId")
+            if (!querySnapshot.isEmpty) {
+                val storeDocument = querySnapshot.documents.firstOrNull()
 
-            // Return the seller ID and store ID
-            onComplete(sellerId, storeId)
+                // Fetch the storeID from the store document
+                val storeId = storeDocument?.getString("storeID") ?: ""
+                Log.d("UserDetails", "Seller ID: $sellerId, Store ID: $storeId")
+
+                // Return the seller ID and store ID
+                onComplete(sellerId, storeId)
+            } else {
+                Log.d("UserDetails", "No store found for Seller ID: $sellerId")
+            }
         }
         .addOnFailureListener {
             Log.e("Firestore", "Error fetching store details", it)
         }
 }
 
+
+
+
 fun saveProductToFirestore(sellerId: String, storeId: String, product: Product) {
     Log.d("Firestore", "Adding new product")
     val db = Firebase.firestore
 
     // Create a new document reference without specifying the ID for a new product
-    val newProductRef = db.collection("sellers").document(sellerId)
-        .collection("store").document(storeId)
-        .collection("products").document() // Firestore generates a new ID
+    val newProductRef = db.collection("products").document() // Firestore generates a new ID
+
+    // Set the productID with the auto-generated ID
+    product.productID = newProductRef.id
+    // Set the sellerId and storeId
+    product.sellerID = sellerId
+    product.storeID = storeId
 
     newProductRef.set(product)
         .addOnSuccessListener {
-            Log.d("Firestore", "New product added successfully")
+            Log.d("Firestore", "New product added successfully, Product ID: ${product.productID}")
             productAdditionSuccess.value = true
         }
         .addOnFailureListener { e ->
@@ -60,21 +74,16 @@ fun updateProductToFirestore(sellerId: String, storeId: String, product: Product
     Log.d("Firestore", "Updating product. Product ID: $productId")
     val db = Firebase.firestore
 
-    val productRef = db.collection("sellers").document(sellerId)
-        .collection("store").document(storeId)
-        .collection("products").document(productId)
+    val productRef = db.collection("products").document(productId)
 
     productRef.update(
         mapOf(
+
             "productName" to product.productName,
             "categories" to product.categories,
             "thumbnail" to product.thumbnail,
-            "gallery" to product.gallery,
             "description" to product.description,
-            "marketPrice" to product.marketPrice,
-            "hashtags" to product.hashtags,
             "expirationDate" to product.expirationDate,
-            "discount" to product.discount,
             "quantity" to product.quantity
         )
     ).addOnSuccessListener {
@@ -96,3 +105,32 @@ fun DisplayImage(imageUri: Uri) {
         modifier = Modifier.size(100.dp) // Adjust size as needed
     )
 }
+
+
+fun uploadImage(uri: Uri, onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit) {
+    val storageRef = Firebase.storage.reference
+    val fileName = "images/${UUID.randomUUID()}.jpg" // Unique file name
+    val imageRef = storageRef.child(fileName)
+
+    Log.d("ImageUpload", "Starting upload for: $uri")
+    imageRef.putFile(uri)
+        .addOnSuccessListener { taskSnapshot ->
+            Log.d("ImageUpload", "Upload succeeded. Bytes Transferred: ${taskSnapshot.bytesTransferred}")
+            imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                Log.d("ImageUpload", "Image URL: $downloadUri")
+                onSuccess(downloadUri.toString())
+            }.addOnFailureListener { exception ->
+                Log.e("ImageUpload", "Failed to get download URL", exception)
+                onFailure(exception)
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.e("ImageUpload", "Upload failed", exception)
+            onFailure(exception)
+        }
+        .addOnProgressListener { taskSnapshot ->
+            val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount)
+            Log.d("ImageUpload", "Upload is $progress% done")
+        }
+}
+

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Product
+//import com.example.unshelf.model.entities.sampleProduct
 import com.example.unshelf.view.product.AdapterCartItem
 import com.example.unshelf.view.product.CartItemData
 import com.example.unshelf.view.product.product_main
@@ -36,7 +37,7 @@ class marketplaceMain : AppCompatActivity() {
         //Selling Out RV
         recyclerView_SO = findViewById(R.id.rv_mm_so_container)
         dataList_SO = arrayListOf()
-        getDataSO()
+        //getDataSO()
         adapter_SO = mm_selling_out_recyclerview(dataList_SO)
 
         recyclerView_SO.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -46,7 +47,7 @@ class marketplaceMain : AppCompatActivity() {
         //Bundle Deals RV
         recyclerView_BD = findViewById(R.id.rv_mm_bd_container)
         dataList_BD = arrayListOf()
-        getDataBD()
+        //getDataBD()
         adapter_BD = mm_bundle_deals_recyclerview(dataList_BD)
 
         recyclerView_BD.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -55,7 +56,7 @@ class marketplaceMain : AppCompatActivity() {
         //Discounted Goods RV
         recyclerView_DG = findViewById(R.id.rv_mm_dg_container)
         dataList_DG = arrayListOf()
-        getDataDG()
+        //getDataDG()
         adapter_DG = mm_discounted_goods_recyclerview(dataList_BD)
 
         recyclerView_DG.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -88,9 +89,9 @@ class marketplaceMain : AppCompatActivity() {
 
 
     }
-
+/*
     private fun getDataSO() {
-        val pabsManok: Product = Product(
+        val pabsManok: Product = sampleProduct(
             "Pabs lechon Manok",
             listOf(),
             "Sample Description",
@@ -103,7 +104,7 @@ class marketplaceMain : AppCompatActivity() {
             69
         )
 
-        val luckySalad: Product = Product(
+        val luckySalad: Product = sampleProduct(
             "Lucky Fruit Salad",
             listOf(),
             "Sample Description",
@@ -307,4 +308,6 @@ class marketplaceMain : AppCompatActivity() {
         dataList_DG.add(luckySalad)
         dataList_DG.add(pabsManok)
     }
+
+ */
 }

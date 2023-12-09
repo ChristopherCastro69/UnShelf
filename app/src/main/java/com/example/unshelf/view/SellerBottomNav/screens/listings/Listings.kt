@@ -3,8 +3,6 @@ package com.example.unshelf.view.SellerBottomNav.screens.listings
 // or, if you're using StateFlow or LiveData:
 import JostFontFamily
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,26 +40,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Product
-import com.example.unshelf.model.entities.ProductWithID
 import com.example.unshelf.model.firestore.seller.listingsModel.ProductViewModel
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.WatermelonRed
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-
 
 
 var productID = mutableStateOf<String?>(null)
@@ -207,7 +197,7 @@ fun ProductList(sellerId: String, storeId: String, navController: NavController)
     }
 }
 @Composable
-fun ProductCard(product: ProductWithID, navController: NavController, productViewModel: ProductViewModel, context: Context) {
+fun ProductCard(product: Product, navController: NavController, productViewModel: ProductViewModel, context: Context) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -219,7 +209,10 @@ fun ProductCard(product: ProductWithID, navController: NavController, productVie
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.background(Color.White)
         ) {
-            val painter = rememberAsyncImagePainter(model = product.thumbnail)
+            // Assuming 'product.thumbnail' contains the URL of the image
+            val imageUrl = product.thumbnail
+            val painter = rememberAsyncImagePainter(model = imageUrl)
+
             Image(
                 painter = painter,
                 contentDescription = product.productName,
@@ -239,9 +232,9 @@ fun ProductCard(product: ProductWithID, navController: NavController, productVie
                     fontFamily = FontFamily.Serif
                 )
                 Text(text = "Quantity: ${product.quantity}", color = Color.Gray)
-                Text(text = "₱${product.marketPrice}", color = Color.Gray)
+                Text(text = "₱${product.price}", color = Color.Gray)
             }
-            IconButton(onClick = { navController.navigate("addProduct/${product.id}")
+            IconButton(onClick = { navController.navigate("addProduct/${product.productID}")
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_edit),
@@ -250,7 +243,7 @@ fun ProductCard(product: ProductWithID, navController: NavController, productVie
                 )
             }
 
-            IconButton(onClick = {   productViewModel.deleteProduct(sellerId.value, storeId.value, product.id, context)
+            IconButton(onClick = {   productViewModel.deleteProduct(sellerId.value, storeId.value, product.productID, context)
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_delete),

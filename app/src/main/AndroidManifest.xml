@@ -19,9 +19,6 @@
         android:theme="@style/Theme.UnShelf"
         tools:targetApi="31">
         <activity
-            android:name=".view.fireprac"
-            android:exported="false" />
-        <activity
             android:name=".view.CxOrderHistory.CxOrderHistory"
             android:exported="false" />
         <activity
@@ -111,6 +108,12 @@
         <activity
             android:name=".view.MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".view.SellerBottomNav.screens.orders.OrderView"
+            android:exported="false"/>
+        <activity
+            android:name=".view.SellerBottomNav.screens.orders.OrderApprovalView"
+            android:exported="false"/>
 
         <activity
             android:name=".view.productView.CartActivity"
@@ -119,5 +122,4 @@
             android:name=".view.productView.ProductMainView"
             android:exported="false"/>
     </application>
-
 </manifest>

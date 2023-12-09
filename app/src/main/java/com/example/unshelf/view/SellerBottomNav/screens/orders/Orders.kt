@@ -1,6 +1,10 @@
 package com.example.unshelf.view.SellerBottomNav.screens.orders
 
 import JostFontFamily
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,6 +55,14 @@ val ordersList = listOf(
     Order(R.drawable.loaf, "Product", "12194bdkl", "10/19/2023", 399.00, "Pending Order"),
 
     )
+class OrderView:ComponentActivity(){
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
+        setContent {
+            Orders()
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,10 +124,12 @@ fun Orders() {
 
 @Composable
 fun OrderCard(order: Order) {
+    val context = LocalContext.current;
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { val intent = Intent(context,OrderApprovalView::class.java) },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(

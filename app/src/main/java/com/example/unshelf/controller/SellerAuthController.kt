@@ -20,6 +20,7 @@ class SellerAuthController ( // Please modify class diagram and add this class a
         callback: (Boolean, String?) -> Unit
     ) {
         sellerAuthModel.createSellerAccountFirebase(
+
             email,
             password,
             phoneNumber,

@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+//import com.bumptech.glide.Glide
+//import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Product
 
@@ -37,12 +37,12 @@ class mm_discounted_goods_recyclerview(private val datalist: ArrayList<Product>)
         holder.itemView.setOnClickListener {
             onItemClickListener?.onItemClick(position)
         }
-        Glide.with(holder.itemView.context)
-            .load(R.drawable.fruit_salad_img) // Replace with the actual image URL or resource
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(holder.rvProductImage)
-
-        holder.rvPrice.text = "₱" + datalist[position].marketPrice.toString()
+//        Glide.with(holder.itemView.context)
+//            .load(R.drawable.fruit_salad_img) // Replace with the actual image URL or resource
+//            .transition(DrawableTransitionOptions.withCrossFade())
+//            .into(holder.rvProductImage)
+//
+//        holder.rvPrice.text = "₱" + datalist[position].marketPrice.toString()
         holder.rvProductName.text = datalist[position].productName
         holder.rvDiscount.text =  "8% off"
     }
