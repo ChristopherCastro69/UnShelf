@@ -779,10 +779,12 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
 
 
     var flag = false
+    var forUpdate = true
     var buttonText = "Update Product"
 
     if (productId == "null"){
         flag = true
+        forUpdate = false
         buttonText = "Add Product"
         // Log the flag value
         Log.d("AddButton", "Flag value: $flag, Product ID: $productId")
@@ -808,7 +810,7 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
                 expirationDate = stringDate.value,
                 isActive = if (productQuantity.value.toIntOrNull() ?: 0 > 0) true else false
             )
-            if(flag){
+            if(flag && !forUpdate){
                 saveProductToFirestore(sellerId, storeId, product)
             }
             else{

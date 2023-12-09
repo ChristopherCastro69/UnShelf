@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.MiddleGreenYellow
@@ -198,7 +199,7 @@ fun CategoryUI() {
     }
 }
 @Composable
-fun ProductGroup(product : ProductDetailsModel){
+fun ProductGroup(product : Product){
     Box(Modifier.padding(horizontal = 10.dp)){
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)){
             items(6){
@@ -210,7 +211,7 @@ fun ProductGroup(product : ProductDetailsModel){
 }
 
 @Composable
-fun ProductUI(product : ProductDetailsModel) {
+fun ProductUI(product : Product) {
     val context = LocalContext.current
     Box{
         Box(
@@ -220,7 +221,7 @@ fun ProductUI(product : ProductDetailsModel) {
                 .height(190.dp)
         ){
             Text(
-                text = product.storeName,
+                text = product.productName,
                 color = DeepMossGreen,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.ExtraBold,
@@ -229,7 +230,7 @@ fun ProductUI(product : ProductDetailsModel) {
                     .padding(vertical = 10.dp)
             )
             Image (
-                rememberAsyncImagePainter(product.imageUrl),
+                rememberAsyncImagePainter(product.thumbnail),
                 contentDescription = "${product.productName}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -244,7 +245,7 @@ fun ProductUI(product : ProductDetailsModel) {
             )
 
             Text(
-                text = "P ${product.price}",
+                text = "₱ ${product.price}",
                 color = DeepMossGreen,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Black,
@@ -254,7 +255,7 @@ fun ProductUI(product : ProductDetailsModel) {
             )
         }
         Box(modifier = Modifier.offset(y=30.dp,x=0.dp)) {
-            if(product.price < 10) {
+            if(product.discount > 0) {
                 Image(
                     painterResource(id = R.drawable.ic_banner),
                     contentDescription = "banner",
@@ -265,7 +266,7 @@ fun ProductUI(product : ProductDetailsModel) {
                 )
 
                 Text(
-                    text = "Save ${product.price}",
+                    text = "Save ${product.discount}",
                     color = Color.White,
                     fontSize = 13.sp,
                     modifier = Modifier.padding(start=15.dp,top=5.dp)
