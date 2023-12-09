@@ -53,6 +53,7 @@ import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
 import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.view.BuyerBottomNav.main.BuyerScreens
+import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.product.cart
@@ -168,7 +169,7 @@ fun PMNavigation() {
             .fillMaxWidth()
             .height(100.dp)
     ) {
-
+        val activity = LocalContext.current
         Image (
             painter = painterResource(id = R.drawable.ic_back_button),
             contentDescription = "Back",
@@ -177,7 +178,7 @@ fun PMNavigation() {
                 .height(55.dp)
                 .width(55.dp)
                 .clickable {
-                    val intent = Intent(context, CartActivity::class.java)
+                    val intent = Intent(context, MainNavigationActivityBuyer::class.java)
                     context.startActivity(intent)
                }
             ,

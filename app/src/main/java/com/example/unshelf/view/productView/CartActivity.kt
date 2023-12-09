@@ -1,5 +1,6 @@
 package com.example.unshelf.view.productView
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -52,6 +53,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.unshelf.R
 import com.example.unshelf.ui.theme.DarkPalmLeaf
+import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
+import com.example.unshelf.view.Wallet.CheckoutUI
 
 class CartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,6 +127,7 @@ fun Menu(modifier: Modifier = Modifier) {
             .padding(8.dp)
     ) {
         // Back button
+        val context = LocalContext.current
         Image(
             painter = painterResource(id = R.drawable.ic_backbtn),
             contentDescription = "Back",
@@ -131,6 +135,10 @@ fun Menu(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .padding(start = 16.dp, end = 8.dp)
                 .align(Alignment.CenterVertically)
+                .clickable {
+                    val intent = Intent(context, MainNavigationActivityBuyer::class.java)
+                    context.startActivity(intent)
+                }
         )
 
         // Text
@@ -175,6 +183,7 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
             .padding(16.dp)
             .padding(bottom = 0.dp)// Add padding if needed
     ) {
+        val context = LocalContext.current
         // Add your content here, for example, Text and Button
         CheckBox(Modifier
             .padding(end = 8.dp)
@@ -198,6 +207,7 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
                 .padding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Text (
                 text = "Total",
                 fontSize = 16.sp,
@@ -214,7 +224,10 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
         }
         Spacer(modifier = Modifier.padding(end = 16.dp))
         Button(
-            onClick = { /* Handle button click */ },
+            onClick = {
+                val intent = Intent(context, CheckoutUI::class.java)
+                context.startActivity(intent)
+            },
             colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
             modifier = Modifier
                 .height(60.dp)
