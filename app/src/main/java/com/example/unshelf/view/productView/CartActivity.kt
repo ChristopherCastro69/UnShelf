@@ -362,7 +362,6 @@ fun Variation(
             .fillMaxWidth()
             .padding(top = 16.dp)
             .paint(
-                // Replace with your image id
                 painterResource(id = R.drawable.sv_cart_dholder),
                 contentScale = ContentScale.FillBounds
             ),
@@ -378,7 +377,6 @@ fun Variation(
             painter = painterResource(id = R.drawable.ic_plust_active),
             contentDescription = "Increase Quantity",
             modifier = Modifier.clickable {
-                //increase qty
                 setQty(qty + 1)
             }
                 .padding(end = 5.dp)
@@ -391,7 +389,6 @@ fun Variation(
             painter = painterResource(id = R.drawable.ic_minus_active),
             contentDescription = "Decrease Quantity",
             modifier = Modifier.clickable {
-                //decrease
                 setQty(qty - 1)
             }
                 .padding(start = 5.dp)

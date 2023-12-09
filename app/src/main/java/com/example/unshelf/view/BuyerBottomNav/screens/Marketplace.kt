@@ -50,6 +50,7 @@ import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.Seller.SellerProfile
 import com.example.unshelf.view.product.product_main
+import com.example.unshelf.view.productView.ProductMainView
 import java.time.format.TextStyle
 
 @Preview
@@ -162,6 +163,7 @@ fun CategoryUI() {
                         .border(1.dp, MiddleGreenYellow, RoundedCornerShape(10.dp))
                         .align(Alignment.CenterHorizontally)
                 ){
+
                     Image(
                         painterResource(id = categoryImgs[i]),
                         contentDescription = "category",
@@ -227,7 +229,7 @@ fun ProductUI() {
                     .border(1.dp, color = MediumSpringBud, shape = RoundedCornerShape(10.dp))
                     .align(Alignment.Center)
                     .clickable{
-                        val intent = Intent(context, product_main::class.java)
+                        val intent = Intent(context, ProductMainView::class.java)
                         context.startActivity(intent)
                     }
             )
