@@ -1,5 +1,7 @@
 package com.example.unshelf.model.checkout
 
+import com.google.gson.annotations.SerializedName
+
 data class FullCheckoutModel(
     val `data`: FullData
 )
@@ -48,7 +50,8 @@ data class FullBilling(
 data class FullLineItem(
     val amount: Int,
     val currency: String = "PHP",
-    val description: String,
+    @SerializedName("description")
+    val storeID: String,
     val images: List<String?>,
     val name: String,
     val quantity: Int
