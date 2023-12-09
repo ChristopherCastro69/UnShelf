@@ -12,12 +12,4 @@ class Cart(
         return customerId
     }
 
-    val totalPrice: Double
-        get() {
-            var sum = 0.0
-            for (prod in products) {
-                sum += prod.marketPrice + prod.marketPrice * prod.discount
-            }
-            return sum
-        }
 }
