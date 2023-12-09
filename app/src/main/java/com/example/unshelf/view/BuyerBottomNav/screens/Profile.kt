@@ -42,12 +42,14 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontVariation.width
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.example.unshelf.R
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.view.SellerBottomNav.screens.store.ProfileOptionItem
@@ -55,18 +57,27 @@ import com.example.unshelf.view.SellerBottomNav.screens.store.Store
 
 @Composable
 fun Profile() {
-    val names = listOf(
-        "Delivery Settings","Pickup Settings","Store Locations","Promotions","Settings","Language","Log Out"
-    )
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFE8F5E9)),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BuyerProfileDetails()
         Column {
-            names.forEach { name ->
+            val strings_1 = listOf("Addresses", "Subscriptions", "Referals", "Vouchers")
+            val strings_2 = listOf("Help Center", "Settings", "Customer Support", "Log out")
+            strings_1.forEach { name ->
+                BuyerSettings(name)
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Text (
+                text = "General",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green07))
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            strings_2.forEach { name ->
                 BuyerSettings(name)
             }
         }
@@ -187,7 +198,6 @@ fun BuyerSettings(option: String) {
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = option,
             modifier = Modifier.weight(1f),
@@ -206,7 +216,7 @@ fun BuyerSettings(option: String) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewProfileScreen() {
-    Column {
+    Column  {
         Profile()
     }
 }
