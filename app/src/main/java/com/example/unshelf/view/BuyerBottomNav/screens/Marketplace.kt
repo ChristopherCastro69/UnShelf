@@ -1,4 +1,6 @@
 import android.content.Intent
+import com.example.unshelf.controller.DataFetch.DataFetchController
+import com.example.unshelf.model.entities.ProductDetailsModel
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,14 +48,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
-import com.example.unshelf.controller.DataFetch.DataFetchController
-import com.example.unshelf.model.entities.ProductDetailsModel
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.Seller.SellerProfile
 import com.example.unshelf.view.product.product_main
+import com.example.unshelf.view.productView.ProductMainView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -124,6 +125,7 @@ fun Marketplace(){
                             CategoryUI()
                         }
                         val dataFetch = DataFetchController.dataFetch
+                        Log.d("Marketplace", "${dataFetch.size}")
                         for(product in dataFetch) {
                             Row(Modifier.padding(horizontal = 10.dp)) {
                                 Text(
@@ -236,7 +238,7 @@ fun ProductUI(product : ProductDetailsModel) {
                     .border(1.dp, color = MediumSpringBud, shape = RoundedCornerShape(10.dp))
                     .align(Alignment.Center)
                     .clickable{
-                        val intent = Intent(context, product_main::class.java)
+                        val intent = Intent(context, ProductMainView::class.java)
                         context.startActivity(intent)
                     }
             )
