@@ -18,11 +18,22 @@ import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 import com.example.unshelf.view.StartUI.MainUI
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ui_tester)
+
+        // Initialize Firebase App
+        FirebaseApp.initializeApp(this)
+
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )
 
         // BUTTONS
         // define the buttons here

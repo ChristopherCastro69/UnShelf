@@ -76,15 +76,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.model.entities.Product
-import com.example.unshelf.model.firestore.seller.dashboardmodel.DisplayImage
+import com.example.unshelf.model.firestore.seller.dashboardmodel.fetchProductDetails
 import com.example.unshelf.model.firestore.seller.dashboardmodel.saveProductToFirestore
 import com.example.unshelf.model.firestore.seller.dashboardmodel.updateProductToFirestore
 import com.example.unshelf.model.firestore.seller.dashboardmodel.uploadImage
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
@@ -102,8 +100,8 @@ var imageUri = mutableStateOf<Uri?>(null)
 var galleryImageUris = mutableStateListOf<Uri>()
 var productDescription = mutableStateOf("")
 var productHashtags = mutableStateListOf<String>()
-var marketPrice = mutableStateOf("")
-var voucherCode = mutableStateOf("")
+var marketPrice = mutableStateOf("0.00")
+var voucherCode = mutableStateOf("0.00")
 var discountPercent = mutableStateOf("")
 @RequiresApi(Build.VERSION_CODES.O)
 var pickedDate = mutableStateOf(LocalDate.now())
@@ -119,72 +117,53 @@ var status = mutableStateOf(false)
 @RequiresApi(Build.VERSION_CODES.O)
 fun AddProducts(productId: String? = null) {
     Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
+    // Log the current state of imageUri at the start of the function
+    Log.d("AddProducts", "Initial imageUri: ${imageUri.value ?: "null or empty"}")
 
-    imageUri.value?.let {
-        DisplayImage(imageUri = it)
-    }
+//    imageUri.value?.let {
+//        DisplayImage(imageUri = it)
+//    }
+    // State variables
 
-    if (productId != null) {
-        LaunchedEffect(productId) {
-            Log.d("AddProducts", "Current Product ID: $productId")
-            val db = Firebase.firestore
-            val docRef = db.collection("products").document(productId)
+    var isLoadingProduct by remember { mutableStateOf(false) }
+    // Fetch product details if productId is not null
+    LaunchedEffect(productId) {
+        productId?.let {
 
-            docRef.get().addOnSuccessListener { document ->
-                if (document != null) {
-                    productName.value = document.getString("productName") ?: ""
-                    selectedCategory.value = document.getString("category") ?: "Grocery"
-                    val thumbnailString = document.getString("thumbnail")
-                    if (!thumbnailString.isNullOrEmpty()) {
-                        imageUri.value = Uri.parse(thumbnailString)
-                    } else {
-                        // Handle the case where thumbnail string is null or empty
-                        // Maybe set a default imageUri or leave it null based on your app's logic
+
+            isLoadingProduct = true
+            fetchProductDetails(it, onSuccess = { product ->
+                // Populate state variables with fetched product details
+                productName.value = product.productName
+                selectedCategory.value = product.categories.firstOrNull() ?: "Grocery"
+                imageUri.value = Uri.parse(product.thumbnail)
+                productDescription.value = product.description
+                marketPrice.value = product.price.toString()
+                discountPercent.value = product.discount.toString()
+                voucherCode.value = product.voucherCode
+               // pickedDate.value = LocalDate.parse(product.expirationDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+                productQuantity.value = product.quantity.toString()
+                status.value = product.isActive // Assuming isActive is a boolean in your Product data class
+                val expirationDateString = product.expirationDate
+                if (expirationDateString.isNotEmpty()) {
+                    try {
+                        pickedDate.value = LocalDate.parse(expirationDateString, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+                    } catch (e: DateTimeParseException) {
+                        Log.e("AddProduct", "Error parsing date: $expirationDateString", e)
+                        // Set to default date or handle the error as needed
+                        pickedDate.value = LocalDate.now()
                     }
-
-                    productDescription.value = document.getString("description") ?: ""
-
-                    // Convert String to Long for marketPrice
-                    marketPrice.value = document.getDouble("price")?.toString() ?: ""
-
-                    // Convert String to List<String> for galleryImageUris
-//                    val galleryImages = document.getString("gallery")?.split(",") ?: listOf()
-//                    galleryImageUris.clear()
-//                    galleryImages.forEach { uriString ->
-//                        galleryImageUris.add(Uri.parse(uriString))
-//                    }
-
-//                    // Handle hashtags as List<String>
-//                    val hashtags = document.get("hashtags") as? List<String> ?: listOf()
-//                    productHashtags.clear()
-//                    productHashtags.addAll(hashtags)
-
-                    // Handle expirationDate
-                    val expirationDateString = document.getString("expirationDate") ?: ""
-                    if (expirationDateString.isNotEmpty()) {
-                        try {
-                            pickedDate.value = LocalDate.parse(expirationDateString, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
-                        } catch (e: DateTimeParseException) {
-                            Log.e("AddProduct", "Error parsing date: $expirationDateString", e)
-                            // Set to default date or handle the error as needed
-                            pickedDate.value = LocalDate.now()
-                        }
-                    } else {
-                        pickedDate.value = LocalDate.now() // Or your default date
-                    }
-
-                    // Handle discount
-                    discountPercent.value = document.getLong("discount")?.toString() ?: ""
-
-                    // Handle quantity
-                    productQuantity.value = document.getLong("quantity")?.toString() ?: ""
                 } else {
-                    Log.d("Firestore", "No such document")
+                    // Handle case where expiration date is empty
+                    pickedDate.value = LocalDate.now() // You can set a default date or handle as required
+                    Log.d("AddProduct", "Expiration date is empty, setting to current date")
                 }
-            }.addOnFailureListener { exception ->
-                Log.d("Firestore", "get failed with ", exception)
-            }
 
+                isLoadingProduct = false
+            }, onFailure = { exception ->
+                Log.e("AddProducts", "Error fetching product details: ${exception.message}", exception)
+                isLoadingProduct = false
+            })
         }
     }
 
@@ -336,33 +315,37 @@ fun Category() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Thumbnail() {
-    // State to hold the selected image Uri
-//    var imageUri by remember { mutableStateOf<Uri?>(null) }
-    LocalContext.current
-
     // This launcher is used to start the image picker activity
+
+    var flag = false
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
             uploadImage(it, onSuccess = { downloadUrl ->
-                // Here you can store the downloadUrl in Firestore along with other product details
                 imageUri.value = Uri.parse(downloadUrl)
             }, onFailure = { exception ->
-                // Handle upload failure
+                Log.e("Thumbnail", "Upload failed: ${exception.message}")
             })
         }
     }
 
 
+    Log.d("Thumbnail", "imageUri value: ${imageUri.value}")
+    if(imageUri.value == null){
+        flag = true
+    }
+
+    Log.d("Thumbnail", "Flag value: $flag") // Log the flag value
     Column(
         modifier = Modifier
             .fillMaxWidth()
-//            .padding(16.dp)
-            .background(Color.Transparent), // This is the green background color
+            .background(Color.Transparent)
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(30.dp)) // Spacing from the top
+        Spacer(modifier = Modifier.height(30.dp))
+
 
         imageUri.value?.let {
             Image(
@@ -370,48 +353,45 @@ fun Thumbnail() {
                 contentDescription = "Selected Thumbnail",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .size(250.dp) // Size of the circle
+                    .size(250.dp)
                     .clip(RectangleShape)
                     .border(2.dp, PalmLeaf, RectangleShape)
                     .border(2.dp, Color.Gray, RectangleShape)
-                    .clickable { launcher.launch("image/*") } // Change thumbnail on click
+                    .clickable { launcher.launch("image/*") }
+            )
+            Text(
+                text = "Tap to change thumbnail",
+                fontFamily = JostFontFamily,
+                fontWeight = FontWeight.Light,
+                fontSize = 12.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(12.dp)
+            )
+        } ?: Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .background(PalmLeaf, RectangleShape)
+                .border(2.dp, Color.Gray, RectangleShape)
+                .clickable { launcher.launch("image/*") }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add Thumbnail",
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+            Text(
+                text = "Choose a thumbnail for your product",
+                fontFamily = JostFontFamily,
+                fontWeight = FontWeight.Light,
+                fontSize = 12.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(12.dp)
             )
         }
-        // Check if an image URI is available and call DisplayImage
 
-            ?: Box(
-                // If no image is selected, show the 'add' icon
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp)
-//                .fillMaxHeight()
-//                .size(250.dp) // Size of the circle
-                    .background(PalmLeaf, RectangleShape) // White circle
-                    .border(2.dp, Color.Gray, RectangleShape)
-                    .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Thumbnail",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp) // Size of the plus icon
-                )
-            }
-
-        Spacer(modifier = Modifier.height(10.dp)) // Spacing between the circle and text
-
-        // Text under the image/thumbnail
-        Text(
-            text = if (imageUri.value == null) "Choose a thumbnail for your product" else "Tap to change thumbnail",
-            fontFamily = JostFontFamily,
-            fontWeight = FontWeight.Light,
-            fontSize = 12.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(12.dp)
-        )
-
-        // Button to remove the selected image
         if (imageUri.value != null) {
             Button(
                 onClick = { imageUri.value = null },
@@ -422,7 +402,7 @@ fun Thumbnail() {
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp)) // Spacing from the bottom
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 
@@ -808,28 +788,16 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
         onClick = {
             Log.d("AddButton", "Button clicked. Product ID: $productId, Flag: $flag")
 
-//            val product = Product(
-//                productName = productName.value,
-//                categories = listOf(selectedCategory.value),
-//                thumbnail = imageUri.value.toString(),
-//                gallery = galleryImageUris.joinToString(",") { it.toString() },
-//                description = productDescription.value,
-//                marketPrice = marketPrice.value.toLongOrNull() ?: 0L,
-//                hashtags = productHashtags.toList(),
-//                expirationDate = stringDate.value,
-//                discount = discountPercent.value.toLongOrNull() ?: 0L,
-//                quantity = productQuantity.value.toIntOrNull() ?: 0
-//            )
-
             val product = Product(
                 productId ?: "",
                 sellerId,
                 storeId,
                 productName = productName.value,
                 quantity = productQuantity.value.toIntOrNull() ?: 0,
-                price = marketPrice.value.toLongOrNull() ?: 0L,
-                sellingPrice = marketPrice.value.toLongOrNull() ?: 0L,
-                discount = discountPercent.value.toLongOrNull() ?: 0L,
+                price = marketPrice.value.toDoubleOrNull() ?: 0.00,
+                sellingPrice = marketPrice.value.toDoubleOrNull() ?: 0.00,
+                discount = discountPercent.value.toDoubleOrNull() ?: 0.00,
+                voucherCode = voucherCode.value,
                 categories = listOf(selectedCategory.value),
                 thumbnail = imageUri.value.toString(),
                 description = productDescription.value,

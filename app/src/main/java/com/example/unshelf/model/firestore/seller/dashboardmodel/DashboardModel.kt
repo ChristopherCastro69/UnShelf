@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.model.entities.Product
 import com.example.unshelf.view.SellerBottomNav.screens.listings.productAdditionSuccess
+import com.example.unshelf.view.SellerBottomNav.screens.listings.voucherCode
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
@@ -134,3 +135,34 @@ fun uploadImage(uri: Uri, onSuccess: (String) -> Unit, onFailure: (Exception) ->
         }
 }
 
+fun fetchProductDetails(productId: String, onSuccess: (Product) -> Unit, onFailure: (Exception) -> Unit) {
+    Firebase.firestore.collection("products").document(productId)
+        .get()
+        .addOnSuccessListener { document ->
+            if (document != null) {
+                try {
+                    // Assuming 'Product' has a constructor that matches the document fields
+                    val product = Product(
+                        productID = document.id,
+                        sellerID = document.getString("sellerId") ?: "",
+                        storeID = document.getString("storeId") ?: "",
+                        productName = document.getString("productName") ?: "",
+                        quantity = document.getLong("quantity")?.toInt() ?: 0,
+                        price = document.getDouble("price") ?: 0.0,
+                        sellingPrice = document.getDouble("sellingPrice") ?: 0.00,
+                        discount = document.getDouble("discount") ?: 0.00,
+                        voucherCode = document.getString("voucherCode") ?: "",
+                        categories = document.get("categories") as? List<String> ?: emptyList(),
+                        thumbnail = document.getString("thumbnail") ?: "",
+                        description = document.getString("description") ?: "",
+                        expirationDate = document.getString("expirationDate") ?: "",
+                        isActive = document.getBoolean("isActive") ?: false
+                    )
+                    onSuccess(product)
+                } catch (e: Exception) {
+                    onFailure(e)
+                }
+            }
+        }
+        .addOnFailureListener(onFailure)
+}

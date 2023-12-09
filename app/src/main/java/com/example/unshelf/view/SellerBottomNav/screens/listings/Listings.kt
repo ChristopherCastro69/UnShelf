@@ -124,6 +124,7 @@ fun TopBar(navController: NavController) {
 
             IconButton(onClick = {
                 productID.value = null  // Set productID to null for adding a new product
+                imageUri.value = null
                 navController.navigate("addProduct/${productID.value}")},
 
             ) {

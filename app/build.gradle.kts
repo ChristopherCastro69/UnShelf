@@ -128,4 +128,10 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.7.5")
 
+    //for the Firebase appcheck
+    implementation ("com.google.firebase:firebase-appcheck-safetynet:16.1.2")
+
+
+
+
 }

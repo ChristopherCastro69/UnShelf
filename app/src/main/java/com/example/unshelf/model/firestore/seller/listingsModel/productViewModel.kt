@@ -5,9 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.unshelf.model.entities.Product
-import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
-import com.example.unshelf.view.SellerBottomNav.screens.listings.sellerID
-import com.example.unshelf.view.SellerBottomNav.screens.listings.sellerId
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,18 +31,17 @@ class ProductViewModel : ViewModel() {
 
                     val categories = document.get("categories") as? List<String> ?: listOf("Unknown")
                     val description = document.getString("description") ?: "Unknown"
-                     val discount = document.getLong("discount") ?: 0L
+                     val discount = document.getDouble("discount") ?: 0.00
+                    val voucherCode = document.getString("voucherCode") ?: ""
                     val expirationDate = document.getString("expirationDate") ?: "0/00/0000"
-                    // val gallery = document.getString("gallery") ?: ""  // Assuming gallery is a single String
-                    // val hashtags = document.get("hashtags") as? List<String> ?: listOf()
                     val name = document.getString("productName") ?: "Unknown"
                     val quantity = document.getLong("quantity")?.toInt() ?: 0
-                    val price = document.getDouble("price")?.toLong() ?: 0L
-                    val sellingPrice = document.getDouble("sellingPrice")?.toLong() ?: 0L
+                    val price = document.getDouble("price") ?: 0.00
+                    val sellingPrice = document.getDouble("sellingPrice") ?: 0.00
                     val isActive = document.getBoolean("isActive") ?: false  // Use getBoolean and provide a default value
                     val thumbnailUri = document.getString("thumbnail") ?: ""
 
-                    Product(id, seller, store, name, quantity, price, sellingPrice, discount, categories, thumbnailUri, description,  expirationDate, isActive)
+                    Product(id, seller, store, name, quantity, price, sellingPrice, discount, voucherCode, categories, thumbnailUri, description,  expirationDate, isActive)
                 }
                 _products.value = productList
             }
