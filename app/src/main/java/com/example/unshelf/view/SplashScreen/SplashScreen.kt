@@ -7,14 +7,18 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
+import androidx.lifecycle.ViewModelProvider
 import com.example.unshelf.view.MainActivity
 import com.example.unshelf.R
 import com.example.unshelf.R.id.splashscreen
+import com.example.unshelf.controller.DataFetch.DataFetchController
 
 class SplashScreen : AppCompatActivity() {
+    private lateinit var dataFetchController: DataFetchController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
+        dataFetchController = ViewModelProvider(this).get(DataFetchController::class.java)
 
         val splashScreen = findViewById<ImageView>(splashscreen)
 
