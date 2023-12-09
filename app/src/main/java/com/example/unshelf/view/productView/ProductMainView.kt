@@ -53,6 +53,7 @@ import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
 import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.view.BuyerBottomNav.main.BuyerScreens
+import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
@@ -106,6 +107,7 @@ fun ProductMain() {
 
 @Composable
 fun PMMenu() {
+    val context = LocalContext.current
     Row(
         modifier = Modifier.run {
             padding(top = 10.dp)
@@ -121,12 +123,16 @@ fun PMMenu() {
         horizontalArrangement = Arrangement.Center, // justify-content: center
     ) {
         Button(
-            onClick = { /* Handle button click */ },
+            onClick = {
+                val intent = Intent(context, CartActivity::class.java)
+                context.startActivity(intent)
+            },
             colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
             modifier = Modifier
                 .height(50.dp)
                 .padding(bottom = 10.dp)
                 .align(Alignment.CenterVertically)
+
 
         ) {
             Text(
@@ -135,7 +141,10 @@ fun PMMenu() {
             )
         }
         Button(
-            onClick = { /* Handle button click */ },
+            onClick = {
+                val intent = Intent(context, CheckoutUI::class.java)
+                context.startActivity(intent)
+            },
             colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
             modifier = Modifier
                 .height(50.dp)
@@ -167,6 +176,10 @@ fun PMNavigation() {
                 .padding(15.dp)
                 .height(55.dp)
                 .width(55.dp)
+                .clickable {
+                    val intent = Intent(context, CartActivity::class.java)
+                    context.startActivity(intent)
+               }
             ,
             contentScale = ContentScale.Crop
         )
