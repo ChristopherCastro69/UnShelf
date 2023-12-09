@@ -16,7 +16,9 @@ class LoginAuthenticationManager {
     ) {
         firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(onCompleteListener)
+        firebaseAuth.signInAnonymously()
     }
+
 }
 
 

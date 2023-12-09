@@ -2,8 +2,12 @@ package com.example.unshelf.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.unshelf.R
+import com.example.unshelf.controller.DataFetch.DataFetchController
 import com.example.unshelf.helper.UI_Tester_Helper
 import com.example.unshelf.view.AddressManager.AddressManager
 import com.example.unshelf.view.BuyerBottomNav.main.BuyerAppNavigation
@@ -22,9 +26,14 @@ import com.example.unshelf.view.productView.CartActivity
 import com.example.unshelf.view.productView.ProductMainView
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ui_tester)
+
+
+
+
 
         // BUTTONS
         // define the buttons here

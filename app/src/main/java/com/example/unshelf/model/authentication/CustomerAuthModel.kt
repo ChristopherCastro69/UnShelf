@@ -1,6 +1,8 @@
 package com.example.unshelf.model.authentication
 
+import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
 import com.example.unshelf.model.entities.Customer
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,6 +21,19 @@ class CustomerAuthModel() {
         val firebaseAuth = FirebaseAuth.getInstance()
         val firestore = FirebaseFirestore.getInstance()
 
+        firebaseAuth.signInAnonymously()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("Debug", "signInAnonymously:success")
+                    val user = firebaseAuth.currentUser
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("Debug", "signInAnonymously:failure", task.exception)
+                }
+            }
+
+        // Firebase authentication logic
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
