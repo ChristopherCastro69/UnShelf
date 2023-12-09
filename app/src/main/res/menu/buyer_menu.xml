@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -10,7 +9,7 @@
     <item
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:icon="@drawable/notif_buyer_ic"
+        android:icon="@drawable/notifications_selector"
         android:title="Notifications" />
     <item
         android:layout_width="wrap_content"

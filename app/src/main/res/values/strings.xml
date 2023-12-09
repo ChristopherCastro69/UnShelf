@@ -73,7 +73,7 @@
     <string name="desc_allow_loc_access">By allowing access, you can search for restaurants and shops near you and receive more accurate deals.</string>
     <string name="confirm_loc">Confirm location</string>
 
-<!--    Cx Order History-->
+    <!--    Cx Order History-->
     <string name="cx_order_hist">Orders</string>
     <string name="cx_order_search">Search order ID, name, or description</string>
     <string name="cx_filters_txt">Filters</string>
@@ -83,7 +83,7 @@
     <string name="cx_order_status">Order status</string>
     <string name="cx_order_amount">399.00</string>
 
-<!--    order status-->
+    <!--    order status-->
     <string name="order_pending">Pending</string>
     <string name="order_approved">Approved</string>
     <string name="order_cancelled">Cancelled</string>
