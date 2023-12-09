@@ -1,59 +1,77 @@
 package com.example.unshelf.controller.Checkout
 
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import com.example.unshelf.controller.DataFetch.DataFetchController
 import com.example.unshelf.model.checkout.*
+import com.example.unshelf.model.entities.Order
 import com.example.unshelf.model.entities.ProductDetailsModel
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import java.io.IOException
+import java.util.Date
+
 class CheckoutSessionController() {
     private val gson = Gson()
+    val db = Firebase.firestore
 
-    suspend fun createCheckoutSession(): String {
-        val salad = ProductDetailsModel(
-            storeName = "Lucky's fruits",
-            productName = "Fruit Salad",
-            quantity = 2,
-            price = 20.00,
-            expirationDate = "12/8/2023",
-            imageUrl = "https://i.pinimg.com/736x/3c/d5/dd/3cd5dd10fdaef74c958d22ef340b8bb0.jpg",
-            category = null,
-            description = null
-        )
-        val salad2 = ProductDetailsModel(
-            storeName = "Top's fruits",
-            productName = "Fruit Salad",
-            quantity = 2,
-            price = 20.00,
-            expirationDate = "12/8/2023",
-            imageUrl = "https://nationalvending.com/wp-content/uploads/2019/02/shutterstock_682616113-600x384.jpg",
-            category = null,
-            description = null
+    suspend fun createCheckoutSession() : FullCheckoutModel? {
+        val products = DataFetchController.getProducts()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        var email = ""
+        var name = ""
+        var number = ""
+        if (currentUser != null) {
+            val uid = currentUser.uid
+            email = currentUser.email as String
+            try {
+                val userSnapshot = db.collection("customers").document(uid).get().await()
+
+                if (userSnapshot.exists()) {
+                    name = userSnapshot.getString("fullName").orEmpty()
+                    number = userSnapshot.getLong("phoneNumber").toString()
+                }
+            } catch (e: Exception) {
+                Log.e("Checkout", "Error retrieving user information", e)
+            }
+        }
+        val billing = partBilling (
+            email = email,
+            name = name,
+            phone = number,
         )
         val liSalad = partLineItem(
-            amount = (salad.price * 100).toInt(),
-            name = salad.productName,
-            description = salad.storeName,
+            amount = (products.get(0).price * 100).toInt(),
+            name = products.get(0).productName,
+            storeID = products.get(0).storeID,
             quantity = 2,
-            images = listOf(salad.imageUrl),
+            images = listOf(products.get(0).thumbnail),
         )
         val liSalad2 = partLineItem(
-            amount = (salad2.price * 100).toInt(),
-            name = salad2.productName,
-            description = salad2.storeName,
+            amount = (products.get(1).price * 100).toInt(),
+            name = products.get(1).productName,
+            storeID = products.get(1).storeID,
             quantity = 2,
-            images = listOf(salad2.imageUrl),
+            images = listOf(products.get(1).thumbnail),
         )
         val basketList: List<partLineItem> = listOf(
-            liSalad, liSalad, liSalad, liSalad2, liSalad2, liSalad2
+            liSalad, liSalad2
         )
         val att = partAttributes(
-            partBilling(email = "hgalosada@gmail.com", name = "Hernah Alosada", phone = "09551062604"),
-            billing_information_fields_editable = "enabled",
+            billing = billing,
             line_items = basketList,
             payment_method_types = listOf("gcash", "paymaya"),
             send_email_receipt = true,
@@ -81,20 +99,55 @@ class CheckoutSessionController() {
             }
             if (response.isSuccessful) {
                 val responseBody = response.body?.string()
-                return getCheckoutUrl(responseBody)
+                val retrievedCheckout: FullCheckoutModel = gson.fromJson(responseBody, FullCheckoutModel::class.java)
+                return retrievedCheckout
             } else {
                 println(response.code)
             }
         } catch (e: IOException) {
             e.printStackTrace()
+            throw e
         }
-
-        return ""
+        return null
     }
 
-    private fun getCheckoutUrl(resBody: String?): String {
-        val retrievedCheckout: FullCheckoutModel = gson.fromJson(resBody, FullCheckoutModel::class.java)
-        return retrievedCheckout.data.attributes.checkout_url
+    suspend fun retrieveCheckout(checkoutID: String): CheckoutResponse? {
+        val client = OkHttpClient()
+
+        val request = Request.Builder()
+            .url("https://api.paymongo.com/v1/checkout_sessions/$checkoutID")
+            .get()
+            .addHeader("accept", "application/json")
+            .addHeader("authorization", "Basic c2tfdGVzdF9VMkNSQ0o3UGlTOFpUSlN4VDluUGtLUzQ6")
+            .build()
+
+        val response = client.newCall(request).execute()
+        if (response.isSuccessful) {
+            val responseBody = response.body?.string()
+            val retrievedCheckout: CheckoutResponse = gson.fromJson(responseBody, CheckoutResponse::class.java)
+            return retrievedCheckout
+        } else {
+            println(response.code)
+        }
+        return null
+    }
+
+    suspend fun placeOrder(checkoutID: String) {
+        val checkoutResponse = retrieveCheckout(checkoutID)
+        if(checkoutResponse!= null) {
+            val timestamp = checkoutResponse.data.attributes.paidAt
+            val date = Date(timestamp * 1000)
+            val paymentID = checkoutResponse.data.attributes.payments.get(0).id
+            val customerID = FirebaseAuth.getInstance().currentUser?.uid
+            val totalAmount = checkoutResponse.data.attributes.payments.get(0).attributes.amount / 100.0
+            val fee = checkoutResponse.data.attributes.payments.get(0).attributes.fee / 100.0
+            val netAmount = totalAmount - fee
+            val method = checkoutResponse.data.attributes.paymentMethodUsed
+            val products = checkoutResponse.data.attributes.lineItems
+            val status = checkoutResponse.data.attributes.payments.get(0).attributes.status
+            val order = Order(checkoutID,paymentID,date,customerID.toString(),products,totalAmount,fee,netAmount,status,method)
+            db.collection("orders").add(order).await()
+        }
     }
 }
 

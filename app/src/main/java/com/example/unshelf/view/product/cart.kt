@@ -9,9 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unshelf.R
-import com.example.unshelf.view.Wallet.CheckoutUI
+import com.example.unshelf.view.checkout.CheckoutUI
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 

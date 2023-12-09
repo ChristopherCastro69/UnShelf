@@ -76,10 +76,13 @@
             android:name=".view.Wallet.Balance"
             android:exported="false" />
         <activity
-            android:name=".view.Wallet.CheckoutUI"
+            android:name=".view.checkout.CheckoutUI"
             android:exported="false" />
         <activity
-            android:name=".view.Wallet.CheckoutRedirect"
+            android:name=".view.checkout.OrderPlaced"
+            android:exported="false" />
+        <activity
+            android:name=".view.checkout.CheckoutRedirect"
             android:exported="false" />
         <activity
             android:name=".view.Seller.SellerProfile"
