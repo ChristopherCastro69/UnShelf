@@ -109,6 +109,7 @@ var pickedDate = mutableStateOf(LocalDate.now())
 val stringDate = mutableStateOf("")
 
 var productAdditionSuccess = mutableStateOf(false)
+var flag = mutableStateOf(false)
 var productQuantity = mutableStateOf("")
 var status = mutableStateOf(false)
 
@@ -315,9 +316,11 @@ fun Category() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Thumbnail() {
-    // This launcher is used to start the image picker activity
+    // State to hold the selected image Uri
+//    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    LocalContext.current
 
-    var flag = false
+    // This launcher is used to start the image picker activity
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -332,67 +335,68 @@ fun Thumbnail() {
 
 
     Log.d("Thumbnail", "imageUri value: ${imageUri.value}")
-    if(imageUri.value == null){
-        flag = true
-    }
-
     Log.d("Thumbnail", "Flag value: $flag") // Log the flag value
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Transparent)
-            .padding(16.dp),
+//            .padding(16.dp)
+            .background(Color.Transparent), // This is the green background color
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(30.dp)) // Spacing from the top
 
-
-        imageUri.value?.let {
+        if(flag.value == false) {
             Image(
-                painter = rememberAsyncImagePainter(model = it),
+                painter = rememberAsyncImagePainter(model = imageUri.value),
                 contentDescription = "Selected Thumbnail",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .size(250.dp)
+                    .size(250.dp) // Size of the circle
                     .clip(RectangleShape)
                     .border(2.dp, PalmLeaf, RectangleShape)
                     .border(2.dp, Color.Gray, RectangleShape)
-                    .clickable { launcher.launch("image/*") }
+                    .clickable { launcher.launch("image/*") } // Change thumbnail on click
             )
-            Text(
-                text = "Tap to change thumbnail",
-                fontFamily = JostFontFamily,
-                fontWeight = FontWeight.Light,
-                fontSize = 12.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(12.dp)
-            )
-        } ?: Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-                .background(PalmLeaf, RectangleShape)
-                .border(2.dp, Color.Gray, RectangleShape)
-                .clickable { launcher.launch("image/*") }
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Thumbnail",
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
-            Text(
-                text = "Choose a thumbnail for your product",
-                fontFamily = JostFontFamily,
-                fontWeight = FontWeight.Light,
-                fontSize = 12.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(12.dp)
-            )
+            Log.d("Thumbnail", "Displaying image with URI: ${imageUri.value}")
         }
+        // Check if an image URI is available and call DisplayImage
+        else{
+             Box(
+                // If no image is selected, show the 'add' icon
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+//                .fillMaxHeight()
+//                .size(250.dp) // Size of the circle
+                    .background(PalmLeaf, RectangleShape) // White circle
+                    .border(2.dp, Color.Gray, RectangleShape)
+                    .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Thumbnail",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp) // Size of the plus icon
+                )
+                 Log.d("Thumbnail", "No image URI present, showing 'add' icon")
+            }
+    }
+        Spacer(modifier = Modifier.height(10.dp)) // Spacing between the circle and text
 
-        if (imageUri.value != null) {
+        // Text under the image/thumbnail
+        Text(
+            text = if (flag.value == true) "Choose a thumbnail for your product" else "Tap to change thumbnail",
+            fontFamily = JostFontFamily,
+            fontWeight = FontWeight.Light,
+            fontSize = 12.sp,
+            color = Color.Black,
+            modifier = Modifier.padding(12.dp)
+        )
+
+        // Button to remove the selected image
+        if (imageUri.value != null && flag.value == false) {
             Button(
                 onClick = { imageUri.value = null },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
@@ -402,7 +406,7 @@ fun Thumbnail() {
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(10.dp)) // Spacing from the bottom
     }
 }
 
