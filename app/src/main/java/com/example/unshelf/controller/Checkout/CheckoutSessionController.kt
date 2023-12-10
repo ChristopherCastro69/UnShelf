@@ -2,6 +2,7 @@ package com.example.unshelf.controller.Checkout
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.unshelf.controller.DataFetch.DataFetchController
 import com.example.unshelf.model.checkout.*
 import com.example.unshelf.model.entities.Order
@@ -29,7 +30,7 @@ class CheckoutSessionController() {
     val db = Firebase.firestore
 
     suspend fun createCheckoutSession() : FullCheckoutModel? {
-        val products = DataFetchController.getProducts()
+        val products = DataFetchController().products.value
         val currentUser = FirebaseAuth.getInstance().currentUser
         var email = ""
         var name = ""
