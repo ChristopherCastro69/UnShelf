@@ -1,10 +1,13 @@
 package com.example.unshelf.model.entities
 
+import android.os.Parcelable
 import androidx.compose.runtime.MutableState
 import java.util.Date
+import kotlinx.parcelize.Parcelize
 
 
 
+@Parcelize
 class Product(
     var productID : String ="",
     var sellerID: String ="",
@@ -20,7 +23,7 @@ class Product(
     val description: String = "",
     val expirationDate: String ="",      // Changed from String to Date
     val isActive : Boolean = true
-)
+) : Parcelable
 /*
  docRef.get().addOnSuccessListener { document ->
                 if (document != null) {

@@ -157,7 +157,7 @@ fun AddProducts(productId: String? = null, navController: NavController) {
                 marketPrice.value = product.price.toString()
                 discountPercent.value = product.discount.toString()
                 voucherCode.value = product.voucherCode
-               // pickedDate.value = LocalDate.parse(product.expirationDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+                // pickedDate.value = LocalDate.parse(product.expirationDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
                 productQuantity.value = product.quantity.toString()
                 status.value = product.isActive // Assuming isActive is a boolean in your Product data class
                 val expirationDateString = product.expirationDate
@@ -369,72 +369,72 @@ fun Thumbnail() {
     Log.d("Thumbnail", "Flag value: $flag") // Log the flag value
 
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .background(Color.Transparent), // This is the green background color
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(16.dp)) // Spacing from the top
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(Color.Transparent), // This is the green background color
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(16.dp)) // Spacing from the top
 
-            if (!flag.value) {
-                Image(
-                    painter = rememberAsyncImagePainter(model = imageUri.value),
-                    contentDescription = "Selected Thumbnail",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(250.dp)
-                        .clip(RectangleShape)
-                        .border(2.dp, PalmLeaf, RectangleShape)
-                        .border(2.dp, Color.Gray, RectangleShape)
-                )
-            }
+        if (!flag.value) {
+            Image(
+                painter = rememberAsyncImagePainter(model = imageUri.value),
+                contentDescription = "Selected Thumbnail",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(250.dp)
+                    .clip(RectangleShape)
+                    .border(2.dp, PalmLeaf, RectangleShape)
+                    .border(2.dp, Color.Gray, RectangleShape)
+            )
+        }
 
-            // Check if an image URI is available and call DisplayImage
-            else{
-                Box(
-                    // If no image is selected, show the 'add' icon
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp) // Consistent thumbnail size
-                        .clip(RoundedCornerShape(8.dp)) // Rounded corners for modern look
-                        .border(2.dp, PalmLeaf, RoundedCornerShape(8.dp))
-                        .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
-                ) {
-                    if (isImageLoading.value) {
-                        // Show CircularProgressIndicator while the image is loading
-                        CircularProgressIndicator(color = PalmLeaf)
+        // Check if an image URI is available and call DisplayImage
+        else{
+            Box(
+                // If no image is selected, show the 'add' icon
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp) // Consistent thumbnail size
+                    .clip(RoundedCornerShape(8.dp)) // Rounded corners for modern look
+                    .border(2.dp, PalmLeaf, RoundedCornerShape(8.dp))
+                    .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
+            ) {
+                if (isImageLoading.value) {
+                    // Show CircularProgressIndicator while the image is loading
+                    CircularProgressIndicator(color = PalmLeaf)
 //                        Text(
 //                            text = "Uploading...",
 //                            color = Color.White,
 ////            modifier = Modifier.align(Alignment.BottomCenter)
 //                        )
-                    } else{
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add Thumbnail",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp) // Size of the plus icon
-                        )
-                    }
-
-                    Log.d("Thumbnail", "No image URI present, showing 'add' icon")
+                } else{
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Thumbnail",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp) // Size of the plus icon
+                    )
                 }
+
+                Log.d("Thumbnail", "No image URI present, showing 'add' icon")
             }
-            Spacer(modifier = Modifier.height(10.dp)) // Spacing between the circle and text
+        }
+        Spacer(modifier = Modifier.height(10.dp)) // Spacing between the circle and text
 
-            // Text under the image/thumbnail
-            Text(
+        // Text under the image/thumbnail
+        Text(
 
-                text = if (flag.value) "Choose a thumbnail for your product" else "Tap to change thumbnail",
-                fontFamily = JostFontFamily,
-                fontWeight = FontWeight.Light,
-                fontSize = 12.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(12.dp)
-            )
+            text = if (flag.value) "Choose a thumbnail for your product" else "Tap to change thumbnail",
+            fontFamily = JostFontFamily,
+            fontWeight = FontWeight.Light,
+            fontSize = 12.sp,
+            color = Color.Black,
+            modifier = Modifier.padding(12.dp)
+        )
 
     }
 
@@ -458,7 +458,7 @@ fun Thumbnail() {
         }
     }
 
-        Spacer(modifier = Modifier.height(10.dp)) // Spacing from the bottom
+    Spacer(modifier = Modifier.height(10.dp)) // Spacing from the bottom
 
 }
 
@@ -957,9 +957,3 @@ fun PreviewAddProducts() {
 
 
 // ----> FUNCTIONS TO CLOUD FIRESTORE <-----
-
-
-
-
-
-
