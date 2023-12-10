@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,10 +14,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -24,15 +33,25 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults.Indicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -40,6 +59,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -49,13 +69,14 @@ import com.example.unshelf.model.entities.Product
 import com.example.unshelf.model.firestore.seller.listingsModel.ProductViewModel
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MiddleGreenYellow
+import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.WatermelonRed
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
 
 
 var productID = mutableStateOf<String?>(null)
-
+var showDialog = mutableStateOf(false)
 
 // ViewModel to handle fetching products
 
@@ -77,10 +98,14 @@ fun PreviewListings() {
 
 @Composable
 fun Listings(navController: NavController, sellerId: String, storeId: String) {
+    val selectedIndex = remember { mutableStateOf(0) }
     Column {
 
         TopBar(navController)
-        FilterTabs()
+        FilterTabs(selectedIndex = selectedIndex) { index ->
+            // Handle tab selection
+            // Update other parts of your UI based on the selected tab
+        }
         ProductList(sellerId = sellerId, storeId = storeId, navController)
     }
 }
@@ -101,7 +126,7 @@ fun TopBar(navController: NavController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(DeepMossGreen), // Replace with your desired background color
+                .background(PalmLeaf), // Replace with your desired background color
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -142,38 +167,52 @@ fun TopBar(navController: NavController) {
 
 
 @Composable
-fun FilterTabs() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+fun FilterTabs(selectedIndex: MutableState<Int>, onTabSelected: (Int) -> Unit) {
+    val filterOptions = listOf("Active", "Unlisted")
 
-    ) {
-        Button(
+    Row(modifier = Modifier.fillMaxWidth()) {
+        // Wrap the ScrollableTabRow in a Box with a weight modifier to ensure it doesn't take up all space
+        Box(modifier = Modifier.weight(1f)) {
+            ScrollableTabRow(
+                selectedTabIndex = selectedIndex.value,
+                edgePadding = 0.dp,
+                indicator = { tabPositions ->
+                    // Draw the indicator here
+                    Indicator(
+                        Modifier.tabIndicatorOffset(tabPositions[selectedIndex.value]),
+                        color = DeepMossGreen, // Set the selected line color to deep moss green
+                        height = 3.dp // Set the height of the indicator
+                    )
+                }
+            ) {
+                filterOptions.forEachIndexed { index, text ->
+                    Tab(
+                        selected = selectedIndex.value == index,
+                        onClick = {
+                            selectedIndex.value = index
+                            onTabSelected(index)
+                        },
+                        text = {
+                            Text(
+                                text = text,
+                                color = if (selectedIndex.value == index) DeepMossGreen else Color.LightGray
+                            )
+                        }
+                    )
+                }
+            }
+        }
 
-            onClick = { /* TODO: Handle Active filter action */ },
-            colors = ButtonDefaults.buttonColors(MiddleGreenYellow), // Replace with your active tab color
-        ) {
-            Text(text = "Active")
-        }
-        Spacer(modifier = Modifier.size(8.dp))
-        Button(
-            onClick = { /* TODO: Handle Unlisted filter action */ },
-            colors = ButtonDefaults.buttonColors(WatermelonRed) // Replace with your unlisted tab color
-        ) {
-            Text(text = "Unlisted")
-        }
-        Spacer(modifier = Modifier.weight(1f))
+        // Now the IconButton should be visible because it is outside the Box
         IconButton(onClick = { /* TODO: Handle sort action */ }) {
             Icon(
-                painter = painterResource(id = R.drawable.button_sort), // Replace with your sort icon resource
+                imageVector = Icons.Default.Sort, // Using material icons
                 contentDescription = "Sort",
                 tint = DeepMossGreen
             )
         }
     }
 }
-
 @Composable
 fun ProductList(sellerId: String, storeId: String, navController: NavController) {
     // Use a ViewModel to manage the state and business logic
@@ -200,6 +239,33 @@ fun ProductList(sellerId: String, storeId: String, navController: NavController)
 }
 @Composable
 fun ProductCard(product: Product, navController: NavController, productViewModel: ProductViewModel, context: Context) {
+
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = { Text("Delete Product") },
+            text = { Text("Are you sure you want to delete this product?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDialog.value = false
+                        productViewModel.deleteProduct(sellerId.value, storeId.value, product.productID, context)
+                    }
+                ) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDialog.value = false }
+                ) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -234,7 +300,8 @@ fun ProductCard(product: Product, navController: NavController, productViewModel
                     fontFamily = FontFamily.Serif
                 )
                 Text(text = "Quantity: ${product.quantity}", color = Color.Gray)
-                Text(text = "₱${product.price}", color = Color.Gray)
+                Text(text = "₱${String.format("%.2f", product.price)}", color = Color.Gray)
+
             }
             IconButton(onClick = {
                 navController.navigate("addProduct/${product.productID}")
@@ -247,7 +314,8 @@ fun ProductCard(product: Product, navController: NavController, productViewModel
                 )
             }
 
-            IconButton(onClick = {   productViewModel.deleteProduct(sellerId.value, storeId.value, product.productID, context)
+            IconButton(onClick = {
+                showDialog.value = true
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_delete),

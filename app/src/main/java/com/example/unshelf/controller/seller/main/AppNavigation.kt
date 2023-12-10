@@ -38,128 +38,90 @@ import com.example.unshelf.view.SellerBottomNav.screens.store.Store
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
-fun AppNavigationPreview() {
-
-    AppNavigation() // This will show a preview of your AppNavigation composable
-
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
 fun AppNavigation(){
     val navController = rememberNavController()
 
     Scaffold (
-
         bottomBar = {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
 
-            NavigationBar (
-                containerColor = Color.White,
-                tonalElevation = 5.dp,
+            // Check if the current screen is 'AddProducts'
+            val isAddProductScreen = currentDestination?.route?.startsWith("addProduct") == true
 
-
-            ) {
-
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-
-                listOfNavItems.forEach{
-                    navItem ->
-                    NavigationBarItem(
-                        selected = currentDestination?.hierarchy?.any {
-                            it.route == navItem.route
-                        } == true,
-                        onClick = {
-
-                            navController.navigate(navItem.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+            if (!isAddProductScreen) {
+                NavigationBar (
+                    containerColor = Color.White,
+                    tonalElevation = 5.dp,
+                ) {
+                    listOfNavItems.forEach { navItem ->
+                        NavigationBarItem(
+                            selected = currentDestination?.hierarchy?.any {
+                                it.route == navItem.route
+                            } == true,
+                            onClick = {
+                                // Navigate to the selected screen
+                                navController.navigate(navItem.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-
-                        },
-                        icon = {
-                            if (navItem.iconResId != 0 ) {
-                                // Use custom icon if the resource ID is provided
-                                if (currentDestination?.hierarchy?.any {
-                                        it.route == navItem.route
-                                    } == true){
-                                    Icon(
-                                        painter = painterResource(navItem.activeIcon),
-                                        contentDescription = null,
-                                        tint = DeepMossGreen,
-
-                                    )
-                                }
+                            },
+                            icon = {
+                                // Set the icon for each navigation item
                                 Icon(
-                                    painter = painterResource(navItem.iconResId),
+                                    painter = painterResource(if (currentDestination?.hierarchy?.any { it.route == navItem.route } == true) navItem.activeIcon else navItem.iconResId),
                                     contentDescription = null,
-                                    tint = PalmLeaf,
+                                    tint = if (currentDestination?.hierarchy?.any { it.route == navItem.route } == true) DeepMossGreen else PalmLeaf
                                 )
-
-                            } else {
-                                // Use default icon if no custom resource ID is provided
-                                Icon(
-                                    imageVector = navItem.icon,
-                                    contentDescription = null,
-                                    tint = PalmLeaf
+                            },
+                            label = {
+                                // Set the label for each navigation item
+                                Text(
+                                    text = navItem.label,
+                                    color = if (currentDestination?.hierarchy?.any { it.route == navItem.route } == true) DeepMossGreen else PalmLeaf
                                 )
-                            }
-                        },
-                        label = {
-                            Text(
-                                text = navItem.label,
-                                color = if (currentDestination?.hierarchy?.any {
-                                        it.route == navItem.route
-                                    } == true) {
-                                    // Use a different color for the selected item
-                                        DeepMossGreen
-                                } else {
-                                    // Use the default color for unselected items
-                                    PalmLeaf // Change this to your desired color
-                                }
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                indicatorColor = White
                             )
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-
-                            indicatorColor = White,
-
                         )
-                    )
-
+                    }
                 }
             }
         }
-    ){paddingValues->
+    ) { paddingValues ->
         NavHost(
             navController = navController,
             startDestination = Screens.DashboardScreen.name,
-            modifier = Modifier
-                .padding(paddingValues)){
-            composable(route = Screens.DashboardScreen.name){
+            modifier = Modifier.padding(paddingValues)
+        ) {
+            composable(route = Screens.DashboardScreen.name) {
                 Dashboard()
             }
 
-            composable(route = Screens.OrderScreen.name){
+            composable(route = Screens.OrderScreen.name) {
                 Orders()
             }
-            composable(route = Screens.ListingScreen.name){
+
+            composable(route = Screens.ListingScreen.name) {
                 Listings(navController, sellerId.value, storeId.value)
             }
-            composable(route = Screens.StoreScreen.name){
+
+            composable(route = Screens.StoreScreen.name) {
                 Store()
             }
+
             composable("addProduct/{productId}") { backStackEntry ->
                 val productId = backStackEntry.arguments?.getString("productId")
-                AddProducts(productId) // Adjust according to your actual implementation
+                AddProducts(productId, navController)
             }
 
+            composable(route = "listings") {
+                Listings(navController, sellerId.value, storeId.value)
+            }
         }
     }
-
-
 }
-
-
