@@ -2,15 +2,10 @@ package com.example.unshelf.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.unshelf.R
-import com.example.unshelf.controller.DataFetch.DataFetchController
 import com.example.unshelf.helper.UI_Tester_Helper
 import com.example.unshelf.view.AddressManager.AddressManager
-import com.example.unshelf.view.BuyerBottomNav.main.BuyerAppNavigation
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.authentication.CustomerRegister
@@ -18,11 +13,10 @@ import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
 
 import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
-import com.example.unshelf.view.Wallet.CheckoutUI
+import com.example.unshelf.view.checkout.CheckoutUI
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 import com.example.unshelf.view.StartUI.MainUI
-import com.example.unshelf.view.productView.CartActivity
 import com.example.unshelf.view.productView.ProductMainView
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck

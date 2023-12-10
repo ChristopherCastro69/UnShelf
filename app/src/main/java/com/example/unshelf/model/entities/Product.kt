@@ -5,20 +5,20 @@ import java.util.Date
 
 
 class Product(
-    var productID : String,
-    var sellerID: String,
-    var storeID : String,
-    val productName: String,
-    val quantity: Int, // Added quantity field
-    val price: Double,
-    val sellingPrice : Double,
-    val discount : Double,
-    val voucherCode : String,
-    val categories: List<String>,  // Changed from String to List<String>
-    val thumbnail: String,
-    val description: String,
-    val expirationDate: String,      // Changed from String to Date
-    val isActive : Boolean
+    var productID : String ="",
+    var sellerID: String ="",
+    var storeID : String ="",
+    val productName: String = "",
+    val quantity: Int = 0, // Added quantity field
+    val price: Double = 0.0,
+    val sellingPrice : Double = 0.0,
+    val discount : Double = 0.0,
+    val voucherCode : String = "",
+    val categories: List<String> = listOf(""),  // Changed from String to List<String>
+    val thumbnail: String = "",
+    val description: String = "",
+    val expirationDate: String ="",      // Changed from String to Date
+    val isActive : Boolean = true
 )
 /*
  docRef.get().addOnSuccessListener { document ->

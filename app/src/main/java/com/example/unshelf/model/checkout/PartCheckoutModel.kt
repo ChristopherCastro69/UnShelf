@@ -1,4 +1,7 @@
 package com.example.unshelf.model.checkout
+
+import com.google.gson.annotations.SerializedName
+
 //Contains required attributes for checkout session creation
 data class partCheckout(
     val `data`: partData
@@ -11,10 +14,10 @@ data class partData(
 
 data class partAttributes(
     val billing: partBilling,
-    val billing_information_fields_editable: String,
     val line_items: List<partLineItem>,
     val payment_method_types: List<String>,
     val send_email_receipt: Boolean,
+    val show_description: Boolean = false,
     val show_line_items: Boolean
 )
 
@@ -27,7 +30,8 @@ data class partBilling(
 data class partLineItem(
     val amount: Int,
     val currency: String = "PHP",
-    val description: String,
+    @SerializedName("description")
+    val storeID: String,
     val name: String,
     val quantity: Int,
     val images: List<String?>,
