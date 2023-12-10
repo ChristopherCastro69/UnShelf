@@ -36,7 +36,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Event
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -91,8 +93,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.unshelf.controller.seller.main.Screens
 import com.example.unshelf.ui.theme.WatermelonRed
 
 
@@ -198,9 +202,8 @@ fun AddProducts(productId: String? = null, navController: NavController) {
                 ),
 
                 navigationIcon = {
-                    IconButton(onClick = { /* TODO: Handle back action */ }) {
-//
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Menu", tint = Color.White)
+                    IconButton(onClick = { navController.navigate(Screens.ListingScreen.name) }) {
+                        Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
                     }
                 },
                 actions = {
@@ -223,6 +226,9 @@ fun AddProducts(productId: String? = null, navController: NavController) {
             Voucher()
             QuantityInput()
             ExpirationDate()
+            if(!flag.value){
+                UnlistItemButton()
+            }
             // Pass the current value of sellerId and storeId to AddButton
             AddButton(navController,sellerId = sellerId.value, storeId = storeId.value, productId = productId)
         }
@@ -355,7 +361,7 @@ fun Thumbnail() {
                 .background(Color.Transparent), // This is the green background color
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(30.dp)) // Spacing from the top
+            Spacer(modifier = Modifier.height(16.dp)) // Spacing from the top
 
             if (!flag.value) {
                 Image(
@@ -377,11 +383,9 @@ fun Thumbnail() {
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(250.dp)
-//                .fillMaxHeight()
-//                .size(250.dp) // Size of the circle
-                        .background(PalmLeaf, RectangleShape) // White circle
-                        .border(2.dp, Color.Gray, RectangleShape)
+                        .height(200.dp) // Consistent thumbnail size
+                        .clip(RoundedCornerShape(8.dp)) // Rounded corners for modern look
+                        .border(2.dp, PalmLeaf, RoundedCornerShape(8.dp))
                         .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
                 ) {
                     if (isImageLoading.value) {
@@ -760,50 +764,54 @@ fun QuantityInput() {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ExpirationDate() {
-//    var pickedDate by remember { mutableStateOf(LocalDate.now()) }
-    val context = LocalContext.current // Use LocalContext.current for context
+    val context = LocalContext.current
+    val dateDialogState = rememberMaterialDialogState()
+    var textDate by remember { mutableStateOf(DateTimeFormatter.ofPattern("MM/dd/yyyy").format(pickedDate.value)) }
 
-    val formattedDate by remember {
-        derivedStateOf { DateTimeFormatter.ofPattern("MM/dd/yyyy").format(pickedDate.value) }
+    val updateDate = { date: LocalDate ->
+        pickedDate.value = date
+        textDate = DateTimeFormatter.ofPattern("MM/dd/yyyy").format(date)
     }
 
-    val dateDialogState = rememberMaterialDialogState()
-
-    Row(
+    OutlinedTextField(
+        value = textDate,
+        onValueChange = { textDate = it },
+        readOnly = true, // Make the TextField read-only since we're using the dialog to set the date
+        trailingIcon = {
+            IconButton(onClick = { dateDialogState.show() }) {
+                Icon(Icons.Default.Event, contentDescription = "Select date")
+            }
+        },
+        label = { Text("Expiration Date") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Button(onClick = { dateDialogState.show() },
-            colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
-        ) {
-            Text(text = "Expiration Date")
-        }
-        Text(text = formattedDate)
+        textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            containerColor = Color(0xFFF0F0F0), // Apply the background color here
+            unfocusedBorderColor = Color.Transparent,
+            focusedBorderColor = Color.Transparent,
+            cursorColor = Color.Black
+        ),
+        shape = RoundedCornerShape(4.dp) // Apply rounded shape here
+    )
 
-        MaterialDialog(
-            dialogState = dateDialogState,
-            buttons = {
-                positiveButton("Ok") {
-                    Toast.makeText(context, "Date Picked: $formattedDate", Toast.LENGTH_LONG).show()
-                }
-                negativeButton("Cancel")
-            }
-        ) {
-            datepicker(initialDate = LocalDate.now(), title = "Pick a date") {
-                pickedDate.value = it
-                stringDate.value = formattedDate
-            }
+    MaterialDialog(
+        dialogState = dateDialogState,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }
+    ) {
+        datepicker(initialDate = pickedDate.value, title = "Pick a date") { date ->
+            updateDate(date)
         }
     }
 }
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -870,6 +878,21 @@ fun AddButton(navController: NavController,sellerId: String, storeId: String, pr
             )
         }
 
+    }
+}
+
+@Composable
+fun UnlistItemButton() {
+    Button(
+        onClick = {
+            // Define the action to be performed on button click
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = WatermelonRed)
+    ) {
+        Text("Unlist Product")
     }
 }
 
