@@ -2,20 +2,26 @@ package com.example.unshelf.model.firestore.seller.dashboardmodel
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.model.entities.Product
+import com.example.unshelf.view.SellerBottomNav.screens.listings.isProductUpdating
 import com.example.unshelf.view.SellerBottomNav.screens.listings.productAdditionSuccess
+import com.example.unshelf.view.SellerBottomNav.screens.listings.productID
 import com.example.unshelf.view.SellerBottomNav.screens.listings.voucherCode
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.storage
+import android.content.Context
 import java.util.UUID
+
 
 fun fetchUserDetails(onComplete: (String, String) -> Unit) {
     val userId = Firebase.auth.currentUser?.uid ?: return
@@ -47,7 +53,7 @@ fun fetchUserDetails(onComplete: (String, String) -> Unit) {
 
 
 
-fun saveProductToFirestore(sellerId: String, storeId: String, product: Product) {
+fun saveProductToFirestore(context: Context, navController: NavController,sellerId: String, storeId: String, product: Product) {
     Log.d("Firestore", "Adding new product")
     val db = Firebase.firestore
 
@@ -63,15 +69,24 @@ fun saveProductToFirestore(sellerId: String, storeId: String, product: Product) 
     newProductRef.set(product)
         .addOnSuccessListener {
             Log.d("Firestore", "New product added successfully, Product ID: ${product.productID}")
+            Toast.makeText(context, "New product added successfully", Toast.LENGTH_SHORT).show()
             productAdditionSuccess.value = true
+            isProductUpdating.value = false
+            navController.navigate("listings") {
+                // This will clear the back stack up to the 'listings' route
+                popUpTo("listings") { inclusive = true }
+            }
+
         }
         .addOnFailureListener { e ->
             Log.e("Firestore", "Error adding new product", e)
+            Toast.makeText(context, "Error adding new product: ${e.message}", Toast.LENGTH_LONG).show()
             productAdditionSuccess.value = false
+            isProductUpdating.value = false
         }
 }
 
-fun updateProductToFirestore(sellerId: String, storeId: String, product: Product, productId: String) {
+fun updateProductToFirestore(context : Context, navController: NavController,sellerId: String, storeId: String, product: Product, productId: String) {
     Log.d("Firestore", "Updating product. Product ID: $productId")
     val db = Firebase.firestore
 
@@ -88,12 +103,21 @@ fun updateProductToFirestore(sellerId: String, storeId: String, product: Product
             "quantity" to product.quantity
         )
     ).addOnSuccessListener {
+        Toast.makeText(context, "Product updated successfully", Toast.LENGTH_SHORT).show()
         Log.d("Firestore", "Product updated successfully")
         productAdditionSuccess.value = true
+        isProductUpdating.value = false
+        navController.navigate("listings") {
+            // This will clear the back stack up to the 'listings' route
+            popUpTo("listings") { inclusive = true }
+        }
     }.addOnFailureListener { e ->
         Log.e("Firestore", "Error updating product", e)
+        Toast.makeText(context, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
         productAdditionSuccess.value = false
+        isProductUpdating.value = false
     }
+
 }
 
 
@@ -119,7 +143,9 @@ fun uploadImage(uri: Uri, onSuccess: (String) -> Unit, onFailure: (Exception) ->
             Log.d("ImageUpload", "Upload succeeded. Bytes Transferred: ${taskSnapshot.bytesTransferred}")
             imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
                 Log.d("ImageUpload", "Image URL: $downloadUri")
-                onSuccess(downloadUri.toString())
+                onSuccess(
+                    downloadUri.toString()
+                )
             }.addOnFailureListener { exception ->
                 Log.e("ImageUpload", "Failed to get download URL", exception)
                 onFailure(exception)

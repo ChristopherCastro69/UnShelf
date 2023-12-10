@@ -153,8 +153,14 @@ fun AppNavigation(){
             }
             composable("addProduct/{productId}") { backStackEntry ->
                 val productId = backStackEntry.arguments?.getString("productId")
-                AddProducts(productId) // Adjust according to your actual implementation
+                AddProducts(productId, navController)
             }
+            composable(route = "listings") {
+                Listings(navController, sellerId.value, storeId.value)
+            }
+
+
+
 
         }
     }

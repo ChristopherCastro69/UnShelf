@@ -18,6 +18,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -89,6 +90,11 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.unshelf.ui.theme.WatermelonRed
+
 
 // First, define your Product data class to match the Firestore structure
 var product = mutableStateOf("")
@@ -107,16 +113,18 @@ var discountPercent = mutableStateOf("")
 var pickedDate = mutableStateOf(LocalDate.now())
 
 val stringDate = mutableStateOf("")
-
+var isImageLoading = mutableStateOf(false)
 var productAdditionSuccess = mutableStateOf(false)
 var flag = mutableStateOf(false)
 var productQuantity = mutableStateOf("")
 var status = mutableStateOf(false)
+var isProductUpdating = mutableStateOf(false)
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @RequiresApi(Build.VERSION_CODES.O)
-fun AddProducts(productId: String? = null) {
+fun AddProducts(productId: String? = null, navController: NavController) {
     Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
     // Log the current state of imageUri at the start of the function
     Log.d("AddProducts", "Initial imageUri: ${imageUri.value ?: "null or empty"}")
@@ -168,11 +176,11 @@ fun AddProducts(productId: String? = null) {
         }
     }
 
-    if (productAdditionSuccess.value) {
-        Toast.makeText(LocalContext.current, "Product added successfully", Toast.LENGTH_LONG).show()
-        // Reset the flag so the toast won't show again unless a new product is added
-        productAdditionSuccess.value = false
-    }
+//    if (productAdditionSuccess.value) {
+//        Toast.makeText(LocalContext.current, "Product added successfully", Toast.LENGTH_LONG).show()
+//        // Reset the flag so the toast won't show again unless a new product is added
+//        productAdditionSuccess.value = false
+//    }
 
     Scaffold(
         topBar = {
@@ -216,7 +224,7 @@ fun AddProducts(productId: String? = null) {
             QuantityInput()
             ExpirationDate()
             // Pass the current value of sellerId and storeId to AddButton
-            AddButton(sellerId = sellerId.value, storeId = storeId.value, productId = productId)
+            AddButton(navController,sellerId = sellerId.value, storeId = storeId.value, productId = productId)
         }
 
     }
@@ -319,95 +327,120 @@ fun Thumbnail() {
     // State to hold the selected image Uri
 //    var imageUri by remember { mutableStateOf<Uri?>(null) }
     LocalContext.current
-
-    // This launcher is used to start the image picker activity
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
+            isImageLoading.value = true // Set loading to true when image upload starts
             uploadImage(it, onSuccess = { downloadUrl ->
                 imageUri.value = Uri.parse(downloadUrl)
+                isImageLoading.value = false
+                flag.value = false // Set flag to false as the image is successfully uploaded
             }, onFailure = { exception ->
                 Log.e("Thumbnail", "Upload failed: ${exception.message}")
+                isImageLoading.value = false
             })
+
         }
     }
+
 
 
     Log.d("Thumbnail", "imageUri value: ${imageUri.value}")
     Log.d("Thumbnail", "Flag value: $flag") // Log the flag value
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-//            .padding(16.dp)
-            .background(Color.Transparent), // This is the green background color
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(30.dp)) // Spacing from the top
 
-        if(flag.value == false) {
-            Image(
-                painter = rememberAsyncImagePainter(model = imageUri.value),
-                contentDescription = "Selected Thumbnail",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .size(250.dp) // Size of the circle
-                    .clip(RectangleShape)
-                    .border(2.dp, PalmLeaf, RectangleShape)
-                    .border(2.dp, Color.Gray, RectangleShape)
-                    .clickable { launcher.launch("image/*") } // Change thumbnail on click
-            )
-            Log.d("Thumbnail", "Displaying image with URI: ${imageUri.value}")
-        }
-        // Check if an image URI is available and call DisplayImage
-        else{
-             Box(
-                // If no image is selected, show the 'add' icon
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(Color.Transparent), // This is the green background color
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(30.dp)) // Spacing from the top
+
+            if (!flag.value) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = imageUri.value),
+                    contentDescription = "Selected Thumbnail",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(250.dp)
+                        .clip(RectangleShape)
+                        .border(2.dp, PalmLeaf, RectangleShape)
+                        .border(2.dp, Color.Gray, RectangleShape)
+                )
+            }
+
+            // Check if an image URI is available and call DisplayImage
+            else{
+                Box(
+                    // If no image is selected, show the 'add' icon
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
 //                .fillMaxHeight()
 //                .size(250.dp) // Size of the circle
-                    .background(PalmLeaf, RectangleShape) // White circle
-                    .border(2.dp, Color.Gray, RectangleShape)
-                    .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Thumbnail",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp) // Size of the plus icon
-                )
-                 Log.d("Thumbnail", "No image URI present, showing 'add' icon")
+                        .background(PalmLeaf, RectangleShape) // White circle
+                        .border(2.dp, Color.Gray, RectangleShape)
+                        .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
+                ) {
+                    if (isImageLoading.value) {
+                        // Show CircularProgressIndicator while the image is loading
+                        CircularProgressIndicator(color = Color.White)
+//                        Text(
+//                            text = "Uploading...",
+//                            color = Color.White,
+////            modifier = Modifier.align(Alignment.BottomCenter)
+//                        )
+                    } else{
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add Thumbnail",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp) // Size of the plus icon
+                        )
+                    }
+
+                    Log.d("Thumbnail", "No image URI present, showing 'add' icon")
+                }
             }
+            Spacer(modifier = Modifier.height(10.dp)) // Spacing between the circle and text
+
+            // Text under the image/thumbnail
+            Text(
+
+                text = if (flag.value) "Choose a thumbnail for your product" else "Tap to change thumbnail",
+                fontFamily = JostFontFamily,
+                fontWeight = FontWeight.Light,
+                fontSize = 12.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(12.dp)
+            )
+
     }
-        Spacer(modifier = Modifier.height(10.dp)) // Spacing between the circle and text
 
-        // Text under the image/thumbnail
-        Text(
-            text = if (flag.value == true) "Choose a thumbnail for your product" else "Tap to change thumbnail",
-            fontFamily = JostFontFamily,
-            fontWeight = FontWeight.Light,
-            fontSize = 12.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(12.dp)
-        )
-
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp),
+        horizontalArrangement = Arrangement.Center // Center the button
+    ) {
         // Button to remove the selected image
-        if (imageUri.value != null && flag.value == false) {
+        if (imageUri.value != null && !flag.value) {
             Button(
-                onClick = { imageUri.value = null },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                modifier = Modifier.padding(top = 4.dp)
+                onClick = {
+                    imageUri.value = null
+                    flag.value = true
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = WatermelonRed)
             ) {
                 Text("Remove Thumbnail", color = Color.White)
             }
         }
+    }
 
         Spacer(modifier = Modifier.height(10.dp)) // Spacing from the bottom
-    }
+
 }
 
 
@@ -774,9 +807,9 @@ fun ExpirationDate() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
+fun AddButton(navController: NavController,sellerId: String, storeId: String, productId: String? = null) {
     Log.d("AddButton", "Button clicked. Product ID: $productId, Seller ID: $sellerId, Store ID: $storeId")
-
+    val context = LocalContext.current
 
     var flag = false
     var buttonText = "Update Product"
@@ -791,7 +824,7 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
     Button(
         onClick = {
             Log.d("AddButton", "Button clicked. Product ID: $productId, Flag: $flag")
-
+            isProductUpdating.value = true
             val product = Product(
                 productId ?: "",
                 sellerId,
@@ -809,10 +842,11 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
                 isActive = if (productQuantity.value.toIntOrNull() ?: 0 > 0) true else false
             )
             if(flag){
-                saveProductToFirestore(sellerId, storeId, product)
+                saveProductToFirestore(context, navController,sellerId, storeId, product)
+
             }
             else{
-                updateProductToFirestore(sellerId, storeId, product, productId.toString())
+                updateProductToFirestore(context, navController,sellerId, storeId, product, productId.toString())
             }
 
 
@@ -821,14 +855,21 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
+        colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf),
+        enabled = !isProductUpdating.value
     ) {
-        Text(
-            text = buttonText,
-            color = Color.White,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
+        if (isProductUpdating.value) {
+            // Show a loading indicator
+            CircularProgressIndicator(color = Color.White)
+        }else{
+            Text(
+                text = buttonText,
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
     }
 }
 
@@ -837,8 +878,12 @@ fun AddButton(sellerId: String, storeId: String, productId: String? = null) {
 @Preview(showBackground = true, heightDp = 1500)
 @Composable
 fun PreviewAddProducts() {
+    // Mock NavController for the preview
+    val navController = rememberNavController()
+
+
     Column {
-        AddProducts()
+        AddProducts(productID.value, navController)
     }
 }
 

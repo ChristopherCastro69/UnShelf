@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -25,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,7 +57,7 @@ import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
 
 
 var productID = mutableStateOf<String?>(null)
-
+var showDialog = mutableStateOf(false)
 
 // ViewModel to handle fetching products
 
@@ -200,6 +202,33 @@ fun ProductList(sellerId: String, storeId: String, navController: NavController)
 }
 @Composable
 fun ProductCard(product: Product, navController: NavController, productViewModel: ProductViewModel, context: Context) {
+
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = { Text("Delete Product") },
+            text = { Text("Are you sure you want to delete this product?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDialog.value = false
+                        productViewModel.deleteProduct(sellerId.value, storeId.value, product.productID, context)
+                    }
+                ) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDialog.value = false }
+                ) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -247,7 +276,8 @@ fun ProductCard(product: Product, navController: NavController, productViewModel
                 )
             }
 
-            IconButton(onClick = {   productViewModel.deleteProduct(sellerId.value, storeId.value, product.productID, context)
+            IconButton(onClick = {
+                showDialog.value = true
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_delete),
