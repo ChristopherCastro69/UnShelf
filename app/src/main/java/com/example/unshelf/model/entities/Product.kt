@@ -25,4 +25,4 @@ class Product(
     val expirationDate: String ="",      // Changed from String to Date
     val active : Boolean = true
 
-)
+) : Parcelable
