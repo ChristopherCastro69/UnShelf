@@ -245,7 +245,7 @@ fun ProductUI(product : Product) {
             )
 
             Text(
-                text = "₱ ${product.price}",
+                text = "₱ ${String.format("%.2f",product.price)}",
                 color = DeepMossGreen,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Black,
@@ -266,9 +266,9 @@ fun ProductUI(product : Product) {
                 )
 
                 Text(
-                    text = "Save ${product.discount}",
+                    text = "Save ₱ ${String.format("%.2f",product.discount)}",
                     color = Color.White,
-                    fontSize = 13.sp,
+                    fontSize = 12.sp,
                     modifier = Modifier.padding(start=15.dp,top=5.dp)
                 )
             }
