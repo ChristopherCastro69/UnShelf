@@ -52,19 +52,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.unshelf.R
+import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
+import com.example.unshelf.view.SellerBottomNav.screens.listings.product
 import com.example.unshelf.view.Wallet.CheckoutUI
 
 class CartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
             // Your Compose UI goes here
             MyComposable()
         }
     }
 }
+val storesInfo : Map<String, List<Product>> = getStores()
+class StoreCheck (
+    StoreID : String,
+    isActive : MutableState<Boolean>
+)
 
 @Preview
 @Composable
@@ -90,8 +98,10 @@ fun MyComposable() {
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
             ) {
-                repeat(10) {
-                    CartItem()
+
+                storesInfo.forEach { (storeID, products) ->
+                    //Query the store from the database
+                    CartItem(Modifier, storeID, products)
                 }
             }
 
@@ -184,11 +194,14 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
             .padding(bottom = 0.dp)// Add padding if needed
     ) {
         val context = LocalContext.current
+        val isActiveCheckout = remember {mutableStateOf(false)}
+
         // Add your content here, for example, Text and Button
-        CheckBox(Modifier
-            .padding(end = 8.dp)
-            .align(Alignment.CenterVertically),
-            checkedState = false,
+        CheckBox(
+            Modifier
+                .padding(end = 8.dp)
+                .align(Alignment.CenterVertically),
+            checkedState = isActiveCheckout,
             onCheckedChange = {}
         )
         Text (
@@ -240,11 +253,62 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
     }
 }
 
-@Preview
+
+@Composable
+fun CartProduct(
+    product : Product,
+    parentCheck : MutableState<Boolean>,
+    fromChild : MutableState<Int>
+) {
+    var isActive = remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier.padding(top = 16.dp),
+    ) {
+        CheckBox(
+            Modifier.padding(top = 50.dp),
+            isActive,
+            onCheckedChange = {
+                if (isActive.value) {
+                   parentCheck.value = true
+                    fromChild.value += 1
+                } else {
+                    fromChild.value--
+                }
+            }
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+        Image(
+            painter = painterResource(id = R.drawable.fruit_salad_img),
+            contentDescription = "Product Image",
+            modifier = Modifier
+                .height(120.dp)
+                .width(120.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column {
+            Text(
+                text = "Fruit Salad",
+                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                fontSize = 18.sp,
+            )
+            Variation()
+            Variation()
+
+        }
+
+    }
+}
+
+
 @Composable
 fun CartItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    storeName : String,
+    products : List<Product>
 ) {
+
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -258,14 +322,21 @@ fun CartItem(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            val isChecked = remember {mutableStateOf(false)}
+            val fromChild = remember {mutableStateOf(0)}
+            val fromParent = remember { mutableStateOf(isChecked) }
             Row(
                 horizontalArrangement = Arrangement.Start,
             ) {
-                var isChecked = false
-                CheckBox(checkedState = false, onCheckedChange = {
-                    isChecked = !isChecked
-                    // Perform additional logic here
-                })
+                isChecked.value = fromChild.value != 0
+
+                CheckBox(
+                    checkedState = isChecked,
+                    onCheckedChange = {
+//                    isChecked.value = !isChecked.value
+                }, modifier = Modifier.clickable {
+                        fromParent.value.value = !fromParent.value.value
+                    })
                 Spacer(modifier = Modifier.width(16.dp))
                 Row (
                     modifier = Modifier.weight(1f),
@@ -275,77 +346,58 @@ fun CartItem(
                         contentDescription = "Seller Icon",
                     )
                     Text(
-                        text = "Lucky's Fruits",
+                        text = "${storeName}",
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 6.dp).align(Alignment.CenterVertically)
                     )
                 }
             }
-            Row(
-                modifier = Modifier.padding(top = 16.dp),
-            ) {
-                var isChecked = false
-                CheckBox(
-                    Modifier.padding(top = 50.dp),
+            products.forEach { product ->
+                CartProduct(
+                    product,
                     isChecked,
-                    onCheckedChange = {
-                        isChecked = !isChecked
-                        // Perform additional logic here
-                        if (isChecked) {
-
-                        }
-                    }
+                    fromChild
                 )
-
-                Spacer(modifier = Modifier.width(16.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.fruit_salad_img),
-                    contentDescription = "Product Image",
-                    modifier = Modifier
-                        .height(120.dp)
-                        .width(120.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Text(
-                        text = "Fruit Salad",
-                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
-                        fontSize = 18.sp,
-                    )
-                    Variation()
-                    Variation()
+            }
+            Column (
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row () {
+                    Spacer(modifier = Modifier.width(30.dp))
                     Text(
                         text = "Total: ₱160",
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
-                            .align(Alignment.Start)
                             .padding(top = 16.dp)
+                            .fillMaxWidth(0.5f)
                     )
                 }
-
             }
+
         }
+
     }
 }
 
 @Composable
 fun CheckBox(
     modifier: Modifier = Modifier,
-    checkedState: Boolean,
+    checkedState: MutableState<Boolean>,
     onCheckedChange: () -> Unit
 ) {
     val (checked, setChecked) = remember { mutableStateOf(checkedState) }
-
-    if (checked) {
+    if (checked.value) {
         Image (
             painter = painterResource(id = R.drawable.checkbox_active_ic),
             contentDescription = "Checkbox",
             modifier = modifier
                 .clickable {
-                    setChecked(!checked)
+                    checked.value = !checked.value
+                    setChecked(checked)
                     onCheckedChange()
                 }
 
@@ -356,11 +408,15 @@ fun CheckBox(
             contentDescription = "Checkbox",
             modifier = modifier
                 .clickable {
-                    setChecked(!checked)
+                    checked.value = !checked.value
+                    setChecked(checked)
+                    onCheckedChange()
                 }
         )
     }
 }
+
+
 
 @Composable
 fun Variation(
@@ -389,9 +445,10 @@ fun Variation(
         Image(
             painter = painterResource(id = R.drawable.ic_plust_active),
             contentDescription = "Increase Quantity",
-            modifier = Modifier.clickable {
-                setQty(qty + 1)
-            }
+            modifier = Modifier
+                .clickable {
+                    setQty(qty + 1)
+                }
                 .padding(end = 5.dp)
         )
         Text(
@@ -401,9 +458,10 @@ fun Variation(
         Image(
             painter = painterResource(id = R.drawable.ic_minus_active),
             contentDescription = "Decrease Quantity",
-            modifier = Modifier.clickable {
-                setQty(qty - 1)
-            }
+            modifier = Modifier
+                .clickable {
+                    setQty(qty - 1)
+                }
                 .padding(start = 5.dp)
         )
     }
