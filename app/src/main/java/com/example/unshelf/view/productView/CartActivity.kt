@@ -283,7 +283,7 @@ fun CartProduct(
     isClickedParent : MutableState<Boolean>,
     CartItemPrice : MutableState<Double>
 ) {
-    var isActive = remember { mutableStateOf(product.isActive) }
+    var isActive = remember { mutableStateOf(product.active) }
     var partialPrice = remember { mutableStateOf(0.0) }
 
     Row(

@@ -2,6 +2,7 @@ package com.example.unshelf.view.productView
 
 import android.util.Log
 import com.example.unshelf.model.entities.Product
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
@@ -88,11 +89,24 @@ data class ProductWithSelection(
 suspend fun getProductIds(): List<String> {
     return withContext(Dispatchers.IO) {
         try {
-            val db = Firebase.firestore
-            val result = db.collection("carts").document("1RGjwnuF3lhYRKSfV6yIr1j1nhg1").get().await()
-            result.data?.get("products") as? List<String> ?: emptyList()
+            val auth = FirebaseAuth.getInstance()
+            val user = auth.currentUser
+
+            if (user != null) {
+                Log.d("USERRR", "The user ID is ${user.uid}")
+
+                val db = Firebase.firestore
+                val result = db.collection("carts").document(user.uid).get().await()
+
+                // Assuming the "products" field contains a list of strings
+                result.data?.get("products") as? List<String> ?: emptyList()
+            } else {
+                // Handle the case when the user is not authenticated
+                throw IllegalStateException("User not authenticated")
+            }
         } catch (exception: Exception) {
             Log.d("Database Fetch", "Error getting documents: ", exception)
+            // Consider throwing an exception or returning a special value
             emptyList()
         }
     }
