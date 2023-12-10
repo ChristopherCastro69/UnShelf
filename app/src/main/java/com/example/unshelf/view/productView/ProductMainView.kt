@@ -48,7 +48,6 @@ import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.view.checkout.CheckoutUI
 import com.example.unshelf.view.BuyerBottomNav.main.BuyerScreens
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
-import com.example.unshelf.view.Wallet.CheckoutUI
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main

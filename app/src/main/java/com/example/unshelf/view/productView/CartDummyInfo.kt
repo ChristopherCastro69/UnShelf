@@ -13,9 +13,10 @@ fun productDummyData(): List<Product> {
         "000",
         "Lucky's Fruit",
         2,
-        3,
-        30,
-        10,
+        3.0,
+        30.0,
+        10.0,
+        "AAAA",
         listOf("Abc", "bcd"),
         "yoo",
         "sample",
@@ -24,39 +25,42 @@ fun productDummyData(): List<Product> {
     )
 
     val prod2 = Product(
-        "0",
+        "1",
         "0",
         "000",
-        "Lucky's Fruit",
-        2,
+        "Another Fruit",
         3,
-        30,
-        10,
-        listOf("Abc", "bcd"),
-        "yoo",
-        "sample",
-        "12-12-12",
-        false
+        4.5,
+        40.0,
+        15.0,
+        "BBBB",
+        listOf("Xyz", "def"),
+        "xyz",
+        "another sample",
+        "11-11-11",
+        true
     )
 
     val prod3 = Product(
-        "0",
+        "2",
         "1",
         "001",
-        "Lucky's Fruit",
-        2,
-        3,
-        30,
-        10,
-        listOf("Abc", "bcd"),
-        "yoo",
-        "sample",
-        "12-12-12",
-        false
+        "Exotic Fruit",
+        1,
+        5.0,
+        50.0,
+        20.0,
+        "CCCC",
+        listOf("Pqr", "ghi"),
+        "pqr",
+        "exotic sample",
+        "10-10-10",
+        true
     )
 
     return listOf(prod1, prod2, prod3)
 }
+
 
 fun getStores(): Map<String, List<Product>> {
     val products: List<Product> = productDummyData()

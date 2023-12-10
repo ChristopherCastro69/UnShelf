@@ -56,7 +56,7 @@ import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.SellerBottomNav.screens.listings.product
-import com.example.unshelf.view.Wallet.CheckoutUI
+import com.example.unshelf.view.checkout.CheckoutUI
 
 class CartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
