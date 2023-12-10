@@ -46,6 +46,11 @@ import androidx.core.content.ContextCompat
 import com.example.unshelf.R
 import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.view.checkout.CheckoutUI
+import com.example.unshelf.view.BuyerBottomNav.main.BuyerScreens
+import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
+import com.example.unshelf.view.authentication.Customer_Login
+import com.example.unshelf.view.product.cart
+import com.example.unshelf.view.product.product_main
 
 class ProductMainView : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -157,7 +162,7 @@ fun PMNavigation() {
             .fillMaxWidth()
             .height(100.dp)
     ) {
-
+        val activity = LocalContext.current
         Image (
             painter = painterResource(id = R.drawable.ic_back_button),
             contentDescription = "Back",
@@ -166,7 +171,7 @@ fun PMNavigation() {
                 .height(55.dp)
                 .width(55.dp)
                 .clickable {
-                    val intent = Intent(context, CartActivity::class.java)
+                    val intent = Intent(context, MainNavigationActivityBuyer::class.java)
                     context.startActivity(intent)
                }
             ,
