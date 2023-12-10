@@ -124,6 +124,8 @@ fun TopBar(navController: NavController) {
 
             IconButton(onClick = {
                 productID.value = null  // Set productID to null for adding a new product
+                imageUri.value = null
+                flag.value = true
                 navController.navigate("addProduct/${productID.value}")},
 
             ) {
@@ -234,7 +236,9 @@ fun ProductCard(product: Product, navController: NavController, productViewModel
                 Text(text = "Quantity: ${product.quantity}", color = Color.Gray)
                 Text(text = "₱${product.price}", color = Color.Gray)
             }
-            IconButton(onClick = { navController.navigate("addProduct/${product.productID}")
+            IconButton(onClick = {
+                navController.navigate("addProduct/${product.productID}")
+                flag.value = false
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.button_edit),

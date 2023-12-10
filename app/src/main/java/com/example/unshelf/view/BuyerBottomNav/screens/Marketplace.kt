@@ -1,4 +1,7 @@
 import android.content.Intent
+import com.example.unshelf.controller.DataFetch.DataFetchController
+import com.example.unshelf.model.entities.ProductDetailsModel
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,8 +45,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.MiddleGreenYellow
@@ -51,6 +56,10 @@ import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.Seller.SellerProfile
 import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.productView.ProductMainView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.format.TextStyle
 
 @Preview
@@ -116,7 +125,9 @@ fun Marketplace(){
                         Box(Modifier.align(Alignment.CenterHorizontally)){
                             CategoryUI()
                         }
-                        for(i in 1..3) {
+                        val dataFetch = DataFetchController.dataFetch
+                        Log.d("Marketplace", "${dataFetch.size}")
+                        for(product in dataFetch) {
                             Row(Modifier.padding(horizontal = 10.dp)) {
                                 Text(
                                     text = "Selling Out",
@@ -135,7 +146,7 @@ fun Marketplace(){
                                         .align(Alignment.CenterVertically)
                                 )
                             }
-                            ProductGroup()
+                            ProductGroup(product)
                             Spacer(
                                 Modifier.height(10.dp)
                             )
@@ -163,7 +174,6 @@ fun CategoryUI() {
                         .border(1.dp, MiddleGreenYellow, RoundedCornerShape(10.dp))
                         .align(Alignment.CenterHorizontally)
                 ){
-
                     Image(
                         painterResource(id = categoryImgs[i]),
                         contentDescription = "category",
@@ -189,11 +199,11 @@ fun CategoryUI() {
     }
 }
 @Composable
-fun ProductGroup(){
+fun ProductGroup(product : Product){
     Box(Modifier.padding(horizontal = 10.dp)){
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)){
             items(6){
-                ProductUI()
+                ProductUI(product)
             }
         }
     }
@@ -201,7 +211,7 @@ fun ProductGroup(){
 }
 
 @Composable
-fun ProductUI() {
+fun ProductUI(product : Product) {
     val context = LocalContext.current
     Box{
         Box(
@@ -211,7 +221,7 @@ fun ProductUI() {
                 .height(190.dp)
         ){
             Text(
-                text = "Lucky fruit salad",
+                text = product.productName,
                 color = DeepMossGreen,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.ExtraBold,
@@ -220,8 +230,8 @@ fun ProductUI() {
                     .padding(vertical = 10.dp)
             )
             Image (
-                painterResource(id = R.drawable.fruit_salad_img),
-                contentDescription = "salad",
+                rememberAsyncImagePainter(product.thumbnail),
+                contentDescription = "${product.productName}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
@@ -235,7 +245,7 @@ fun ProductUI() {
             )
 
             Text(
-                text = "₱ 20.00",
+                text = "₱ ${product.price}",
                 color = DeepMossGreen,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Black,
@@ -245,20 +255,23 @@ fun ProductUI() {
             )
         }
         Box(modifier = Modifier.offset(y=30.dp,x=0.dp)) {
-            Image(
-                painterResource(id = R.drawable.ic_banner),
-                contentDescription = "banner",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .width(80.dp)
-                    .height(25.dp)
-            )
-            Text(
-                text = "15% off",
-                color = Color.White,
-                fontSize = 13.sp,
-                modifier = Modifier.padding(start=15.dp,top=5.dp)
-            )
+            if(product.discount > 0) {
+                Image(
+                    painterResource(id = R.drawable.ic_banner),
+                    contentDescription = "banner",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(25.dp)
+                )
+
+                Text(
+                    text = "Save ${product.discount}",
+                    color = Color.White,
+                    fontSize = 13.sp,
+                    modifier = Modifier.padding(start=15.dp,top=5.dp)
+                )
+            }
         }
     }
 }

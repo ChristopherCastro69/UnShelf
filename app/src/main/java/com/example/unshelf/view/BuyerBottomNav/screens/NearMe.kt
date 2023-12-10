@@ -1,19 +1,15 @@
 package com.example.unshelf.view.BuyerBottomNav.screens
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.widget.Button
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat.startActivity
 import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
-import com.example.unshelf.view.AddressManager.AddressManager
 import com.example.unshelf.view.AddressManager.UserAddress
-import com.example.unshelf.view.Wallet.CheckoutRedirect
+
 @Composable
 fun NearMe() {
     AndroidView(
