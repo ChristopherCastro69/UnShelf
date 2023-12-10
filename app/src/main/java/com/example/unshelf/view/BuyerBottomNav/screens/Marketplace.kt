@@ -1,7 +1,5 @@
 import android.content.Intent
 import com.example.unshelf.controller.DataFetch.DataFetchController
-import com.example.unshelf.model.entities.ProductDetailsModel
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,26 +18,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.Modifier.*
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.ImageShader
-import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,23 +43,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.controller.FilterDesign.CategoryFilter
+import com.example.unshelf.controller.FilterDesign.DiscountFilter
 import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
-import com.example.unshelf.view.Seller.SellerProfile
-import com.example.unshelf.view.product.product_main
+import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.productView.ProductMainView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.time.format.TextStyle
 
 @Preview
 @Composable
 fun Marketplace(){
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             Row(
@@ -106,66 +98,100 @@ fun Marketplace(){
                         .fillMaxHeight()
                         .padding(5.dp)
                         .align(Alignment.CenterVertically)
+                        .clickable {
+                            val intent = Intent(context, cart::class.java)
+                            context.startActivity(intent)
+                        }
                 )
             }
         }
-    ){ innerPadding ->
-        LazyColumn{
-            item{
-                Column(modifier = Modifier.padding(innerPadding)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ad),
-                        contentDescription = "Cart button",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp)
-                    )
-                    Column{
-                        Box(Modifier.align(Alignment.CenterHorizontally)){
-                            CategoryUI()
+    ){innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            MarketplaceContent()
+        }
+    }
+}
+@Composable
+fun MarketplaceContent() {
+    val listState = rememberLazyListState()
+    val viewModel: DataFetchController = viewModel()
+    LazyColumn(state = listState) {
+        item{
+            Column(modifier = Modifier.padding(10.dp)) {
+                Image(
+                    painter = painterResource(id = R.drawable.ad),
+                    contentDescription = "Cart button",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                )
+                Column{
+                    CategoryUI()
+                    val products by viewModel.products
+                    val isLoading by viewModel.isLoading
+
+                    if (isLoading) {
+                        CircularProgressIndicator(color = PalmLeaf, modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 20.dp).size(50.dp))
+                    } else {
+                        val initializedFilter = CategoryFilter()
+                        val categories = listOf("Grocery", "Fruits", "Vegetables", "Baked Goods", "Meals")
+                        Row(Modifier.padding(horizontal = 10.dp)) {
+                            Text(
+                                text = "Hot Deals",
+                                color = DeepMossGreen,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .padding(vertical = 10.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_fire),
+                                contentDescription = "hot deals",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .align(Alignment.CenterVertically)
+                            )
                         }
-                        val dataFetch = DataFetchController.dataFetch
-                        Log.d("Marketplace", "${dataFetch.size}")
-                        for(product in dataFetch) {
+                        val discountFilter = DiscountFilter()
+                        ProductGroup(discountFilter.meetsCriteria(products))
+                        Spacer(
+                            Modifier.height(10.dp)
+                        )
+                        for(category in categories) {
+                            val categoryFilter = CategoryFilter()
+                            categoryFilter.categoryList = listOf(category)
                             Row(Modifier.padding(horizontal = 10.dp)) {
                                 Text(
-                                    text = "Selling Out",
+                                    text = "${category}",
                                     color = DeepMossGreen,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier
                                         .padding(vertical = 10.dp)
                                 )
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_fire),
-                                    contentDescription = "hot deals",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                        .align(Alignment.CenterVertically)
-                                )
                             }
-                            ProductGroup(product)
+                            ProductGroup(categoryFilter.meetsCriteria(products))
                             Spacer(
                                 Modifier.height(10.dp)
                             )
                         }
                     }
-
                 }
+
             }
         }
-
     }
 }
-
 
 @Composable
 fun CategoryUI() {
     val categoryImgs = listOf(R.drawable.ic_coupon,R.drawable.ic_groceries,R.drawable.ic_watermelon,R.drawable.ic_carrot,R.drawable.ic_bread, R.drawable.ic_meal)
     val categoryNames = listOf("Offers", "Grocery", "Fruits", "Vegetables", "Baked", "Meals")
-    Row(horizontalArrangement = Arrangement.spacedBy(5.dp)){
+    Row(horizontalArrangement = Arrangement.spacedBy(3.dp),modifier = Modifier.padding(start = 10.dp, end = 10.dp)){
         for(i in 0..5) {
             Column {
                 Card(
@@ -188,7 +214,7 @@ fun CategoryUI() {
                 Text(
                     text = "${categoryNames.get(i)}",
                     color = DeepMossGreen,
-                    fontSize = 11.sp,
+                    fontSize = 10.sp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(vertical = 3.dp)
@@ -199,11 +225,11 @@ fun CategoryUI() {
     }
 }
 @Composable
-fun ProductGroup(product : Product){
+fun ProductGroup(products : List<Product>){
     Box(Modifier.padding(horizontal = 10.dp)){
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)){
-            items(6){
-                ProductUI(product)
+            items(products.size) { product ->
+                ProductUI(products.get(product))
             }
         }
     }
@@ -223,7 +249,7 @@ fun ProductUI(product : Product) {
             Text(
                 text = product.productName,
                 color = DeepMossGreen,
-                fontSize = 14.sp,
+                fontSize = 13.sp,
                 fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -238,7 +264,7 @@ fun ProductUI(product : Product) {
                     .clip(RoundedCornerShape(10.dp))
                     .border(1.dp, color = MediumSpringBud, shape = RoundedCornerShape(10.dp))
                     .align(Alignment.Center)
-                    .clickable{
+                    .clickable {
                         val intent = Intent(context, ProductMainView::class.java)
                         context.startActivity(intent)
                     }
@@ -266,7 +292,7 @@ fun ProductUI(product : Product) {
                 )
 
                 Text(
-                    text = "Save ₱ ${String.format("%.2f",product.discount)}",
+                    text = "Save ₱ ${String.format("%.0f",product.discount)}",
                     color = Color.White,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(start=15.dp,top=5.dp)

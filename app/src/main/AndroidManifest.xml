@@ -52,6 +52,9 @@
             android:name=".view.StartUI.MainUI"
             android:exported="false" />
         <activity
+            android:name=".view.StartUI.MainMarketplace"
+            android:exported="false" />
+        <activity
             android:name=".view.SplashScreen.SplashScreen"
             android:exported="true">
             <intent-filter>

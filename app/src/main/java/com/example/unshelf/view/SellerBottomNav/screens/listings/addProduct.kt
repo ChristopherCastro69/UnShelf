@@ -405,7 +405,7 @@ fun Thumbnail() {
                 ) {
                     if (isImageLoading.value) {
                         // Show CircularProgressIndicator while the image is loading
-                        CircularProgressIndicator(color = Color.White)
+                        CircularProgressIndicator(color = PalmLeaf)
 //                        Text(
 //                            text = "Uploading...",
 //                            color = Color.White,
