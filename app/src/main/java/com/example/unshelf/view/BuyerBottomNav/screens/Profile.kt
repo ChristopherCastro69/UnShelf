@@ -16,7 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Assignment
@@ -60,25 +63,31 @@ fun Profile() {
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+//            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+
     ) {
         BuyerProfileDetails()
-        Column {
-            val strings_1 = listOf("Addresses", "Subscriptions", "Referals", "Vouchers")
-            val strings_2 = listOf("Help Center", "Settings", "Customer Support", "Log out")
-            strings_1.forEach { name ->
-                BuyerSettings(name)
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Text (
-                text = "General",
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green07))
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            strings_2.forEach { name ->
-                BuyerSettings(name)
+        LazyColumn (
+            Modifier.padding(bottom = 20.dp)
+        ){
+            item {
+                val strings_1 = listOf("Addresses", "Subscriptions", "Referals", "Vouchers")
+                val strings_2 = listOf("Help Center", "Settings", "Customer Support", "Log out")
+                strings_1.forEach { name ->
+                    BuyerSettings(name)
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "General",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green07))
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                strings_2.forEach { name ->
+                    BuyerSettings(name)
+                }
             }
         }
     }
