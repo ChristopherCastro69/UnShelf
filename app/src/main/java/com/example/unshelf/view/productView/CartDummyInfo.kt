@@ -1,6 +1,12 @@
 package com.example.unshelf.view.productView
 
+import android.util.Log
 import com.example.unshelf.model.entities.Product
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class CartDummyInfo {
 
@@ -38,7 +44,7 @@ fun productDummyData(): List<Product> {
         "xyz",
         "another sample",
         "11-11-11",
-        true
+        false
     )
 
     val prod3 = Product(
@@ -55,24 +61,71 @@ fun productDummyData(): List<Product> {
         "pqr",
         "exotic sample",
         "10-10-10",
-        true
+        false
     )
 
     return listOf(prod1, prod2, prod3)
 }
 
-
-fun getStores(): Map<String, List<Product>> {
+fun getTotalAmount() : Double {
+    var sum : Double = 0.0
     val products: List<Product> = productDummyData()
+    products.forEach { product ->
+        sum += product.sellingPrice
+     }
+    return sum
+}
+
+data class ProductWithSelection(
+    val product: Product,
+    var isSelected: Boolean = false
+)
+
+
+suspend fun getProductIds(): List<String> {
+    return withContext(Dispatchers.IO) {
+        try {
+            val db = Firebase.firestore
+            val result = db.collection("carts").document("1RGjwnuF3lhYRKSfV6yIr1j1nhg1").get().await()
+            result.data?.get("products") as? List<String> ?: emptyList()
+        } catch (exception: Exception) {
+            Log.d("Database Fetch", "Error getting documents: ", exception)
+            emptyList()
+        }
+    }
+}
+
+suspend fun getProducts(): List<Product> {
+    return withContext(Dispatchers.IO) {
+        val productIds = getProductIds()
+        val productListDatas: MutableList<Product> = mutableListOf()
+
+        try {
+            val db = Firebase.firestore
+            productIds.forEach { productId ->
+                val result = db.collection("products").document(productId).get().await()
+                val productData = result.toObject(Product::class.java)
+                productData?.let {
+                    productListDatas.add(it)
+                }
+            }
+        } catch (exception: Exception) {
+            Log.d("Database Fetch", "Error getting documents: ", exception)
+        }
+
+        Log.d("Database Fetch", "DATA COR ${productListDatas} ")
+        productListDatas
+    }
+}
+
+fun getStores(products : List<Product>): Map<String, List<Product>> {
     val storesMap: MutableMap<String, MutableList<Product>> = mutableMapOf()
 
     products.forEach { product ->
         val storeID = product.storeID
         if (storesMap.containsKey(storeID)) {
-            // Store ID already exists, add the product to the existing list
             storesMap[storeID]?.add(product)
         } else {
-            // Store ID doesn't exist, create a new list and add the product
             storesMap[storeID] = mutableListOf(product)
         }
     }
