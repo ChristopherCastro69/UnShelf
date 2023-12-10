@@ -13,8 +13,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.model.entities.Product
 import com.example.unshelf.view.SellerBottomNav.screens.listings.isProductUpdating
 import com.example.unshelf.view.SellerBottomNav.screens.listings.productAdditionSuccess
-import com.example.unshelf.view.SellerBottomNav.screens.listings.productID
-import com.example.unshelf.view.SellerBottomNav.screens.listings.voucherCode
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
@@ -27,6 +25,7 @@ fun fetchUserDetails(onComplete: (String, String) -> Unit) {
     val userId = Firebase.auth.currentUser?.uid ?: return
     val sellerId = userId
 
+
     // Query Firestore 'stores' collection to find the store corresponding to the sellerId
     Firebase.firestore.collection("stores")
         .whereEqualTo("sellerID", sellerId) // Assuming the store documents have a 'sellerID' field
@@ -37,8 +36,8 @@ fun fetchUserDetails(onComplete: (String, String) -> Unit) {
 
                 // Fetch the storeID from the store document
                 val storeId = storeDocument?.getString("storeID") ?: ""
-                Log.d("UserDetails", "Seller ID: $sellerId, Store ID: $storeId")
 
+                Log.d("UserDetails", "Seller ID: $sellerId, Store ID: $storeId" )
                 // Return the seller ID and store ID
                 onComplete(sellerId, storeId)
             } else {
@@ -48,9 +47,41 @@ fun fetchUserDetails(onComplete: (String, String) -> Unit) {
         .addOnFailureListener {
             Log.e("Firestore", "Error fetching store details", it)
         }
+
+
 }
 
 
+fun getStoreName(onComplete: (String) -> Unit) {
+    val userId = Firebase.auth.currentUser?.uid ?: return
+    val sellerId = userId
+
+
+    // Query Firestore 'stores' collection to find the store corresponding to the sellerId
+    Firebase.firestore.collection("sellers")
+        .whereEqualTo("sellerID", sellerId) // Assuming the store documents have a 'sellerID' field
+        .get()
+        .addOnSuccessListener { querySnapshot ->
+            if (!querySnapshot.isEmpty) {
+                val storeDocument = querySnapshot.documents.firstOrNull()
+
+                // Fetch the storeID from the store document
+                val storeName = storeDocument?.getString("storeName") ?: ""
+                Log.d("UserDetails", "Seller ID: $sellerId,StoreName: $storeName" )
+
+
+
+
+                // Return the seller ID and store ID
+                onComplete(storeName)
+            } else {
+                Log.d("UserDetails", "No store name found for Seller ID: $sellerId")
+            }
+        }
+        .addOnFailureListener {
+            Log.e("Firestore", "Error fetching store name details", it)
+        }
+}
 
 
 fun saveProductToFirestore(context: Context, navController: NavController,sellerId: String, storeId: String, product: Product) {
@@ -65,6 +96,7 @@ fun saveProductToFirestore(context: Context, navController: NavController,seller
     // Set the sellerId and storeId
     product.sellerID = sellerId
     product.storeID = storeId
+
 
     newProductRef.set(product)
         .addOnSuccessListener {
@@ -182,7 +214,7 @@ fun fetchProductDetails(productId: String, onSuccess: (Product) -> Unit, onFailu
                         thumbnail = document.getString("thumbnail") ?: "",
                         description = document.getString("description") ?: "",
                         expirationDate = document.getString("expirationDate") ?: "",
-                        isActive = document.getBoolean("isActive") ?: false
+                        active = document.getBoolean("active") ?: false
                     )
                     onSuccess(product)
                 } catch (e: Exception) {
@@ -191,4 +223,20 @@ fun fetchProductDetails(productId: String, onSuccess: (Product) -> Unit, onFailu
             }
         }
         .addOnFailureListener(onFailure)
+}
+
+// Function to unlist the product in Firestore
+fun unlistProduct(productId: String?) {
+    // Check if productId is not null
+    if (productId != null) {
+        // Get the reference to your Firestore document
+        val productRef = Firebase.firestore.collection("products").document(productId)
+        productRef.update("isActive", false)
+            .addOnSuccessListener {
+                Log.d("UnlistProduct", "Product successfully unlisted.")
+            }
+            .addOnFailureListener { e ->
+                Log.w("UnlistProduct", "Error unlisting product.", e)
+            }
+    }
 }
