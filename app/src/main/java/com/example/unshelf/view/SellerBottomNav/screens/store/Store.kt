@@ -1,6 +1,7 @@
 package com.example.unshelf.view.SellerBottomNav.screens.store
 
 import JostFontFamily
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,8 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.unshelf.R
 import com.example.unshelf.ui.theme.DeepMossGreen
+import com.example.unshelf.ui.theme.PalmLeaf
 
 
+class StoreView: ComponentActivity(){
+
+}
 @Composable
 fun Store() {
 
@@ -187,8 +192,6 @@ fun CustomTopBar() {
             Image(
                 painter = painterResource(id = R.drawable.button_wallet), // Your wallet icon
                 contentDescription = "Wallet",
-
-
             )
         }
         Spacer(modifier = Modifier.weight(1f))

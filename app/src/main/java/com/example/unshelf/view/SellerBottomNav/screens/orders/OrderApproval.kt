@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Order
 import com.example.unshelf.ui.theme.DarkPalmLeaf
+import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.WatermelonRed
 
 
@@ -54,15 +55,14 @@ fun OrderApproval() {
                     ) },
 
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = Color(0xFF4CAF50)
+                    containerColor = PalmLeaf
                 ),
 
                 navigationIcon = {
                     IconButton(onClick = {val intent = Intent(context,Order::class.java) }) {
-                        Icon(Icons.Filled.ArrowBack, "Menu", tint = Color.White)
+                        Icon(Icons.Filled.ArrowBack, "Back Button", tint = Color.White)
                     }
-                },
-
+                }
             )
         }
     ) { innerPadding ->
@@ -73,11 +73,11 @@ fun OrderApproval() {
                 contentScale = ContentScale.Crop)
             Row(modifier = Modifier.padding(20.dp, 20.dp)) {
                 Column {
-                    Text(text = "Hernah's Pizza",
+                    Text(text = "",
                         fontFamily = JostFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp)
-                    Text(text = "Total: P399.00",
+                    Text(text = "Total: ",
                         fontFamily = JostFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp)

@@ -25,11 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.unshelf.R
+import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.DeepMossGreen
 
-// Assuming drawable resources exist for these icons
-// ...
 
+// Sample data
 data class Order(
     val productImageRes: Int,
     val productName: String,
@@ -39,20 +39,9 @@ data class Order(
     val status: String
 )
 
-// Sample data
 val ordersList = listOf(
     Order(R.drawable.loaf, "Product", "12194bdkl", "10/19/2023", 399.00, "Pending Order"),
     // Add more orders as per your data
-    Order(R.drawable.loaf, "Product", "12194bdkl", "10/19/2023", 399.00, "Pending Order"),
-
-    Order(R.drawable.loaf, "Product", "12194bdkl", "10/19/2023", 399.00, "Pending Order"),
-
-    Order(R.drawable.loaf, "Product", "12194bdkl", "10/19/2023", 399.00, "Pending Order"),
-
-    Order(R.drawable.loaf, "Product", "12194bdkl", "10/19/2023", 399.00, "Pending Order"),
-    Order(R.drawable.loaf, "Product", "12194bdkl", "10/19/2023", 399.00, "Pending Order"),
-
-    Order(R.drawable.loaf, "Product", "12194bdkl", "10/19/2023", 399.00, "Pending Order"),
 
     )
 class OrderView:ComponentActivity(){
@@ -75,31 +64,17 @@ fun Orders() {
             TopAppBar(
                 title = {
                     Text("Orders",
-                    color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 5.dp),
+                        color = Color.White,
                         fontFamily = JostFontFamily,
                         fontWeight = FontWeight.Medium,
                     ) },
 
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = Color(0xFF4CAF50)
+                    containerColor = PalmLeaf
                 ),
 
-                navigationIcon = {
-                    IconButton(onClick = { /* TODO: Handle back action */ }) {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.ic_back_arrow), // Use the correct back icon resource
-//                            contentDescription = "Back",
-//
-//                        )
-                        Icon(Icons.Filled.ArrowBack, "Menu", tint = Color.White)
-                    }
-                },
-
-                actions = {
-                    IconButton(onClick = { /* TODO: Handle menu action */ }) {
-                        Icon(Icons.Filled.Menu, "Menu", tint = Color.White)
-                    }
-                }
             )
         }
     ) { innerPadding ->
@@ -109,7 +84,7 @@ fun Orders() {
                     Tab(
                         selected = selectedTabIndex == index,
                         onClick = { selectedTabIndex = index },
-                        text = { Text(text, color = if (selectedTabIndex == index) DeepMossGreen else Color.LightGray) }
+                        text = { Text(text, color = if (selectedTabIndex == index) PalmLeaf else Color.LightGray) }
                     )
                 }
             }
