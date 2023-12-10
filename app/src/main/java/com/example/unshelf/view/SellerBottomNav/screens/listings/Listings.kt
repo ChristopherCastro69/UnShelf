@@ -106,7 +106,7 @@ fun Listings(navController: NavController, sellerId: String, storeId: String) {
             // Handle tab selection
             // Update other parts of your UI based on the selected tab
         }
-        ProductList(sellerId = sellerId, storeId = storeId, navController)
+        ProductList(sellerId = sellerId, storeId = storeId, navController, selectedIndex.value)
     }
 }
 
@@ -214,14 +214,18 @@ fun FilterTabs(selectedIndex: MutableState<Int>, onTabSelected: (Int) -> Unit) {
     }
 }
 @Composable
-fun ProductList(sellerId: String, storeId: String, navController: NavController) {
+fun ProductList(sellerId: String, storeId: String, navController: NavController, selectedIndex: Int) {
     // Use a ViewModel to manage the state and business logic
     val productViewModel: ProductViewModel = viewModel()
     val context = LocalContext.current
 
     // Call a function in your ViewModel to fetch products for the given sellerId
-    LaunchedEffect(sellerId) {
-        productViewModel.fetchProductsForSeller(sellerId, storeId)
+    LaunchedEffect(selectedIndex) {
+        if (selectedIndex == 0) {
+            productViewModel.fetchActiveProductsForSeller(sellerId, storeId)
+        } else {
+            productViewModel.fetchInactiveProductsForSeller(sellerId, storeId)
+        }
     }
 
     // Observe the product list from your ViewModel

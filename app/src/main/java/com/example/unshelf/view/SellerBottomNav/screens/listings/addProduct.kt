@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Event
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -83,6 +84,7 @@ import com.example.unshelf.model.firestore.seller.dashboardmodel.fetchProductDet
 import com.example.unshelf.model.firestore.seller.dashboardmodel.saveProductToFirestore
 import com.example.unshelf.model.firestore.seller.dashboardmodel.updateProductToFirestore
 import com.example.unshelf.model.firestore.seller.dashboardmodel.uploadImage
+import com.example.unshelf.model.firestore.seller.dashboardmodel.unlistProduct
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
@@ -94,6 +96,8 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.unshelf.controller.seller.main.Screens
@@ -123,8 +127,7 @@ var flag = mutableStateOf(false)
 var productQuantity = mutableStateOf("")
 var status = mutableStateOf(false)
 var isProductUpdating = mutableStateOf(false)
-
-
+val showConfirmationDialog = mutableStateOf(false)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @RequiresApi(Build.VERSION_CODES.O)
@@ -226,9 +229,21 @@ fun AddProducts(productId: String? = null, navController: NavController) {
             Voucher()
             QuantityInput()
             ExpirationDate()
-            if(!flag.value){
-                UnlistItemButton()
+            if (!flag.value) {
+                // Place the UnlistItemButton where you want it to appear
+                UnlistItemButton {
+                    showConfirmationDialog.value = true
+                }
+                if (showConfirmationDialog.value) {
+                    UnlistProductDialog(
+                        showConfirmationDialog = showConfirmationDialog,
+                        onConfirmUnlist = {
+                            unlistProduct(productId)
+                        }
+                    )
+                }
             }
+
             // Pass the current value of sellerId and storeId to AddButton
             AddButton(navController,sellerId = sellerId.value, storeId = storeId.value, productId = productId)
         }
@@ -882,19 +897,48 @@ fun AddButton(navController: NavController,sellerId: String, storeId: String, pr
 }
 
 @Composable
-fun UnlistItemButton() {
+fun UnlistItemButton(onClick: () -> Unit) {
     Button(
-        onClick = {
-            // Define the action to be performed on button click
-        },
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = WatermelonRed)
+        colors = ButtonDefaults.buttonColors(containerColor = WatermelonRed)
     ) {
-        Text("Unlist Product")
+        Text("Unlist Product", color = Color.White)
     }
 }
+
+@Composable
+fun UnlistProductDialog(
+    showConfirmationDialog: MutableState<Boolean>,
+    onConfirmUnlist: () -> Unit
+) {
+    if (showConfirmationDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showConfirmationDialog.value = false },
+            title = { Text("Unlist Product") },
+            text = { Text("Are you sure you want to unlist this product?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showConfirmationDialog.value = false
+                        onConfirmUnlist()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = WatermelonRed)
+                ) {
+                    Text("Confirm", color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmationDialog.value = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+}
+
 
 //Hello
 @RequiresApi(Build.VERSION_CODES.O)

@@ -13,8 +13,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.model.entities.Product
 import com.example.unshelf.view.SellerBottomNav.screens.listings.isProductUpdating
 import com.example.unshelf.view.SellerBottomNav.screens.listings.productAdditionSuccess
-import com.example.unshelf.view.SellerBottomNav.screens.listings.productID
-import com.example.unshelf.view.SellerBottomNav.screens.listings.voucherCode
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
@@ -191,4 +189,20 @@ fun fetchProductDetails(productId: String, onSuccess: (Product) -> Unit, onFailu
             }
         }
         .addOnFailureListener(onFailure)
+}
+
+// Function to unlist the product in Firestore
+fun unlistProduct(productId: String?) {
+    // Check if productId is not null
+    if (productId != null) {
+        // Get the reference to your Firestore document
+        val productRef = Firebase.firestore.collection("products").document(productId)
+        productRef.update("isActive", false)
+            .addOnSuccessListener {
+                Log.d("UnlistProduct", "Product successfully unlisted.")
+            }
+            .addOnFailureListener { e ->
+                Log.w("UnlistProduct", "Error unlisting product.", e)
+            }
+    }
 }
