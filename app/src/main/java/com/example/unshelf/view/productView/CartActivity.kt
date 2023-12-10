@@ -2,6 +2,8 @@ package com.example.unshelf.view.productView
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -31,7 +33,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -51,32 +55,47 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import coil.compose.rememberImagePainter
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.SellerBottomNav.screens.listings.product
 import com.example.unshelf.view.checkout.CheckoutUI
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class CartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
 
-            // Your Compose UI goes here
-            MyComposable()
+        lifecycleScope.launch {
+            try {
+                val productListDatas = getProducts()
+                setContent {
+                    MyComposable(productListDatas)
+                }
+            } catch (e: Exception) {
+                Log.e("Coroutine Error", "Error in coroutine", e)
+            }
         }
     }
 }
-val storesInfo : Map<String, List<Product>> = getStores()
-class StoreCheck (
-    StoreID : String,
-    isActive : MutableState<Boolean>
-)
 
-@Preview
+var storesInfo : MutableState<Map<String, List<Product>>> = mutableStateOf(mutableMapOf())
+var allCheckState : Boolean = false
+var totalPrice : MutableState<Double> = mutableStateOf(0.0)
+
 @Composable
-fun MyComposable() {
+fun MyComposable(
+    productListDatas: List<Product>
+) {
+    storesInfo = mutableStateOf(getStores(productListDatas))
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -99,7 +118,7 @@ fun MyComposable() {
                     .verticalScroll(rememberScrollState())
             ) {
 
-                storesInfo.forEach { (storeID, products) ->
+                storesInfo.value.forEach { (storeID, products) ->
                     //Query the store from the database
                     CartItem(Modifier, storeID, products)
                 }
@@ -118,7 +137,6 @@ fun MyComposable() {
         }
     }
 }
-
 
 @Composable
 fun Menu(modifier: Modifier = Modifier) {
@@ -202,7 +220,9 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
                 .padding(end = 8.dp)
                 .align(Alignment.CenterVertically),
             checkedState = isActiveCheckout,
-            onCheckedChange = {}
+            onCheckedChange = {
+
+            }
         )
         Text (
             text = "All",
@@ -227,7 +247,7 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
                 color = Color(ContextCompat.getColor(LocalContext.current, R.color.green07)),
             )
             Text (
-                text = "₱${totalAmount}",
+                text = "₱${totalPrice.value}",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(ContextCompat.getColor(LocalContext.current, R.color.green07)),
@@ -258,9 +278,13 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
 fun CartProduct(
     product : Product,
     parentCheck : MutableState<Boolean>,
-    fromChild : MutableState<Int>
+    fromChild : MutableState<Int>,
+    fromParent : MutableState<MutableState<Boolean>>,
+    isClickedParent : MutableState<Boolean>,
+    CartItemPrice : MutableState<Double>
 ) {
-    var isActive = remember { mutableStateOf(false) }
+    var isActive = remember { mutableStateOf(product.active) }
+    var partialPrice = remember { mutableStateOf(0.0) }
 
     Row(
         modifier = Modifier.padding(top = 16.dp),
@@ -272,15 +296,26 @@ fun CartProduct(
                 if (isActive.value) {
                    parentCheck.value = true
                     fromChild.value += 1
+                    CartItemPrice.value += partialPrice.value
+                    totalPrice.value += partialPrice.value
                 } else {
                     fromChild.value--
+                    CartItemPrice.value = CartItemPrice.value - partialPrice.value
+                    totalPrice.value = totalPrice.value - partialPrice.value
                 }
             }
         )
 
         Spacer(modifier = Modifier.width(16.dp))
         Image(
-            painter = painterResource(id = R.drawable.fruit_salad_img),
+            painter = rememberImagePainter(
+                data = product.thumbnail,
+                builder = {
+                    crossfade(true)
+                    placeholder(R.drawable.fruit_salad_img) // Optional: Placeholder image resource
+                }
+            ),
+            contentScale = ContentScale.Crop,
             contentDescription = "Product Image",
             modifier = Modifier
                 .height(120.dp)
@@ -289,13 +324,12 @@ fun CartProduct(
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
-                text = "Fruit Salad",
+                text = "${product.productName}",
                 color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                 fontSize = 18.sp,
             )
-            Variation()
-            Variation()
-
+            Variation("Mango", 0 ,partialPrice, product.sellingPrice, isActive, CartItemPrice)
+            Variation("Mango", 0 ,partialPrice, product.sellingPrice, isActive, CartItemPrice)
         }
 
     }
@@ -308,7 +342,8 @@ fun CartItem(
     storeName : String,
     products : List<Product>
 ) {
-
+    val context = LocalContext.current
+    val CartItemPrice = remember { mutableStateOf(0.0)}
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -325,18 +360,11 @@ fun CartItem(
             val isChecked = remember {mutableStateOf(false)}
             val fromChild = remember {mutableStateOf(0)}
             val fromParent = remember { mutableStateOf(isChecked) }
+            val isClicked = remember { mutableStateOf(false) }
             Row(
                 horizontalArrangement = Arrangement.Start,
             ) {
                 isChecked.value = fromChild.value != 0
-
-                CheckBox(
-                    checkedState = isChecked,
-                    onCheckedChange = {
-//                    isChecked.value = !isChecked.value
-                }, modifier = Modifier.clickable {
-                        fromParent.value.value = !fromParent.value.value
-                    })
                 Spacer(modifier = Modifier.width(16.dp))
                 Row (
                     modifier = Modifier.weight(1f),
@@ -344,13 +372,16 @@ fun CartItem(
                     Image(
                         painter = painterResource(id = R.drawable.seller_ic),
                         contentDescription = "Seller Icon",
+                        modifier = Modifier.padding(start = 16.dp)
                     )
                     Text(
                         text = "${storeName}",
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 6.dp).align(Alignment.CenterVertically)
+                        modifier = Modifier
+                            .padding(start = 6.dp)
+                            .align(Alignment.CenterVertically)
                     )
                 }
             }
@@ -358,7 +389,10 @@ fun CartItem(
                 CartProduct(
                     product,
                     isChecked,
-                    fromChild
+                    fromChild,
+                    fromParent,
+                    isClicked,
+                    CartItemPrice
                 )
             }
             Column (
@@ -367,7 +401,7 @@ fun CartItem(
                 Row () {
                     Spacer(modifier = Modifier.width(30.dp))
                     Text(
-                        text = "Total: ₱160",
+                        text = "Sub-Total: ₱${CartItemPrice.value}",
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -421,10 +455,13 @@ fun CheckBox(
 @Composable
 fun Variation(
     variationName: String = "Mango",
-    qty: Int = 0
+    qty: Int = 0,
+    partialPrice : MutableState<Double>,
+    sellingPrice : Double,
+    isActive : MutableState<Boolean>,
+    CartItemPrice : MutableState<Double>
 ) {
     var (qty, setQty)  = remember { mutableStateOf(qty) }
-
 
     Row(
         modifier = Modifier
@@ -447,6 +484,13 @@ fun Variation(
             contentDescription = "Increase Quantity",
             modifier = Modifier
                 .clickable {
+                    if (isActive.value) {
+                        CartItemPrice.value += sellingPrice
+                        partialPrice.value += sellingPrice
+                        totalPrice.value += sellingPrice
+                    } else {
+                        partialPrice.value += sellingPrice
+                    }
                     setQty(qty + 1)
                 }
                 .padding(end = 5.dp)
@@ -460,7 +504,19 @@ fun Variation(
             contentDescription = "Decrease Quantity",
             modifier = Modifier
                 .clickable {
-                    setQty(qty - 1)
+
+                    if (qty - 1 < 0) {
+                        setQty(0)
+                    } else {
+                        if (isActive.value) {
+                            CartItemPrice.value -= sellingPrice
+                            partialPrice.value -= sellingPrice
+                            totalPrice.value -= sellingPrice
+                        } else {
+                            partialPrice.value -= sellingPrice
+                        }
+                        setQty(qty - 1)
+                    }
                 }
                 .padding(start = 5.dp)
         )

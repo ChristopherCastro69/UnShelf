@@ -102,6 +102,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.unshelf.controller.seller.main.Screens
 import com.example.unshelf.ui.theme.WatermelonRed
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeName
 
 
 // First, define your Product data class to match the Firestore structure
@@ -132,7 +133,7 @@ val showConfirmationDialog = mutableStateOf(false)
 @Composable
 @RequiresApi(Build.VERSION_CODES.O)
 fun AddProducts(productId: String? = null, navController: NavController) {
-    Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
+    Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}, StoreName : ${storeName.value}")
     // Log the current state of imageUri at the start of the function
     Log.d("AddProducts", "Initial imageUri: ${imageUri.value ?: "null or empty"}")
 
@@ -159,7 +160,7 @@ fun AddProducts(productId: String? = null, navController: NavController) {
                 voucherCode.value = product.voucherCode
                 // pickedDate.value = LocalDate.parse(product.expirationDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
                 productQuantity.value = product.quantity.toString()
-                status.value = product.isActive // Assuming isActive is a boolean in your Product data class
+                status.value = product.active // Assuming isActive is a boolean in your Product data class
                 val expirationDateString = product.expirationDate
                 if (expirationDateString.isNotEmpty()) {
                     try {
@@ -852,6 +853,7 @@ fun AddButton(navController: NavController,sellerId: String, storeId: String, pr
                 productId ?: "",
                 sellerId,
                 storeId,
+                storeName = storeName.value,
                 productName = productName.value,
                 quantity = productQuantity.value.toIntOrNull() ?: 0,
                 price = marketPrice.value.toDoubleOrNull() ?: 0.00,
@@ -862,7 +864,7 @@ fun AddButton(navController: NavController,sellerId: String, storeId: String, pr
                 thumbnail = imageUri.value.toString(),
                 description = productDescription.value,
                 expirationDate = stringDate.value,
-                isActive = if (productQuantity.value.toIntOrNull() ?: 0 > 0) true else false
+                active = if (productQuantity.value.toIntOrNull() ?: 0 > 0) true else false
             )
             if(flag){
                 saveProductToFirestore(context, navController,sellerId, storeId, product)
