@@ -30,12 +30,14 @@
     import androidx.compose.ui.unit.sp
     import com.example.unshelf.R
     import com.example.unshelf.model.firestore.seller.dashboardmodel.fetchUserDetails
+    import com.example.unshelf.model.firestore.seller.dashboardmodel.getStoreName
     import com.example.unshelf.ui.theme.DeepMossGreen
     import java.time.LocalDate
     import java.time.format.DateTimeFormatter
 
     var sellerId = mutableStateOf("")
     var storeId = mutableStateOf("")
+    var storeName = mutableStateOf("")
     @RequiresApi(Build.VERSION_CODES.O)
     @Preview(showBackground = true, heightDp = 1050, widthDp = 390) // Adjust the height as needed
     @Composable
@@ -53,6 +55,10 @@
                 sellerId.value = sId
                 storeId.value = stId
                 Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}")
+            }
+            getStoreName{stName ->
+                storeName.value = stName
+                Log.d("StoreName", "LaunchedEffect Seller ID: ${sellerId.value}, Store Name: ${storeName.value}")
             }
         }
         val scrollState = rememberScrollState()

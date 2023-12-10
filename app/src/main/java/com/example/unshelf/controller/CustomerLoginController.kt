@@ -14,6 +14,7 @@ class CustomerLoginController(private val context: Context, private val view: Cu
 
     fun init() {
         view.setLoginListener(this)
+        view.changeInProgress(inProgress = false)
         view.initViews()
     }
 
@@ -32,7 +33,7 @@ class CustomerLoginController(private val context: Context, private val view: Cu
                     view.changeInProgress(false)
                 }
             } else {
-                view.showToast("Login failed")
+                view.showToast("Invalid email or password")
                 view.changeInProgress(false)
             }
         })

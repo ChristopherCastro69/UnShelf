@@ -14,6 +14,6 @@ class MainUI : AppCompatActivity() {
 
         val btnMain = findViewById<Button>(R.id.btn_get_started)
 
-        UI_Tester_Helper.UI_Test(this, btnMain, Customer_Login::class.java);
+        UI_Tester_Helper.UI_Test(this, btnMain, MainMarketplace::class.java);
     }
 }

@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SplashScreen : AppCompatActivity() {
-    private lateinit var dataFetchController: DataFetchController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val firebaseAuth = FirebaseAuth.getInstance()
@@ -35,7 +34,6 @@ class SplashScreen : AppCompatActivity() {
                 }
             }
         setContentView(R.layout.activity_splash_screen)
-//        dataFetchController = ViewModelProvider(this).get(DataFetchController::class.java)
 
         val splashScreen = findViewById<ImageView>(splashscreen)
 
