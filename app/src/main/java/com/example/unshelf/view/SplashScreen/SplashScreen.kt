@@ -35,7 +35,7 @@ class SplashScreen : AppCompatActivity() {
                 }
             }
         setContentView(R.layout.activity_splash_screen)
-        dataFetchController = ViewModelProvider(this).get(DataFetchController::class.java)
+//        dataFetchController = ViewModelProvider(this).get(DataFetchController::class.java)
 
         val splashScreen = findViewById<ImageView>(splashscreen)
 
