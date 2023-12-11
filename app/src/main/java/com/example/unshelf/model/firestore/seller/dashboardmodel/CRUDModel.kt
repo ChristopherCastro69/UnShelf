@@ -231,7 +231,7 @@ fun unlistProduct(productId: String?) {
     if (productId != null) {
         // Get the reference to your Firestore document
         val productRef = Firebase.firestore.collection("products").document(productId)
-        productRef.update("isActive", false)
+        productRef.update("active", false)
             .addOnSuccessListener {
                 Log.d("UnlistProduct", "Product successfully unlisted.")
             }
