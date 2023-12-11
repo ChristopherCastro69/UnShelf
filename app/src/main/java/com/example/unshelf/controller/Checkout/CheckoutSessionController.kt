@@ -58,14 +58,14 @@ class CheckoutSessionController() {
         val liSalad = partLineItem(
             amount = (products.get(0).price * 100).toInt(),
             name = products.get(0).productName,
-            storeID = products.get(0).storeID,
+            sellerID = products.get(0).sellerID,
             quantity = 2,
             images = listOf(products.get(0).thumbnail),
         )
         val liSalad2 = partLineItem(
             amount = (products.get(1).price * 100).toInt(),
             name = products.get(1).productName,
-            storeID = products.get(1).storeID,
+            sellerID = products.get(1).sellerID,
             quantity = 2,
             images = listOf(products.get(1).thumbnail),
         )

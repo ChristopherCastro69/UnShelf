@@ -158,7 +158,7 @@ fun AddProducts(productId: String? = null, navController: NavController) {
                 marketPrice.value = product.price.toString()
                 discountPercent.value = product.discount.toString()
                 voucherCode.value = product.voucherCode
-               // pickedDate.value = LocalDate.parse(product.expirationDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+                // pickedDate.value = LocalDate.parse(product.expirationDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
                 productQuantity.value = product.quantity.toString()
                 status.value = product.active // Assuming isActive is a boolean in your Product data class
                 val expirationDateString = product.expirationDate
@@ -370,14 +370,14 @@ fun Thumbnail() {
     Log.d("Thumbnail", "Flag value: $flag") // Log the flag value
 
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .background(Color.Transparent), // This is the green background color
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(16.dp)) // Spacing from the top
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(Color.Transparent), // This is the green background color
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(16.dp)) // Spacing from the top
 
             if (!flag.value) {
                 Image(
@@ -431,13 +431,13 @@ fun Thumbnail() {
             // Text under the image/thumbnail
             Text(
 
-                text = if (flag.value) "Choose a thumbnail for your product" else "Tap to change thumbnail",
-                fontFamily = JostFontFamily,
-                fontWeight = FontWeight.Light,
-                fontSize = 12.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(12.dp)
-            )
+            text = if (flag.value) "Choose a thumbnail for your product" else "Tap to change thumbnail",
+            fontFamily = JostFontFamily,
+            fontWeight = FontWeight.Light,
+            fontSize = 12.sp,
+            color = Color.Black,
+            modifier = Modifier.padding(12.dp)
+        )
 
     }
 

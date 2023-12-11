@@ -26,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -115,73 +116,76 @@ fun Marketplace(){
 fun MarketplaceContent() {
     val listState = rememberLazyListState()
     val viewModel: DataFetchController = viewModel()
-    LazyColumn(state = listState) {
-        item{
-            Column(modifier = Modifier.padding(10.dp)) {
-                Image(
-                    painter = painterResource(id = R.drawable.ad),
-                    contentDescription = "Cart button",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                )
-                Column{
-                    CategoryUI()
-                    val products by viewModel.products
-                    val isLoading by viewModel.isLoading
+    Surface {
+        LazyColumn(state = listState) {
+            item{
+                Column(modifier = Modifier.padding(10.dp)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.marketplace_ad),
+                        contentDescription = "Ad",
+                        contentScale = ContentScale.Inside,
+                        modifier = Modifier
+                            .height(200.dp)
+                            .padding(20.dp)
+                    )
+                    Column{
+                        CategoryUI()
+                        val products by viewModel.products
+                        val isLoading by viewModel.isLoading
 
-                    if (isLoading) {
-                        CircularProgressIndicator(color = PalmLeaf, modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 20.dp).size(50.dp))
-                    } else {
-                        val initializedFilter = CategoryFilter()
-                        val categories = listOf("Grocery", "Fruits", "Vegetables", "Baked Goods", "Meals")
-                        Row(Modifier.padding(horizontal = 10.dp)) {
-                            Text(
-                                text = "Hot Deals",
-                                color = DeepMossGreen,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                                    .padding(vertical = 10.dp)
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_fire),
-                                contentDescription = "hot deals",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .align(Alignment.CenterVertically)
-                            )
+                        if (isLoading) {
+                            CircularProgressIndicator(color = PalmLeaf, modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .size(50.dp).padding(top = 10.dp))
                         }
-                        val discountFilter = DiscountFilter()
-                        ProductGroup(discountFilter.meetsCriteria(products))
-                        Spacer(
-                            Modifier.height(10.dp)
-                        )
-                        for(category in categories) {
-                            val categoryFilter = CategoryFilter()
-                            categoryFilter.categoryList = listOf(category)
+                        else {
+                            val initializedFilter = CategoryFilter()
+                            val categories = listOf("Grocery", "Fruits", "Vegetables", "Baked Goods", "Meals")
                             Row(Modifier.padding(horizontal = 10.dp)) {
                                 Text(
-                                    text = "${category}",
+                                    text = "Hot Deals",
                                     color = DeepMossGreen,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier
                                         .padding(vertical = 10.dp)
                                 )
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_fire),
+                                    contentDescription = "hot deals",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .align(Alignment.CenterVertically)
+                                )
                             }
-                            ProductGroup(categoryFilter.meetsCriteria(products))
+                            val discountFilter = DiscountFilter()
+                            ProductGroup(discountFilter.meetsCriteria(products))
                             Spacer(
                                 Modifier.height(10.dp)
                             )
+                            for(category in categories) {
+                                val categoryFilter = CategoryFilter()
+                                categoryFilter.categoryList = listOf(category)
+                                Row(Modifier.padding(horizontal = 10.dp)) {
+                                    Text(
+                                        text = "${category}",
+                                        color = DeepMossGreen,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier
+                                            .padding(vertical = 10.dp)
+                                    )
+                                }
+                                ProductGroup(categoryFilter.meetsCriteria(products))
+                                Spacer(
+                                    Modifier.height(10.dp)
+                                )
+                            }
                         }
                     }
-                }
 
+                }
             }
         }
     }
@@ -266,6 +270,7 @@ fun ProductUI(product : Product) {
                     .align(Alignment.Center)
                     .clickable {
                         val intent = Intent(context, ProductMainView::class.java)
+                        intent.putExtra("product", product)
                         context.startActivity(intent)
                     }
             )

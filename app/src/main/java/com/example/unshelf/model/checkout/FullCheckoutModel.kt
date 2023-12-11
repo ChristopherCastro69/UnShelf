@@ -51,7 +51,7 @@ data class FullLineItem(
     val amount: Int,
     val currency: String = "PHP",
     @SerializedName("description")
-    val storeID: String,
+    val sellerID: String,
     val images: List<String?>,
     val name: String,
     val quantity: Int
