@@ -1,5 +1,6 @@
 package com.example.unshelf.view.productView
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -96,7 +97,6 @@ fun ProductMain(product : Product?) {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column() {
-//                VariationItem()
                 PMMenu(product)
             }
         }
@@ -126,7 +126,7 @@ fun ProductMain(product : Product?) {
                 PMContent(product)
             }
         }
-        PMNavigation()
+        PMNavigation(product)
     }
 }
 
@@ -206,7 +206,7 @@ fun PMMenu(product : Product?) {
 }
 
 @Composable
-fun PMNavigation() {
+fun PMNavigation(product : Product?) {
     val context = LocalContext.current
     Row {
         val activity = LocalContext.current
@@ -218,8 +218,9 @@ fun PMNavigation() {
                 .height(55.dp)
                 .width(55.dp)
                 .clickable {
-                    val intent = Intent(context, MainNavigationActivityBuyer::class.java)
-                    context.startActivity(intent)
+//                    val intent = Intent(context, MainNavigationActivityBuyer::class.java)
+//                    context.startActivity(intent)
+                    (context as? Activity)?.finish()
                 }
             ,
             contentScale = ContentScale.Crop
