@@ -31,7 +31,7 @@ data class partLineItem(
     val amount: Int,
     val currency: String = "PHP",
     @SerializedName("description")
-    val storeID: String,
+    val sellerID: String,
     val name: String,
     val quantity: Int,
     val images: List<String?>,
