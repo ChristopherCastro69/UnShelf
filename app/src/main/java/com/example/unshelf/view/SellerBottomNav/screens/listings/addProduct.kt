@@ -873,6 +873,7 @@ fun AddButton(navController: NavController,sellerId: String, storeId: String, pr
 
             }
             else{
+
                 updateProductToFirestore(context, navController,sellerId, storeId, product, productId.toString())
             }
 
