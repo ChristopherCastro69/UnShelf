@@ -3,6 +3,9 @@ package com.example.unshelf.view.productView
 import android.util.Log
 import com.example.unshelf.model.entities.Product
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
@@ -85,6 +88,28 @@ data class ProductWithSelection(
     var isSelected: Boolean = false
 )
 
+fun fetchUser() : FirebaseUser? {
+    val auth = FirebaseAuth.getInstance()
+    return auth.currentUser
+}
+
+suspend fun updateCart(userId: String?, productId: String?) {
+    if (userId != null && productId != null) {
+        try {
+            val db = FirebaseFirestore.getInstance()
+            val cartDocument = db.collection("carts").document(userId)
+            cartDocument.update("products", FieldValue.arrayUnion(productId))
+                .await()
+            Log.d("Firestore", "IT WORKS?")
+
+        } catch (e: Exception) {
+             Log.d("Firestore", "Error updating cart data: ${e.message}")
+        }
+    } else {
+         Log.d("Firestore", "User ID or Product ID is null")
+    }
+}
+
 
 suspend fun getProductIds(): List<String> {
     return withContext(Dispatchers.IO) {
@@ -97,16 +122,12 @@ suspend fun getProductIds(): List<String> {
 
                 val db = Firebase.firestore
                 val result = db.collection("carts").document(user.uid).get().await()
-
-                // Assuming the "products" field contains a list of strings
                 result.data?.get("products") as? List<String> ?: emptyList()
             } else {
-                // Handle the case when the user is not authenticated
                 throw IllegalStateException("User not authenticated")
             }
         } catch (exception: Exception) {
             Log.d("Database Fetch", "Error getting documents: ", exception)
-            // Consider throwing an exception or returning a special value
             emptyList()
         }
     }
@@ -146,6 +167,5 @@ fun getStores(products : List<Product>): Map<String, List<Product>> {
             storesMap[storeID] = mutableListOf(product)
         }
     }
-
     return storesMap
 }

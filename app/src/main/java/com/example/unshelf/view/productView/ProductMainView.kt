@@ -29,9 +29,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -67,6 +70,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ProductMainView : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,8 +96,8 @@ fun ProductMain(product : Product?) {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column() {
-                VariationItem()
-                PMMenu()
+//                VariationItem()
+                PMMenu(product)
             }
         }
     ) { innerPadding ->
@@ -127,8 +131,27 @@ fun ProductMain(product : Product?) {
 }
 
 @Composable
-fun PMMenu() {
+fun PMMenu(product : Product?) {
+    var isButtonClicked by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
+    println("pleasseeee re compose")
+    LaunchedEffect(isButtonClicked) {
+        println("should work right?")
+        if (isButtonClicked) {
+            // Coroutine is launched when isButtonClicked becomes true
+            withContext(Dispatchers.IO) {
+                println("Or did it?")
+                // Call your suspend function here, e.g., updateCart
+                updateCart(fetchUser()?.uid, product?.productID)
+            }
+
+            // Reset the flag after the coroutine is executed
+            isButtonClicked = !isButtonClicked
+        } else {
+            println("were do you go")
+        }
+    }
     Row(
         modifier = Modifier.run {
             padding(top = 10.dp)
@@ -145,8 +168,9 @@ fun PMMenu() {
     ) {
         Button(
             onClick = {
-                val intent = Intent(context, CartActivity::class.java)
-                context.startActivity(intent)
+                println("It didnt run :(")
+                isButtonClicked = !isButtonClicked
+                println("Button Value ${isButtonClicked}")
             },
             colors = ButtonDefaults.buttonColors(MiddleGreenYellow),
             modifier = Modifier
@@ -154,8 +178,6 @@ fun PMMenu() {
                 .padding(bottom = 10.dp, start = 20.dp)
                 .align(Alignment.CenterVertically)
                 .weight(1F)
-
-
         ) {
             Text(
                 text = "ADD TO BASKET",
@@ -211,8 +233,13 @@ fun PMNavigation() {
             modifier = Modifier
                 .padding(15.dp)
                 .height(55.dp)
-                .width(55.dp),
-            contentScale = ContentScale.Crop
+                .width(55.dp)
+                .clickable {
+                    val intent = Intent(context, CartActivity::class.java)
+                    context.startActivity(intent)
+                },
+            contentScale = ContentScale.Crop,
+
         )
     }
 }
@@ -310,14 +337,18 @@ fun PMContent(product: Product?) {
                         color = DeepMossGreen,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.CenterVertically).padding(top=10.dp)
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(top = 10.dp)
                     )
                     Spacer(modifier = Modifier.weight(1F))
                     Text (
                         text = product.expirationDate,
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
                         fontSize = 16.sp,
-                        modifier = Modifier.align(Alignment.Top).padding(top=10.dp)
+                        modifier = Modifier
+                            .align(Alignment.Top)
+                            .padding(top = 10.dp)
                     )
                 }
             }
@@ -359,10 +390,10 @@ fun VariationItem(
                 .padding(end = 10.dp)
                 .size(35.dp)
                 .clickable {
-                    if(isZero)
+                    if (isZero)
                         setQty(qty)
                     else
-                        setQty(qty-1)
+                        setQty(qty - 1)
                 }
         )
         Text(
