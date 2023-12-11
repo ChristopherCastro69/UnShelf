@@ -328,8 +328,7 @@ fun CartProduct(
                 color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                 fontSize = 18.sp,
             )
-            Variation("Mango", 0 ,partialPrice, product.sellingPrice, isActive, CartItemPrice)
-            Variation("Mango", 0 ,partialPrice, product.sellingPrice, isActive, CartItemPrice)
+            Variation("Quantity", 0 ,partialPrice, product.sellingPrice, isActive, CartItemPrice)
         }
 
     }
@@ -454,7 +453,7 @@ fun CheckBox(
 
 @Composable
 fun Variation(
-    variationName: String = "Mango",
+    variationName: String = "Quantity",
     qty: Int = 0,
     partialPrice : MutableState<Double>,
     sellingPrice : Double,
