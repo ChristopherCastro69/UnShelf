@@ -77,7 +77,7 @@ data class LineItem(
     val amount: Int,
     val currency: String,
     @SerializedName("description")
-    val storeID: String?,
+    val sellerID: String?,
     val images: List<String>,
     val name: String,
     val quantity: Int

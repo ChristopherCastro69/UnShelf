@@ -1,5 +1,13 @@
 package com.example.unshelf.model.entities
 
+import android.os.Parcelable
+import androidx.compose.runtime.MutableState
+import java.util.Date
+import kotlinx.parcelize.Parcelize
+
+
+
+@Parcelize
 class Product(
     var productID : String ="",
     var sellerID: String ="",
@@ -17,4 +25,4 @@ class Product(
     val expirationDate: String ="",      // Changed from String to Date
     val active : Boolean = true
 
-)
+) : Parcelable
