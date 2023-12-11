@@ -388,7 +388,8 @@ fun Thumbnail() {
                         .size(250.dp)
                         .clip(RectangleShape)
                         .border(2.dp, PalmLeaf, RectangleShape)
-                        .border(2.dp, Color.Gray, RectangleShape)
+                        .border(2.dp, Color.Gray, RectangleShape),
+
                 )
             }
 
@@ -402,6 +403,7 @@ fun Thumbnail() {
                         .height(200.dp) // Consistent thumbnail size
                         .clip(RoundedCornerShape(8.dp)) // Rounded corners for modern look
                         .border(2.dp, PalmLeaf, RoundedCornerShape(8.dp))
+
                         .clickable { launcher.launch("image/*") } // Open image picker when clicking on the box
                 ) {
                     if (isImageLoading.value) {
@@ -416,7 +418,7 @@ fun Thumbnail() {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Add Thumbnail",
-                            tint = Color.White,
+                            tint = PalmLeaf,
                             modifier = Modifier.size(24.dp) // Size of the plus icon
                         )
                     }

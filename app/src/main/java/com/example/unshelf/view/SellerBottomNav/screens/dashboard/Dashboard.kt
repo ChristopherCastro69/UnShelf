@@ -35,11 +35,37 @@
     import java.time.LocalDate
     import java.time.format.DateTimeFormatter
 
+    import androidx.compose.foundation.Canvas
+
+    import androidx.compose.foundation.Canvas
+    import androidx.compose.foundation.background
+    import androidx.compose.foundation.layout.Box
+    import androidx.compose.foundation.layout.fillMaxWidth
+    import androidx.compose.foundation.layout.height
+    import androidx.compose.ui.geometry.Offset
+    import androidx.compose.ui.geometry.Size
+
+
+    import androidx.compose.ui.graphics.Path
+    import androidx.compose.ui.graphics.drawscope.DrawScope
+    import androidx.compose.ui.graphics.drawscope.Stroke
+    import androidx.compose.ui.text.TextStyle
+    import androidx.compose.ui.text.font.FontFamily
+    import androidx.compose.ui.graphics.nativeCanvas
+    import androidx.compose.ui.graphics.toArgb
+    import com.example.unshelf.ui.theme.Champagne
+    import com.example.unshelf.ui.theme.PalmLeaf
+    import com.example.unshelf.ui.theme.WatermelonRed
+    import com.example.unshelf.ui.theme.YellowGreen
+    import kotlin.random.Random
+
+
+
     var sellerId = mutableStateOf("")
     var storeId = mutableStateOf("")
     var storeName = mutableStateOf("")
     @RequiresApi(Build.VERSION_CODES.O)
-    @Preview(showBackground = true, heightDp = 1050, widthDp = 390) // Adjust the height as needed
+    @Preview(showBackground = true, heightDp = 1500, widthDp = 390) // Adjust the height as needed
     @Composable
     fun DashboardPreview() {
         Dashboard()
@@ -167,10 +193,10 @@
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Left side items
-                    AnalyticsItem("Unpaid", 0)
-                    AnalyticsItem("Processed Orders", 0)
-                    AnalyticsItem("Cancellation Requests", 0)
-                    AnalyticsItem("Sold Out Products", 0)
+                    AnalyticsItem("Unpaid", 5)
+                    AnalyticsItem("Processed Orders", 3)
+                    AnalyticsItem("Cancellation Requests", 4)
+                    AnalyticsItem("Sold Out Products", 6)
                 }
 
                 Divider(
@@ -186,9 +212,9 @@
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Right side items
-                    AnalyticsItem("To-Process Orders", 0)
-                    AnalyticsItem("Refund Requests", 0)
-                    AnalyticsItem("Unlisted Products", 0)
+                    AnalyticsItem("To-Process Orders", 9)
+                    AnalyticsItem("Refund Requests", 8)
+                    AnalyticsItem("Unlisted Products", 4)
                     AnalyticsItem("Pending Campaign", 0)
                 }
             }
@@ -196,27 +222,26 @@
     }
 
     @Composable
-    fun AnalyticsItem(title: String, count: Int) {
+    fun AnalyticsItem(title: String, count: Int = (10..100).random()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(vertical = 8.dp) // Adjust spacing as necessary
+            modifier = Modifier.padding(vertical = 8.dp)
         ) {
             Text(
                 text = count.toString(),
-                fontSize = 24.sp,
-                fontFamily = JostFontFamily,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFFFEB3B) // Adjust the color as necessary
+                color = Color.Yellow
             )
             Text(
                 text = title,
-                fontSize = 12.sp,
-                fontFamily = JostFontFamily,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color.White
             )
         }
     }
+
 
 
     @Composable
@@ -236,12 +261,13 @@
                     color = Color.White
                 )
                 Text(
-                    text = "An overview of the shop data for MONTH",
+                    text = "An overview of the shop data for December",
                     fontSize = 16.sp,
                     fontFamily = JostFontFamily,
                     fontWeight = FontWeight.Medium,
                     color = Color.White.copy(alpha = 0.7f)
                 )
+                Spacer(modifier = Modifier.height(15.dp)) // Spacing between the circle and text
 
                 // Placeholder for the line chart, you'll replace this with your actual chart implementation
                 LineChartPlaceholder()
@@ -254,60 +280,144 @@
                 Divider(color = Color.White.copy(alpha = 0.5f), thickness = 1.dp, modifier = Modifier.padding(vertical = 16.dp))
 
                 // Placeholder for the pie chart, you'll replace this with your actual chart implementation
-                PieChartPlaceholder()
+                PieChartWithLegendSideBySide()
 
                 // Product portfolio, replace with actual data
-                ProductPortfolio()
+//                ProductPortfolio()
             }
 
     }
 
     @Composable
-    fun LineChartPlaceholder() {
+    fun BarChartPlaceholder() {
+        val dataPoints = List(10) { Random.nextInt(100) }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
-                .background(Color.White.copy(alpha = 0.2f)),
-            contentAlignment = Alignment.Center
+                .background(Color.DarkGray)
         ) {
-            Text(
-                text = "Line chart placeholder",
-                color = Color.White,
-                fontSize = 20.sp
-            )
-            // You will replace this with your actual line chart composable
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val barWidth = size.width / (dataPoints.size * 2f)
+                val maxBarHeight = size.height
+
+                dataPoints.forEachIndexed { index, value ->
+                    val barHeight = (value / 100f) * maxBarHeight
+                    val barTop = maxBarHeight - barHeight
+                    val barLeft = (index * barWidth * 2) + barWidth / 2f
+                    drawRect(
+                        Color.White,
+                        topLeft = Offset(barLeft, barTop),
+                        size = androidx.compose.ui.geometry.Size(barWidth, barHeight)
+                    )
+                }
+            }
         }
     }
-
     @Composable
     fun DailyStatistics() {
-        // Implementation of daily statistics
-        // Use the StatisticItem composable here
+        // Sample data for daily statistics
+        val stats = listOf(
+            Pair("Total Sales", "$3,450"),
+            Pair("New Orders", "87"),
+            Pair("Returns", "5"),
+            Pair("Customer Queries", "12")
+        )
+
+        Column {
+            stats.forEach { (title, value) ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = title, color = Color.White)
+                    Text(text = value, color = Color.White)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
     }
 
     @Composable
-    fun PieChartPlaceholder() {
-        Box(
+    fun PieChartWithLegendSideBySide() {
+        val dataPoints = listOf(30f, 10f, 25f, 35f) // Replace with actual data
+        val sliceColors = listOf(WatermelonRed, Color.Yellow, Champagne, YellowGreen) // Replace with actual colors
+        val sliceLegends = listOf("Frozen", "Dairy", "Beverages", "Snacks") // Replace with actual legends
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp)
-                .background(Color.White.copy(alpha = 0.2f)),
-            contentAlignment = Alignment.Center
+                .padding(16.dp)
+                .height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Pie chart placeholder",
-                color = Color.White,
-                fontSize = 20.sp
-            )
-            // You will replace this with your actual pie chart composable
+            // Pie chart
+            Canvas(
+                modifier = Modifier
+                    .weight(0.4f)
+                    .size(150.dp)
+            ) {
+                drawPieChart(dataPoints, sliceColors, this)
+            }
+
+            // Legends
+            Column(
+                modifier = Modifier
+                    .weight(0.4f)
+                    .fillMaxHeight()
+                    .padding(start = 16.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                sliceLegends.forEachIndexed { index, legend ->
+                    LegendItem(sliceColors[index], "$legend ${dataPoints[index].toInt()}%")
+                }
+            }
         }
     }
+
+    @Composable
+    fun LegendItem(color: Color, text: String) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Canvas(modifier = Modifier.size(16.dp), onDraw = {
+                drawCircle(color)
+            })
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = text,
+                color = Color.White,
+                fontSize = 14.sp
+            )
+        }
+    }
+
+    fun DrawScope.drawPieChart(dataPoints: List<Float>, colors: List<Color>, drawScope: DrawScope) {
+        val total = dataPoints.sum()
+        var startAngle = 0f // Start from 3 o'clock
+        for ((index, data) in dataPoints.withIndex()) {
+            val sweepAngle = (data / total) * 360f
+            drawArc(
+                color = colors[index],
+                startAngle = startAngle,
+                sweepAngle = sweepAngle,
+                useCenter = true,
+                size = Size(size.width, size.width) // Ensure the pie chart is circular
+            )
+            startAngle += sweepAngle
+        }
+    }
+
 
     @Composable
     fun ProductPortfolio() {
-        // Implementation of product portfolio
-        // You can use a Row with Image composables or a custom implementation for your pie chart legend
+        val products = listOf("Product A", "Product B", "Product C")
+
+        Column {
+            products.forEach { product ->
+                Text(text = product, color = Color.White)
+                // Add more details as necessary (like images, descriptions)
+            }
+        }
     }
 
 
@@ -343,3 +453,78 @@
         return currentDate.format(formatter)
     }
 
+
+    @Composable
+    fun LineChartPlaceholder() {
+        // Sample data for the line chart
+        val dataPoints = List(5) { Random.nextInt(0, 450) } // Values between 50 and 450
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(16.dp)
+                .background(Color.Transparent) // Using the PalmLeaf color from your theme
+        ) {
+            Canvas(modifier = Modifier
+                .size(200.dp)
+
+            ) {
+                val yAxisLabels = listOf("0", "100", "200", "300", "400")
+                drawYAxisLabels(yAxisLabels, this)
+                drawLineChart(dataPoints, this)
+            }
+        }
+    }
+
+    fun DrawScope.drawYAxisLabels(labels: List<String>, drawScope: DrawScope) {
+        val textStyle = TextStyle(
+            color = Color.White,
+            fontSize = 12.sp,
+            fontFamily = FontFamily.Monospace,
+            fontWeight = FontWeight.Bold
+        )
+
+        val textPaint = android.graphics.Paint().apply {
+            textSize = textStyle.fontSize.toPx()
+            color = textStyle.color.toArgb()
+//            typeface = android.graphics.Typeface.create(textStyle.fontFamily, android.graphics.Typeface.BOLD)
+        }
+
+        labels.forEachIndexed { index, label ->
+            val x = 0f
+            val y = size.height - (size.height / (labels.size - 1)) * index
+            drawContext.canvas.nativeCanvas.drawText(label, x, y, textPaint)
+        }
+    }
+
+    fun DrawScope.drawLineChart(dataPoints: List<Int>, drawScope: DrawScope) {
+        val maxValue = 500 // Assuming 500 is the max value for the data points
+        val points = dataPoints.map { it.toFloat() / maxValue * drawScope.size.height }
+
+        // Calculate the coordinates for each point
+        val stepX = drawScope.size.width / (dataPoints.size - 1)
+        val coordinates = points.mapIndexed { index, y ->
+            Offset(x = stepX * index + stepX, y = drawScope.size.height - y) // Offset stepX to the right for labels
+        }
+
+        // Draw the line
+        val linePath = Path().apply {
+            moveTo(coordinates.first().x, coordinates.first().y)
+            coordinates.forEach { lineTo(it.x, it.y) }
+        }
+        drawPath(
+            path = linePath,
+            color = Color.White,
+            style = Stroke(width = 3.dp.toPx())
+        )
+
+        // Draw the points
+        coordinates.forEach { point ->
+            drawCircle(
+                color = Color(0xFFFFEB3B), // Yellow color for the points
+                radius = 8.dp.toPx(),
+                center = point
+            )
+        }
+    }
