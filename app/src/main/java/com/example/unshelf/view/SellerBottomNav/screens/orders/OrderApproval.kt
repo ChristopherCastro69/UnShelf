@@ -1,6 +1,7 @@
 package com.example.unshelf.view.SellerBottomNav.screens.orders
 
 import JostFontFamily
+import android.content.ClipData.Item
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Order
 import com.example.unshelf.ui.theme.DarkPalmLeaf
+import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.WatermelonRed
 
 
@@ -54,122 +57,121 @@ fun OrderApproval() {
                     ) },
 
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = Color(0xFF4CAF50)
+                    containerColor = PalmLeaf
                 ),
 
                 navigationIcon = {
-                    IconButton(onClick = {val intent = Intent(context,Order::class.java) }) {
-                        Icon(Icons.Filled.ArrowBack, "Menu", tint = Color.White)
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Filled.ArrowBack, "Back Button", tint = Color.White)
                     }
-                },
-
+                }
             )
         }
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            Image(painterResource(id = R.drawable.bread),
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop)
-            Row(modifier = Modifier.padding(20.dp, 20.dp)) {
-                Column {
-                    Text(text = "Hernah's Pizza",
-                        fontFamily = JostFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp)
-                    Text(text = "Total: P399.00",
-                        fontFamily = JostFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp)
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(1f),
-                contentAlignment = Alignment.Center
-            ){
-                Card(
-                    modifier = Modifier
-                        .padding(20.dp, 10.dp, 20.dp, 0.dp)
-                        .size(500.dp, 150.dp)
-                        .fillMaxWidth(1f),
-                    ){
-                    Row {
-                        Image(painterResource(
-                            id = R.drawable.profile),
-                            modifier = Modifier
-                                .padding(20.dp),
-                            contentDescription = null
-                        )
-                        Column(
-                            modifier = Modifier
-                                .padding(20.dp)
-                        ) {
-                            Text(text = "Christopher",
-                                fontFamily = JostFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                modifier = Modifier
-                                    .padding(0.dp, 0.dp, 0.dp, 5.dp))
-                            Text(text = "Order#: ",
-                                fontFamily = JostFontFamily,
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 13.sp)
-                            Text(text = "Order Date: ",
-                                fontFamily = JostFontFamily,
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 13.sp)
-                            Text(text = "Voucher: ",
-                                fontFamily = JostFontFamily,
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 13.sp)
-                        }
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .padding(20.dp, 20.dp, 20.dp, 0.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .size(50.dp),
-                ) {
-                    Row (
-                        modifier = Modifier
-                            .padding(5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ){
-                        Text(text = "Accept Order?",
+        LazyColumn(modifier = Modifier.padding(innerPadding)) {
+            item {
+                Image(painterResource(id = R.drawable.bread),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop)
+                Row(modifier = Modifier.padding(20.dp, 20.dp)) {
+                    Column {
+                        Text(text = "${""}", // Product name
                             fontFamily = JostFontFamily,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .padding(10.dp, 0.dp, 40.dp, 0.dp),
-                        )
-                        Button(
-                            onClick = {  },
-                            colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
-                            modifier = Modifier
-                                .padding(0.dp, 0.dp, 10.dp, 0.dp)
+                            fontSize = 24.sp)
+                        Text(text = "Total: ${""}", // Total Price
+                            fontFamily = JostFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp)
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(1f),
+                    contentAlignment = Alignment.Center
+                ){
+                    Card(
+                        modifier = Modifier
+                            .padding(20.dp, 10.dp, 20.dp, 0.dp)
+                            .size(500.dp, 150.dp)
+                            .fillMaxWidth(1f),
+                    ){
+                        Row {
+                            Image(painterResource(
+                                id = R.drawable.profile),
+                                modifier = Modifier
+                                    .padding(20.dp),
+                                contentDescription = null
                             )
-                        {
-                            Text("Yes")
+                            Column(
+                                modifier = Modifier
+                                    .padding(20.dp)
+                            ) {
+                                Text(text = "Christopher",
+                                    fontFamily = JostFontFamily,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    modifier = Modifier
+                                        .padding(0.dp, 0.dp, 0.dp, 5.dp))
+                                Text(text = "Order#: ",
+                                    fontFamily = JostFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 13.sp)
+                                Text(text = "Order Date: ",
+                                    fontFamily = JostFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 13.sp)
+                                Text(text = "Voucher: ",
+                                    fontFamily = JostFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 13.sp)
+                            }
                         }
-                        Button(
-                            onClick = {  },
-                            colors = ButtonDefaults.buttonColors(WatermelonRed))
-                        {
-                            Text("No")
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .padding(20.dp, 20.dp, 20.dp, 0.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .size(50.dp),
+                    ) {
+                        Row (
+                            modifier = Modifier
+                                .padding(5.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ){
+                            Text(text = "Accept Order?",
+                                fontFamily = JostFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp,
+                                modifier = Modifier
+                                    .padding(10.dp, 0.dp, 40.dp, 0.dp),
+                            )
+                            Button(
+                                onClick = {  },
+                                colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
+                                modifier = Modifier
+                                    .padding(0.dp, 0.dp, 10.dp, 0.dp)
+                            )
+                            {
+                                Text("Yes")
+                            }
+                            Button(
+                                onClick = {  },
+                                colors = ButtonDefaults.buttonColors(WatermelonRed))
+                            {
+                                Text("No")
+                            }
                         }
                     }
                 }
             }
-
-
         }
     }
 }

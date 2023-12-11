@@ -9,7 +9,7 @@ data class Order(
     val paymentID: String = "",
     val paymentTimestamp: Date? = null,
     val customerID: String = "",
-    val products: List<LineItem> = listOf(),
+    var products: List<LineItem> = listOf(),
     val totalAmount: Double = 0.0,
     val fee: Double = 0.0,
     val netAmount: Double = 0.0,
