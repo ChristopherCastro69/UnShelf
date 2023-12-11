@@ -81,7 +81,9 @@ data class LineItem(
     val images: List<String>,
     val name: String,
     val quantity: Int
-)
+){
+    constructor() : this(0, "", "", listOf(), "", 0)
+}
 
 data class Payment(
     val id: String,

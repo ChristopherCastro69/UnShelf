@@ -103,7 +103,7 @@ fun AppNavigation(){
             }
 
             composable(route = Screens.OrderScreen.name) {
-                Orders()
+                Orders(navController)
             }
 
             composable(route = Screens.ListingScreen.name) {

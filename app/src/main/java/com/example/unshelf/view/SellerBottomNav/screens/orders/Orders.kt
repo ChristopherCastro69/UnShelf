@@ -3,6 +3,7 @@ package com.example.unshelf.view.SellerBottomNav.screens.orders
 import JostFontFamily
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -24,38 +25,34 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.controller.OrderController
+import com.example.unshelf.model.checkout.LineItem
+import com.example.unshelf.model.entities.Order
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.DeepMossGreen
+import kotlinx.coroutines.launch
 
 
-// Sample data
-data class Order(
-    val productImageRes: Int,
-    val productName: String,
-    val orderID: String,
-    val orderDate: String,
-    val price: Double,
-    val status: String
-)
-
-val ordersList = listOf(
-    Order(R.drawable.loaf, "Product", "12194bdkl", "10/19/2023", 399.00, "Pending Order"),
+//val ordersList = null
     // Add more orders as per your data
 
-    )
-class OrderView:ComponentActivity(){
-    override fun onCreate(savedInstanceState: Bundle?){
-        super.onCreate(savedInstanceState)
-        setContent {
-            Orders()
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Orders() {
+fun Orders(navController: NavController) {
+    val orderViewModel:OrderController = viewModel()
+    LaunchedEffect(0) {
+        orderViewModel.fetchOrder()
+    }
+    val orders = orderViewModel.orders.collectAsState()
     var selectedTabIndex by remember { mutableStateOf(0) }
     val filterOptions = listOf("Pending", "Approved", "Cancelled", "Refunded", "Paid")
 
@@ -89,8 +86,9 @@ fun Orders() {
                 }
             }
             LazyColumn {
-                items(ordersList) { order ->
-                    OrderCard(order)
+               items(orders.value) { order ->
+                   Log.d("OrderCard", "${order}")
+                    OrderCard(order.products, order)
                 }
             }
         }
@@ -98,53 +96,53 @@ fun Orders() {
 }
 
 @Composable
-fun OrderCard(order: Order) {
+fun OrderCard(products: List<LineItem>, order: Order) {
     val context = LocalContext.current;
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { val intent = Intent(context,OrderApprovalView::class.java) },
+            .clickable {
+                val intent = Intent(context, OrderApprovalView::class.java)
+                context.startActivity(intent)
+            },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = order.productImageRes),
-                contentDescription = order.productName,
+        Column(modifier = Modifier
+            .padding(start = 16.dp, top = 20.dp)){
+            Text(text = "Order ID: ${order.checkoutID}", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text(text = "Order Date: ${order.paymentTimestamp}", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+        }
+        for(product in products){
+            Row(
                 modifier = Modifier
-                    .size(60.dp)
-                    .clip(MaterialTheme.shapes.small)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 16.dp) // Padding to ensure text does not touch the edge of the screen
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = order.productName, fontWeight = FontWeight.Bold)
-                Text(text = "Order ID: ${order.orderID}")
-                Text(text = order.orderDate)
-            }
-            Column(
-                horizontalAlignment = Alignment.End,
-                modifier = Modifier.fillMaxHeight()
-            ) {
-                Text(text = "₱${order.price}", fontWeight = FontWeight.Bold)
-                Text(text = order.status, color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
+                Image(
+                    rememberAsyncImagePainter(model = product.images.get(0)),
+                    contentDescription = "product image",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(MaterialTheme.shapes.small)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 16.dp) // Padding to ensure text does not touch the edge of the screen
+                ) {
+                    Text(text = "${product.name}", fontWeight = FontWeight.Bold)
+                }
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.fillMaxHeight()
+                ) {
+                    Text(text = "₱${String.format("%.2f", product.amount/100.0)}", fontWeight = FontWeight.Bold)
+                    Text(text = "${order.orderStatus}", color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
+                }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewOrdersScreen() {
-    Column {
-        Orders()
     }
 }
