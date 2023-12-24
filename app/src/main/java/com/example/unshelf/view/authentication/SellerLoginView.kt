@@ -1,6 +1,7 @@
 package com.example.unshelf.view.authentication
 // SellerLoginView.kt
 // SellerLoginView.kt
+
 import android.content.Context
 import android.content.Intent
 import android.util.Patterns
@@ -27,6 +28,13 @@ class SellerLoginView(private val context: Context, private val binding: Activit
             context.startActivity(intent)
         }
 
+        binding.tfForgotPassword.setOnClickListener {
+            // Intent to launch ResetPasswordActivity
+            val intent = Intent(context, ResetPassword::class.java)
+            context.startActivity(intent)
+        }
+
+
         binding.buttonBack.setOnClickListener{
             val intent = Intent(context, Seller_Login::class.java)
             context.startActivity(intent)
@@ -35,6 +43,10 @@ class SellerLoginView(private val context: Context, private val binding: Activit
             loginUser()
         }
     }
+
+    // Function to reset password
+    // Function to reset password
+
 
     private fun loginUser() {
         val email: String = binding.SellerEmail.text.toString()

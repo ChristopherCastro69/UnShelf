@@ -18,6 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UnShelf"
         tools:targetApi="31">
+
         <activity
             android:name=".view.CxOrderHistory.CxOrderHistory"
             android:exported="false" />
@@ -72,9 +73,7 @@
         <activity
             android:name=".view.RestaurantNearMe.RestaurantsNearMe"
             android:exported="false" />
-        <activity
-            android:name=".view.authentication.Reset_Pass"
-            android:exported="false" />
+
         <activity
             android:name=".view.Wallet.Balance"
             android:exported="false" />
@@ -93,9 +92,7 @@
         <activity
             android:name=".view.authentication.Verification"
             android:exported="false" />
-        <activity
-            android:name=".view.authentication.Reset_Password"
-            android:exported="false" />
+
         <activity
             android:name=".view.authentication.Seller_Register"
             android:exported="false" />
@@ -114,9 +111,9 @@
         <activity
             android:name=".view.MainActivity"
             android:exported="false" />
-        <activity
-            android:name=".view.SellerBottomNav.screens.orders.OrderView"
-            android:exported="false"/>
+<!--        <activity-->
+<!--            android:name=".view.SellerBottomNav.screens.orders.OrderView"-->
+<!--            android:exported="false"/>-->
         <activity
             android:name=".view.SellerBottomNav.screens.orders.OrderApprovalView"
             android:exported="false"/>
@@ -127,5 +124,10 @@
         <activity
             android:name=".view.productView.ProductMainView"
             android:exported="false"/>
+        <activity
+            android:name=".view.authentication.ResetPassword"
+            android:exported="false"
+            />
+
     </application>
 </manifest>
