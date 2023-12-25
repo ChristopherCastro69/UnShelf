@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -14,13 +14,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,6 +43,7 @@ import androidx.compose.material.icons.filled.Event
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,13 +52,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -66,10 +69,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -78,45 +86,39 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.unshelf.controller.seller.main.Screens
 import com.example.unshelf.model.entities.Product
 import com.example.unshelf.model.firestore.seller.dashboardmodel.fetchProductDetails
 import com.example.unshelf.model.firestore.seller.dashboardmodel.saveProductToFirestore
+import com.example.unshelf.model.firestore.seller.dashboardmodel.unlistProduct
 import com.example.unshelf.model.firestore.seller.dashboardmodel.updateProductToFirestore
 import com.example.unshelf.model.firestore.seller.dashboardmodel.uploadImage
-import com.example.unshelf.model.firestore.seller.dashboardmodel.unlistProduct
 import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.ui.theme.WatermelonRed
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeName
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.MutableState
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.unshelf.controller.seller.main.Screens
-import com.example.unshelf.ui.theme.WatermelonRed
-import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeName
 
 
 // First, define your Product data class to match the Firestore structure
 var product = mutableStateOf("")
-var sellerId = mutableStateOf("")
 val sellerID = mutableStateListOf("")
 var productName = mutableStateOf("")
 var selectedCategory = mutableStateOf("Grocery") // Default to the first item in your categories list
 var imageUri = mutableStateOf<Uri?>(null)
 var galleryImageUris = mutableStateListOf<Uri>()
 var productDescription = mutableStateOf("")
-var productHashtags = mutableStateListOf<String>()
-var marketPrice = mutableStateOf("0.00")
-var voucherCode = mutableStateOf("0.00")
+var marketPrice = mutableStateOf("")
+var voucherCode = mutableStateOf("")
 var discountPercent = mutableStateOf("")
 @RequiresApi(Build.VERSION_CODES.O)
 var pickedDate = mutableStateOf(LocalDate.now())
@@ -133,21 +135,18 @@ val showConfirmationDialog = mutableStateOf(false)
 @Composable
 @RequiresApi(Build.VERSION_CODES.O)
 fun AddProducts(productId: String? = null, navController: NavController) {
-    Log.d("AddProducts", "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}, StoreName : ${storeName.value}")
+    Log.d(
+        "AddProducts",
+        "LaunchedEffect Seller ID: ${sellerId.value}, Store ID: ${storeId.value}, StoreName : ${storeName.value}"
+    )
     // Log the current state of imageUri at the start of the function
     Log.d("AddProducts", "Initial imageUri: ${imageUri.value ?: "null or empty"}")
-
-//    imageUri.value?.let {
-//        DisplayImage(imageUri = it)
-//    }
-    // State variables
-
     var isLoadingProduct by remember { mutableStateOf(false) }
     // Fetch product details if productId is not null
+
+
     LaunchedEffect(productId) {
         productId?.let {
-
-
             isLoadingProduct = true
             fetchProductDetails(it, onSuccess = { product ->
                 // Populate state variables with fetched product details
@@ -160,11 +159,15 @@ fun AddProducts(productId: String? = null, navController: NavController) {
                 voucherCode.value = product.voucherCode
                 // pickedDate.value = LocalDate.parse(product.expirationDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
                 productQuantity.value = product.quantity.toString()
-                status.value = product.active // Assuming isActive is a boolean in your Product data class
+                status.value =
+                    product.active // Assuming isActive is a boolean in your Product data class
                 val expirationDateString = product.expirationDate
                 if (expirationDateString.isNotEmpty()) {
                     try {
-                        pickedDate.value = LocalDate.parse(expirationDateString, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+                        pickedDate.value = LocalDate.parse(
+                            expirationDateString,
+                            DateTimeFormatter.ofPattern("MM/dd/yyyy")
+                        )
                     } catch (e: DateTimeParseException) {
                         Log.e("AddProduct", "Error parsing date: $expirationDateString", e)
                         // Set to default date or handle the error as needed
@@ -172,124 +175,130 @@ fun AddProducts(productId: String? = null, navController: NavController) {
                     }
                 } else {
                     // Handle case where expiration date is empty
-                    pickedDate.value = LocalDate.now() // You can set a default date or handle as required
+                    pickedDate.value =
+                        LocalDate.now() // You can set a default date or handle as required
                     Log.d("AddProduct", "Expiration date is empty, setting to current date")
                 }
 
                 isLoadingProduct = false
             }, onFailure = { exception ->
-                Log.e("AddProducts", "Error fetching product details: ${exception.message}", exception)
+                Log.e(
+                    "AddProducts",
+                    "Error fetching product details: ${exception.message}",
+                    exception
+                )
                 isLoadingProduct = false
             })
         }
     }
+    FocusManagerBox {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "Product Details",
+                            color = Color.White,
+                            fontFamily = JostFontFamily,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    },
 
-//    if (productAdditionSuccess.value) {
-//        Toast.makeText(LocalContext.current, "Product added successfully", Toast.LENGTH_LONG).show()
-//        // Reset the flag so the toast won't show again unless a new product is added
-//        productAdditionSuccess.value = false
-//    }
+                    colors = TopAppBarDefaults.mediumTopAppBarColors(
+                        containerColor = PalmLeaf
+                    ),
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Product Details",
-                        color = Color.White,
-                        fontFamily = JostFontFamily,
-                        fontWeight = FontWeight.Medium,
-                    ) },
-
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = PalmLeaf
-                ),
-
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Screens.ListingScreen.name) }) {
-                        Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
-                    }
-                },
-                actions = {
-
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()) // Add vertical scroll
-        ) {
-            ProdName()
-            Category()
-            Thumbnail()
-//            ProductGallery()
-            ProductDescription()
-            Marketprice()
-            Voucher()
-            QuantityInput()
-            ExpirationDate()
-            if (!flag.value) {
-                // Place the UnlistItemButton where you want it to appear
-                UnlistItemButton {
-                    showConfirmationDialog.value = true
-                }
-                if (showConfirmationDialog.value) {
-                    UnlistProductDialog(
-                        showConfirmationDialog = showConfirmationDialog,
-                        onConfirmUnlist = {
-                            unlistProduct(productId)
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigate(Screens.ListingScreen.name) }) {
+                            Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
                         }
-                    )
+                    },
+                    actions = {
+
+                    }
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()) // Add vertical scroll
+            ) {
+                ProdName()
+                Category()
+                Thumbnail()
+    //            ProductGallery()
+                ProductDescription()
+                Marketprice()
+                Voucher()
+                QuantityInput()
+                ExpirationDate()
+                if (!flag.value) {
+                    // Place the UnlistItemButton where you want it to appear
+                    UnlistItemButton {
+                        showConfirmationDialog.value = true
+                    }
+                    if (showConfirmationDialog.value) {
+                        UnlistProductDialog(
+                            showConfirmationDialog = showConfirmationDialog,
+                            onConfirmUnlist = {
+                                unlistProduct(productId)
+                            }
+                        )
+                    }
                 }
+
+                // Pass the current value of sellerId and storeId to AddButton
+                AddButton(
+                    navController,
+                    sellerId = sellerId.value,
+                    storeId = storeId.value,
+                    productId = productId
+                )
             }
 
-            // Pass the current value of sellerId and storeId to AddButton
-            AddButton(navController,sellerId = sellerId.value, storeId = storeId.value, productId = productId)
         }
-
     }
 }
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProdName(){
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)
+fun ProdName() {
+    val focusManager = LocalFocusManager.current
+
+    // Use Box to capture taps outside the TextField
+    Box(
+        modifier = Modifier
+            .fillMaxSize() // Ensure it covers the whole screen
+            .pointerInput(Unit) {
+                detectTapGestures (onPress = { focusManager.clearFocus() })
+            }
     ) {
-        Text(
-            text = "Product Name",
-            fontFamily = JostFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            color = Color.Black,
-
-            )
-        OutlinedTextField(
-            value = productName.value,
-            onValueChange = { productName.value = it },
-            label = { Text("Write a product name.") },
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-//                .padding(4.dp), // You can adjust padding as needed
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
-            singleLine = true, // Add this line if you want the TextField to be single line
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color(0xFFF0F0F0), // Apply the background color here
-                unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent,
-                cursorColor = Color.Black
-            ),
-            shape = RoundedCornerShape(4.dp) // Apply rounded shape here
-        )
-
-
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Product Name",
+                fontFamily = JostFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = Color.Black
+            )
+            CustomTextField(
+                value = productName.value,
+                onValueChange = { productName.value = it },
+                label = "Write a product name.",
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+        }
     }
 }
+
 
 @Composable
 fun Category() {
@@ -340,8 +349,6 @@ fun Category() {
         }
     }
 }
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -409,11 +416,6 @@ fun Thumbnail() {
                     if (isImageLoading.value) {
                         // Show CircularProgressIndicator while the image is loading
                         CircularProgressIndicator(color = PalmLeaf)
-//                        Text(
-//                            text = "Uploading...",
-//                            color = Color.White,
-////            modifier = Modifier.align(Alignment.BottomCenter)
-//                        )
                     } else{
                         Icon(
                             imageVector = Icons.Default.Add,
@@ -562,8 +564,6 @@ fun ProductGallery() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDescription() {
-//    var description by remember { mutableStateOf("") }
-//    val hashtags = remember { mutableStateListOf<String>() }
     var hashtagText by remember { mutableStateOf("") }
 
     Column(modifier = Modifier
@@ -577,25 +577,13 @@ fun ProductDescription() {
             color = Color.Black,
 
             )
-        OutlinedTextField(
+        CustomTextField(
             value = productDescription.value,
             onValueChange = { productDescription.value = it },
-            label = { Text("Write a product description.") },
-            modifier = Modifier
-                .fillMaxWidth(),
-//                .padding(8.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
-            singleLine = false, // Add this line if you want the TextField to be single line
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color(0xFFF0F0F0), // Apply the background color here
-                unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent,
-                cursorColor = Color.Black
-            ),
-            shape = RoundedCornerShape(4.dp)
+            label = "Write a product description.",
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = false
         )
-
     }
 }
 
@@ -671,8 +659,7 @@ fun HashtagChip(text: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Marketprice() {
-//    var marketPrice by remember { mutableStateOf("") }
-
+    var marketPriceText by remember { mutableStateOf("") }
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp)) {
@@ -682,16 +669,17 @@ fun Marketprice() {
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             color = Color.Black,
-//            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
         OutlinedTextField(
             value = marketPrice.value,
-            onValueChange = { marketPrice.value = it },
-            label = { Text("Enter market price") },
+
+            onValueChange = {
+                Log.d("MarketPrice", "New input: $it")
+                marketPrice.value = it },
+            placeholder = { Text("Enter market price") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp),
-//            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
             singleLine = true, // Add this line if you want the TextField to be single line
@@ -719,7 +707,7 @@ fun Voucher() {
         OutlinedTextField(
             value = voucherCode.value,
             onValueChange = { voucherCode.value = it },
-            label = { Text("Voucher") },
+            placeholder = { Text("Voucher") },
             modifier = Modifier
                 .weight(1f)
                 .padding(end = 8.dp),
@@ -770,9 +758,13 @@ fun QuantityInput() {
             color = Color.Black
         )
         OutlinedTextField(
+
             value = productQuantity.value,
-            onValueChange = { productQuantity.value = it },
-            label = { Text("Enter quantity") },
+
+            onValueChange = {
+                Log.d("QuantityInput", "New input: $it")
+                productQuantity.value = it },
+            placeholder = { Text("Enter quantity") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
@@ -961,9 +953,71 @@ fun PreviewAddProducts() {
 
 
 
-// ----> FUNCTIONS TO CLOUD FIRESTORE <-----
+// ----> CUSTOM TEXT FIELD <-----
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+    singleLine: Boolean = true
+) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+    var isFocused by remember { mutableStateOf(false) }
+
+    // Observe focus changes
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text(label) },
+        modifier = modifier
+            .focusRequester(focusRequester)
+            .onFocusChanged { focusState ->
+                isFocused = focusState.isFocused
+            }
+            .fillMaxWidth(),
+        keyboardOptions = keyboardOptions,
+        textStyle = TextStyle(fontSize = 16.sp, fontFamily = JostFontFamily),
+        singleLine = singleLine,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            containerColor = Color(0xFFF0F0F0),
+            unfocusedBorderColor = Color.Transparent,
+            focusedBorderColor = Color.Transparent,
+            cursorColor = Color.Black
+        ),
+        shape = RoundedCornerShape(4.dp)
+    )
+
+    // Back button handler
+    BackHandler(enabled = isFocused) {
+        isFocused = false
+        keyboardController?.hide()
+        focusManager.clearFocus()
+    }
+}
 
 
+
+
+@Composable
+fun FocusManagerBox(content: @Composable () -> Unit) {
+    val focusManager = LocalFocusManager.current
+
+    // Modifier.fillMaxSize() ensures that the Box takes up the entire screen
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onPress = { focusManager.clearFocus() })
+            }
+    ) {
+        content()
+    }
+}
 
 
 
