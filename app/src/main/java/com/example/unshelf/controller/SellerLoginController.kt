@@ -45,6 +45,7 @@ class SellerLoginController(private val context: Context, private val view: Sell
     }
 }
 
+
 fun fetchUserDetails(onComplete: (String, String) -> Unit) {
     val userId = Firebase.auth.currentUser?.uid ?: return
 

@@ -132,13 +132,15 @@ fun updateProductToFirestore(context : Context, navController: NavController,sel
             "thumbnail" to product.thumbnail,
             "description" to product.description,
             "expirationDate" to product.expirationDate,
-            "quantity" to product.quantity
+            "quantity" to product.quantity,
+            "active" to true // Set the "active" field to true
         )
     ).addOnSuccessListener {
         Toast.makeText(context, "Product updated successfully", Toast.LENGTH_SHORT).show()
         Log.d("Firestore", "Product updated successfully")
         productAdditionSuccess.value = true
         isProductUpdating.value = false
+
         navController.navigate("listings") {
             // This will clear the back stack up to the 'listings' route
             popUpTo("listings") { inclusive = true }
