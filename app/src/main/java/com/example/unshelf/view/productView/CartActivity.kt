@@ -73,20 +73,20 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class CartActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
 
-        lifecycleScope.launch {
-            try {
-                val productListDatas = getProducts()
-                setContent {
-                    MyComposable(productListDatas)
+            lifecycleScope.launch {
+                try {
+                    val productListDatas = getProducts()
+                    setContent {
+                        MyComposable(productListDatas)
+                    }
+                } catch (e: Exception) {
+                    Log.e("Coroutine Error", "Error in coroutine", e)
                 }
-            } catch (e: Exception) {
-                Log.e("Coroutine Error", "Error in coroutine", e)
             }
         }
-    }
 }
 
 var storesInfo : MutableState<Map<String, List<Product>>> = mutableStateOf(mutableMapOf())
