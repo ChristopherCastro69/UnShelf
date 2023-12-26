@@ -48,6 +48,7 @@ class CheckoutRedirect : ComponentActivity() {
 @Composable
 fun CheckoutRedirectContent(url: String, clientKey: String, activity: ComponentActivity, cID: String) {
     val context = LocalContext.current
+    var flag = false
     AndroidView(factory = { context ->
         WebView(context).apply {
             layoutParams = ViewGroup.LayoutParams(
@@ -58,8 +59,9 @@ fun CheckoutRedirectContent(url: String, clientKey: String, activity: ComponentA
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                     val curUrl = request?.url.toString()
-                    if (curUrl!=url && curUrl.startsWith("https://checkout.paymongo.com/${clientKey}")) {
+                    if (curUrl!=url && curUrl.startsWith("https://checkout.paymongo.com/${clientKey}") && !flag) {
                         CoroutineScope(Dispatchers.Default).launch() {
+                            flag = true
                             CheckoutSessionController().placeOrder(checkoutID = cID)
                         }
                         handleCheckoutRedirect(url, activity)
