@@ -98,5 +98,9 @@
     <string name="profile">Edit Profile</string>
     <string name="title_activity_google_map">GoogleMap</string>
 
-
+    <string-array name="city_options">
+        <item>Cebu City</item>
+        <item>Minglanilla City</item>
+        <item>Talisay City</item>
+    </string-array>
 </resources>

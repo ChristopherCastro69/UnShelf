@@ -3,6 +3,7 @@ package com.example.unshelf.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Spinner
 import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
 import com.example.unshelf.view.AddressManager.AddressManager
@@ -24,12 +25,17 @@ import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 
 class MainActivity : AppCompatActivity() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ui_tester)
 
         // Initialize Firebase App
         FirebaseApp.initializeApp(this)
+
+
+
+
 
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
         firebaseAppCheck.installAppCheckProviderFactory(
@@ -57,9 +63,11 @@ class MainActivity : AppCompatActivity() {
         val testBtnBuyer = findViewById<Button>(R.id.testBtnBuyer)
 
 
+
+
         // HELPER FUNCTION: UI_Tester_Helper
         //! IMPORTANT: Just call the UI_Tester_Helper.UI_Test(intent, button, java.class) to
-        UI_Tester_Helper.UI_Test(this, testBtnMain, MainUI::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnMain, MainUI::class.java)
         UI_Tester_Helper.UI_Test(this, testBtnNearMe, RestaurantsNearMe::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnLogin, Customer_Login::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
