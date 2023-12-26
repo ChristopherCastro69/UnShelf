@@ -12,17 +12,17 @@ class Product(
     var productID : String ="",
     var sellerID: String ="",
     var storeID : String ="",
-    val storeName : String = "",
-    val productName: String = "",
-    val quantity: Int = 0, // Added quantity field
-    val price: Double = 0.0,
-    val sellingPrice : Double = 0.0,
-    val discount : Double = 0.0,
-    val voucherCode : String = "",
-    val categories: List<String> = listOf(""),  // Changed from String to List<String>
-    val thumbnail: String = "",
-    val description: String = "",
-    val expirationDate: String ="",      // Changed from String to Date
-    val active : Boolean = true
+    var storeName : String = "",
+    var productName: String = "",
+    var quantity: Int = 0, // Added quantity field
+    var price: Double = 0.0,
+    var sellingPrice : Double = 0.0,
+    var discount : Double = 0.0,
+    var voucherCode : String = "",
+    var categories: List<String> = listOf(""),  // Changed from String to List<String>
+    var thumbnail: String = "",
+    var description: String = "",
+    var expirationDate: String ="",      // Changed from String to Date
+    var active : Boolean = true
 
 ) : Parcelable

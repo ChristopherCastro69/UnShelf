@@ -35,6 +35,12 @@ class CustomerLoginView(private val context: Context, private val binding: Activ
             context.startActivity(intent)
         }
 
+        binding.tfForgotPassword.setOnClickListener {
+            // Intent to launch ResetPasswordActivity
+            val intent = Intent(context, ResetPassword::class.java)
+            context.startActivity(intent)
+        }
+
         binding.lblSeller.setOnClickListener{
             val intent = Intent(context, Seller_Login::class.java)
             context.startActivity(intent)

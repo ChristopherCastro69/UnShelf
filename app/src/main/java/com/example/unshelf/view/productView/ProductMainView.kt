@@ -314,7 +314,7 @@ fun PMContent(product: Product?) {
                             .size(25.dp)
                     )
                     Text (
-                        text = product.storeID,
+                        text = product.storeName,
                         fontSize = 16.sp,
                         color = PalmLeaf
                     )

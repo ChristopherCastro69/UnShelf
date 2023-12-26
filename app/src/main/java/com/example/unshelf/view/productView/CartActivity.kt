@@ -223,7 +223,7 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
                 .padding(end = 8.dp)
                 .align(Alignment.CenterVertically),
             checkedState = isActiveCheckout,
-            onCheckedChange = {
+             onCheckedChange = {
 
             }
         )

@@ -63,35 +63,20 @@
         app:layout_constraintHorizontal_bias="0.29"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <Spinner
+        android:id="@+id/spinnerAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="23dp"
         android:fontFamily="@font/jost_medium"
-        android:text="Cebu City"
-        android:textColor="@color/black"
-        android:textSize="25sp"
+        android:minHeight="48dp"
+        android:textColor="@color/green02"
+        android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/btn_get_started"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintHorizontal_bias="0.072"
         app:layout_constraintStart_toEndOf="@+id/textView2" />
 
-    <!--        <TextView-->
-    <!--        android:id="@+id/textView3"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="173dp"-->
-    <!--        android:layout_marginBottom="40dp"-->
-    <!--        android:fontFamily="@font/jost_medium"-->
-    <!--        android:text="Cebu City"-->
-    <!--        android:textColor="#000"-->
-    <!--        android:textSize="25sp"-->
-    <!--        app:layout_constraintBottom_toTopOf="@+id/btn_get_started"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.654"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/textView" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
