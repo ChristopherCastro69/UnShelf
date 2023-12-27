@@ -24,7 +24,7 @@ class CustomerLoginController(private val context: Context, private val view: Cu
             if (task.isSuccessful) {
                 // Login is successful
                 val firebaseAuth = model.firebaseAuth
-                if (firebaseAuth.currentUser!!.isAnonymous || firebaseAuth.currentUser!!.isEmailVerified) {
+                if (firebaseAuth.currentUser!!.isEmailVerified) {
                     // go to main activity
                     val intent = Intent(context, MainNavigationActivityBuyer::class.java)
                     context.startActivity(intent)
