@@ -1,31 +1,24 @@
 package com.example.unshelf.controller.DataFetch
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.example.unshelf.model.entities.Product
+import com.google.firebase.Firebase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class DataFetchRepository {
+object DataFetchRepository {
 
     private val db = FirebaseFirestore.getInstance()
 
     val products = mutableStateOf<List<Product>>(emptyList())
 
     val isLoading = mutableStateOf(true)
-
-    private val listenerRegistration = db.collection("products")
-        .addSnapshotListener { value, error ->
-            error?.let {
-                isLoading.value = false
-                return@addSnapshotListener
-            }
-            value?.let {
-                products.value = it.toObjects(Product::class.java)
-                isLoading.value = false
-            }
-        }
 
     fun fetchData() {
         CoroutineScope(Dispatchers.Main).launch {
@@ -39,7 +32,4 @@ class DataFetchRepository {
         }
     }
 
-    fun clearListener() {
-        listenerRegistration.remove()
-    }
 }

@@ -95,59 +95,65 @@ fun MainMarketplaceContent(){
             }
         },
         bottomBar = {
-            Row {
-                Button(onClick = {
-                    val intent = Intent(context, CustomerRegister::class.java)
-                    context.startActivity(intent)
-                },
-                    shape = RoundedCornerShape(13.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf),
-                    modifier = Modifier
-                        .weight(1F)
-                        .padding(horizontal = 8.dp)
-                ){
-                    Text(
-                        text = "Sign up",
-                        color = Color.White,
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Black,
-                            textAlign = TextAlign.Center,
-                        ),
-                        modifier = Modifier
-                            .wrapContentHeight(align = Alignment.CenterVertically)
-                    )
-
-                }
-                Button(onClick = {
-                    val intent = Intent(context, Customer_Login::class.java)
-                    context.startActivity(intent)
-                },
-                    shape = RoundedCornerShape(13.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf),
-                    modifier = Modifier
-                        .weight(1F)
-                        .padding(horizontal = 8.dp)
-                ){
-                    Text(
-                        text = "Log in",
-                        color = Color.White,
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Black,
-                            textAlign = TextAlign.Center,
-                        ),
-                        modifier = Modifier
-                            .wrapContentHeight(align = Alignment.CenterVertically)
-                    )
-
-                }
-            }
+            initialMarketNav()
         }
     ) {innerPadding ->
         Box(modifier = androidx.compose.ui.Modifier.padding(innerPadding)) {
-            MarketplaceContent()
+            MarketplaceContent(false)
         }
     }
 
+}
+
+@Composable
+fun initialMarketNav() {
+    val context = LocalContext.current
+    Row {
+        Button(onClick = {
+            val intent = Intent(context, CustomerRegister::class.java)
+            context.startActivity(intent)
+        },
+            shape = RoundedCornerShape(13.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf),
+            modifier = Modifier
+                .weight(1F)
+                .padding(horizontal = 8.dp)
+        ){
+            Text(
+                text = "Sign up",
+                color = Color.White,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center,
+                ),
+                modifier = Modifier
+                    .wrapContentHeight(align = Alignment.CenterVertically)
+            )
+
+        }
+        Button(onClick = {
+            val intent = Intent(context, Customer_Login::class.java)
+            context.startActivity(intent)
+        },
+            shape = RoundedCornerShape(13.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf),
+            modifier = Modifier
+                .weight(1F)
+                .padding(horizontal = 8.dp)
+        ){
+            Text(
+                text = "Log in",
+                color = Color.White,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center,
+                ),
+                modifier = Modifier
+                    .wrapContentHeight(align = Alignment.CenterVertically)
+            )
+
+        }
+    }
 }

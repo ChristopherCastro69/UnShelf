@@ -52,8 +52,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.model.entities.Customer
 import com.example.unshelf.model.entities.Product
 import com.example.unshelf.model.entities.Seller
 import com.example.unshelf.ui.theme.DarkPalmLeaf
@@ -63,6 +65,7 @@ import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.checkout.CheckoutUI
 import com.example.unshelf.view.BuyerBottomNav.main.BuyerScreens
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
+import com.example.unshelf.view.StartUI.initialMarketNav
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.product.cart
 import com.example.unshelf.view.product.product_main
@@ -71,15 +74,18 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProductMainView : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val user: Boolean = intent.getBooleanExtra("user",false)
         val product: Product? = intent.getParcelableExtra("product")
+
         setContent {
             // Your Compose UI goes here
-            ProductMain(product)
+            ProductMain(product, user)
         }
     }
 }
@@ -87,17 +93,21 @@ class ProductMainView : ComponentActivity() {
 @Preview
 @Composable
 fun ProductContent() {
-    ProductMain(product = null)
+    ProductMain(product = null, false)
 }
 
 @Composable
-fun ProductMain(product : Product?) {
+fun ProductMain(product : Product?, user : Boolean) {
     product as Product
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            Column() {
-                PMMenu(product)
+            if(user) {
+                Column() {
+                    PMMenu(product)
+                }
+            } else {
+                initialMarketNav()
             }
         }
     ) { innerPadding ->
@@ -126,7 +136,7 @@ fun ProductMain(product : Product?) {
                 PMContent(product)
             }
         }
-        PMNavigation(product)
+        PMNavigation(product, user)
     }
 }
 
@@ -206,7 +216,7 @@ fun PMMenu(product : Product?) {
 }
 
 @Composable
-fun PMNavigation(product : Product?) {
+fun PMNavigation(product : Product?, user: Boolean) {
     val context = LocalContext.current
     Row {
         val activity = LocalContext.current
@@ -228,20 +238,23 @@ fun PMNavigation(product : Product?) {
         Spacer(
             modifier = Modifier.weight(1f) // Add some space between images
         )
-        Image (
-            painter = painterResource(id = R.drawable.ic_cart),
-            contentDescription = "Back",
-            modifier = Modifier
-                .padding(15.dp)
-                .height(55.dp)
-                .width(55.dp)
-                .clickable {
-                    val intent = Intent(context, CartActivity::class.java)
-                    context.startActivity(intent)
-                },
-            contentScale = ContentScale.Crop,
+        if(user) {
+            Image (
+                painter = painterResource(id = R.drawable.ic_cart),
+                contentDescription = "Back",
+                modifier = Modifier
+                    .padding(15.dp)
+                    .height(55.dp)
+                    .width(55.dp)
+                    .clickable {
+                        val intent = Intent(context, CartActivity::class.java)
+                        context.startActivity(intent)
+                    },
+                contentScale = ContentScale.Crop,
 
-        )
+                )
+        }
+
     }
 }
 
