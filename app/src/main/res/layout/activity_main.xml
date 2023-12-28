@@ -48,32 +48,45 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ProgressBar
+        android:id="@+id/loading_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="52dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="130dp"
         android:fontFamily="@font/jost_medium"
         android:text="I live in "
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btn_get_started"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.29"
+        app:layout_constraintHorizontal_bias="0.288"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
         android:id="@+id/spinnerAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="23dp"
+        android:layout_marginBottom="125dp"
         android:fontFamily="@font/jost_medium"
         android:minHeight="48dp"
         android:textColor="@color/green02"
         android:textSize="32sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btn_get_started"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.072"
         app:layout_constraintStart_toEndOf="@+id/textView2" />
