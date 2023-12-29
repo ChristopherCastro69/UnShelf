@@ -36,9 +36,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier // Correct import
 import androidx.compose.ui.draw.paint
@@ -71,25 +73,26 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class CartActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
 
-        lifecycleScope.launch {
-            try {
-                val productListDatas = getProducts()
-                setContent {
-                    MyComposable(productListDatas)
+            lifecycleScope.launch {
+                try {
+                    val productListDatas = getProducts()
+                    setContent {
+                        MyComposable(productListDatas)
+                    }
+                } catch (e: Exception) {
+                    Log.e("Coroutine Error", "Error in coroutine", e)
                 }
-            } catch (e: Exception) {
-                Log.e("Coroutine Error", "Error in coroutine", e)
             }
         }
-    }
 }
 
 var storesInfo : MutableState<Map<String, List<Product>>> = mutableStateOf(mutableMapOf())
 var allCheckState : Boolean = false
 var totalPrice : MutableState<Double> = mutableStateOf(0.0)
+var checkoutProductList : MutableList<productCheckOutQuantity> = mutableListOf()
 
 @Composable
 fun MyComposable(
@@ -213,8 +216,8 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
     ) {
         val context = LocalContext.current
         val isActiveCheckout = remember {mutableStateOf(false)}
-
-        // Add your content here, for example, Text and Button
+        
+        // Add your content here for example, Text and Button
         CheckBox(
             Modifier
                 .padding(end = 8.dp)
@@ -258,13 +261,15 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
         Spacer(modifier = Modifier.padding(end = 16.dp))
         Button(
             onClick = {
-                val intent = Intent(context, CheckoutUI::class.java)
-                context.startActivity(intent)
+//                val intent = Intent(context, CheckoutUI::class.java)
+//                context.startActivity(intent)
+                for (prod in checkoutProductList) {
+                    println(prod)
+                }
             },
             colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
             modifier = Modifier
                 .height(60.dp)
-
         ) {
             Text(
                 text = "CHECKOUT",
@@ -279,13 +284,17 @@ fun CartProduct(
     product : Product,
     parentCheck : MutableState<Boolean>,
     fromChild : MutableState<Int>,
-    fromParent : MutableState<MutableState<Boolean>>,
+    fromParent: Boolean,
     isClickedParent : MutableState<Boolean>,
-    CartItemPrice : MutableState<Double>
+    CartItemPrice : MutableState<Double>,
 ) {
-    var isActive = remember { mutableStateOf(product.active) }
+    var isActive = remember { mutableStateOf(false) }
     var partialPrice = remember { mutableStateOf(0.0) }
-
+    var productQty by remember { mutableStateOf(0) }
+    if (fromParent) {
+        isActive.value = true
+        "Value when fromParent is true"
+    }
     Row(
         modifier = Modifier.padding(top = 16.dp),
     ) {
@@ -294,15 +303,19 @@ fun CartProduct(
             isActive,
             onCheckedChange = {
                 if (isActive.value) {
-                   parentCheck.value = true
+                    checkoutProductList.add(productCheckOutQuantity(product, productQty))
+                    parentCheck.value = true
                     fromChild.value += 1
                     CartItemPrice.value += partialPrice.value
                     totalPrice.value += partialPrice.value
                 } else {
+                    val productCheckOutToRemove = productCheckOutQuantity(product, productQty)
+                    checkoutProductList.remove(productCheckOutToRemove)
                     fromChild.value--
                     CartItemPrice.value = CartItemPrice.value - partialPrice.value
                     totalPrice.value = totalPrice.value - partialPrice.value
                 }
+                Log.d("CartProduct", "Updated productQty: ${productQty}")
             }
         )
 
@@ -328,7 +341,9 @@ fun CartProduct(
                 color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                 fontSize = 18.sp,
             )
-            Variation("Quantity", 0 ,partialPrice, product.sellingPrice, isActive, CartItemPrice)
+            Variation("Quantity", productQty ,
+                onQtyChange = { newQty -> productQty = newQty }
+                ,partialPrice, product.sellingPrice, isActive, CartItemPrice, product)
         }
 
     }
@@ -358,20 +373,35 @@ fun CartItem(
         ) {
             val isChecked = remember {mutableStateOf(false)}
             val fromChild = remember {mutableStateOf(0)}
-            val fromParent = remember { mutableStateOf(isChecked) }
+            val fromParent by remember {mutableStateOf(false)}
+//            val fromParent by derivedStateOf {
+//                isChecked.value // Use the value of isChecked as the value of fromParent
+//            }
             val isClicked = remember { mutableStateOf(false) }
             Row(
                 horizontalArrangement = Arrangement.Start,
             ) {
-                isChecked.value = fromChild.value != 0
+                isChecked.value = fromChild.value != 0 || isClicked.value
                 Spacer(modifier = Modifier.width(16.dp))
                 Row (
                     modifier = Modifier.weight(1f),
                 ) {
+//                    CheckBox(
+//                        Modifier
+//                            .padding(start = 8.dp),
+//                        checkedState = isChecked,
+//                        onCheckedChange = {
+//                            isClicked.value = !isClicked.value
+//                        }
+//                    )
                     Image(
                         painter = painterResource(id = R.drawable.seller_ic),
                         contentDescription = "Seller Icon",
-                        modifier = Modifier.padding(start = 16.dp)
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .clickable {
+                                isChecked.value = !isChecked.value;
+                            }
                     )
                     Text(
                         text = "${storeName}",
@@ -391,7 +421,7 @@ fun CartItem(
                     fromChild,
                     fromParent,
                     isClicked,
-                    CartItemPrice
+                    CartItemPrice,
                 )
             }
             Column (
@@ -454,14 +484,14 @@ fun CheckBox(
 @Composable
 fun Variation(
     variationName: String = "Quantity",
-    qty: Int = 0,
+    qty : Int,
+    onQtyChange: (Int) -> Unit,
     partialPrice : MutableState<Double>,
     sellingPrice : Double,
     isActive : MutableState<Boolean>,
-    CartItemPrice : MutableState<Double>
+    CartItemPrice : MutableState<Double>,
+    product: Product
 ) {
-    var (qty, setQty)  = remember { mutableStateOf(qty) }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -483,14 +513,22 @@ fun Variation(
             contentDescription = "Increase Quantity",
             modifier = Modifier
                 .clickable {
+
+                    val productCheckOutToRemove = productCheckOutQuantity(product, qty)
+                    val indexToRemove = checkoutProductList.indexOf(productCheckOutToRemove)
+
                     if (isActive.value) {
+                        if (indexToRemove != -1) {
+                            checkoutProductList[indexToRemove].qty += 1
+                        }
                         CartItemPrice.value += sellingPrice
                         partialPrice.value += sellingPrice
                         totalPrice.value += sellingPrice
                     } else {
+
                         partialPrice.value += sellingPrice
                     }
-                    setQty(qty + 1)
+                    onQtyChange(qty + 1)
                 }
                 .padding(end = 5.dp)
         )
@@ -503,19 +541,26 @@ fun Variation(
             contentDescription = "Decrease Quantity",
             modifier = Modifier
                 .clickable {
+                    val productCheckOutToRemove = productCheckOutQuantity(product, qty)
+                    val indexToRemove = checkoutProductList.indexOf(productCheckOutToRemove)
 
-                    if (qty - 1 < 0) {
-                        setQty(0)
-                    } else {
+                    if (qty - 1 >= 0) {
                         if (isActive.value) {
+                            if (indexToRemove != -1) {
+                                checkoutProductList[indexToRemove].qty -= 1
+                                if (checkoutProductList[indexToRemove].qty <= 0) {
+                                    checkoutProductList.removeAt(indexToRemove)
+                                }
+                            }
                             CartItemPrice.value -= sellingPrice
                             partialPrice.value -= sellingPrice
                             totalPrice.value -= sellingPrice
                         } else {
                             partialPrice.value -= sellingPrice
                         }
-                        setQty(qty - 1)
+                        onQtyChange(qty - 1)
                     }
+
                 }
                 .padding(start = 5.dp)
         )

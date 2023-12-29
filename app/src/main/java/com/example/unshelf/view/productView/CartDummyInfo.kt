@@ -83,9 +83,9 @@ fun getTotalAmount() : Double {
     return sum
 }
 
-data class ProductWithSelection(
+data class productCheckOutQuantity(
     val product: Product,
-    var isSelected: Boolean = false
+    var qty: Int = 0,
 )
 
 fun fetchUser() : FirebaseUser? {

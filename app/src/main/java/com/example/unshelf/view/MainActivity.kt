@@ -16,6 +16,7 @@ import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
 import com.example.unshelf.view.checkout.CheckoutUI
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
+import com.example.unshelf.view.SellerBottomNav.screens.orders.PickUp
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 import com.example.unshelf.view.StartUI.MainUI
 import com.example.unshelf.view.productView.ProductMainView
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnPmain, product_main::class.java);
 //        UI_Tester_Helper.UI_Test(this, testBtnPmain, cart::class.java);
-        UI_Tester_Helper.UI_Test(this, testBtnCart, ProductMainView::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnCart, PickUp::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnWallet, Balance::class.java);
         UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivitySeller::class.java);
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);

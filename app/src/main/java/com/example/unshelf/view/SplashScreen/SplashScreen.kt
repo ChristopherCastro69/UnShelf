@@ -19,20 +19,20 @@ import com.google.firebase.firestore.FirebaseFirestore
 class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val firebaseAuth = FirebaseAuth.getInstance()
-        val firestore = FirebaseFirestore.getInstance()
-
-        firebaseAuth.signInAnonymously()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("Debug", "signInAnonymously:success")
-                    val user = firebaseAuth.currentUser
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w("Debug", "signInAnonymously:failure", task.exception)
-                }
-            }
+//        val firebaseAuth = FirebaseAuth.getInstance()
+//        val firestore = FirebaseFirestore.getInstance()
+//
+//        firebaseAuth.signInAnonymously()
+//            .addOnCompleteListener { task ->
+//                if (task.isSuccessful) {
+//                    // Sign in success, update UI with the signed-in user's information
+//                    Log.d("Debug", "signInAnonymously:success")
+//                    val user = firebaseAuth.currentUser
+//                } else {
+//                    // If sign in fails, display a message to the user.
+//                    Log.w("Debug", "signInAnonymously:failure", task.exception)
+//                }
+//            }
         setContentView(R.layout.activity_splash_screen)
 
         val splashScreen = findViewById<ImageView>(splashscreen)

@@ -111,13 +111,12 @@ fun Marketplace(){
         }
     ){innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            MarketplaceContent()
+            MarketplaceContent(true)
         }
     }
 }
 @Composable
-fun MarketplaceContent() {
-    val listState = rememberLazyListState()
+fun MarketplaceContent(user: Boolean) {
     val viewModel: DataFetchController = viewModel()
     Surface {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -143,7 +142,6 @@ fun MarketplaceContent() {
                                 .padding(top = 10.dp))
                         }
                         else {
-                            val initializedFilter = CategoryFilter()
                             val categories = listOf("Grocery", "Fruits", "Vegetables", "Baked Goods", "Meals")
                             Row(Modifier.padding(horizontal = 10.dp)) {
                                 Text(
@@ -164,7 +162,7 @@ fun MarketplaceContent() {
                                 )
                             }
                             val discountFilter = DiscountFilter()
-                            ProductGroup(discountFilter.meetsCriteria(products))
+                            ProductGroup(discountFilter.meetsCriteria(products), user)
                             Spacer(
                                 Modifier.height(10.dp)
                             )
@@ -181,7 +179,7 @@ fun MarketplaceContent() {
                                             .padding(vertical = 10.dp)
                                     )
                                 }
-                                ProductGroup(categoryFilter.meetsCriteria(products))
+                                ProductGroup(categoryFilter.meetsCriteria(products), user)
                                 Spacer(
                                     Modifier.height(10.dp)
                                 )
@@ -233,12 +231,12 @@ fun CategoryUI() {
     }
 }
 @Composable
-fun ProductGroup(products : List<Product>){
+fun ProductGroup(products : List<Product>, user: Boolean){
     Box(Modifier.padding(horizontal = 10.dp)){
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.horizontalScroll(rememberScrollState())){
             //items(products.size)
             for(product in products){
-                ProductUI(product)
+                ProductUI(product, user)
             }
         }
     }
@@ -246,7 +244,7 @@ fun ProductGroup(products : List<Product>){
 }
 
 @Composable
-fun ProductUI(product : Product) {
+fun ProductUI(product : Product, user: Boolean) {
     val context = LocalContext.current
     Box{
         Box(
@@ -276,6 +274,7 @@ fun ProductUI(product : Product) {
                     .clickable {
                         val intent = Intent(context, ProductMainView::class.java)
                         intent.putExtra("product", product)
+                        intent.putExtra("user", user)
                         context.startActivity(intent)
                     }
             )

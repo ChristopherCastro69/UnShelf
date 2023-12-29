@@ -5,7 +5,7 @@ import com.example.unshelf.model.entities.Product
 
 class DataFetchController : ViewModel() {
 
-    private val repository = DataFetchRepository()
+    private val repository = DataFetchRepository
 
     val products = repository.products
     val isLoading = repository.isLoading
@@ -18,7 +18,4 @@ class DataFetchController : ViewModel() {
         repository.fetchData()
     }
 
-    fun clearListener() {
-        repository.clearListener()
-    }
 }
