@@ -30,6 +30,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -215,32 +216,35 @@ fun FilterTabs(selectedIndex: MutableState<Int>, onTabSelected: (Int) -> Unit) {
 }
 @Composable
 fun ProductList(sellerId: String, storeId: String, navController: NavController, selectedIndex: Int) {
-    // Use a ViewModel to manage the state and business logic
     val productViewModel: ProductViewModel = viewModel()
-    val context = LocalContext.current
+    val products by productViewModel.products.collectAsState()
 
-    // Call a function in your ViewModel to fetch products for the given sellerId
+    // This will reload products based on the active tab
     LaunchedEffect(selectedIndex) {
-        if (selectedIndex == 0) {
-            productViewModel.fetchActiveProductsForSeller(sellerId, storeId)
-        } else {
-            productViewModel.fetchInactiveProductsForSeller(sellerId, storeId)
+        when (selectedIndex) {
+            0 -> productViewModel.fetchActiveProductsForSeller(sellerId, storeId)
+            1 -> productViewModel.fetchInactiveProductsForSeller(sellerId, storeId)
         }
     }
 
-    // Observe the product list from your ViewModel
-    val products = productViewModel.products.collectAsState()
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFE8F5E9)) // Adjust the background color as needed
-    ) {
-        items(products.value) { product ->
-            ProductCard(product, navController, productViewModel, context)
+    if (products.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFE8F5E9)) // Adjust the background color as needed
+        ) {
+            items(products) { product ->
+                ProductCard(product, navController, productViewModel, LocalContext.current)
+            }
+        }
+    } else {
+        // Show a loading indicator or message while waiting for products to load
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator() // or a custom loading component
         }
     }
 }
+
 @Composable
 fun ProductCard(product: Product, navController: NavController, productViewModel: ProductViewModel, context: Context) {
 

@@ -1,6 +1,7 @@
 package com.example.unshelf.view.authentication
 // CustomerLoginView.kt
 // CustomerLoginView.kt
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Patterns
@@ -13,9 +14,9 @@ class CustomerLoginView(private val context: Context, private val binding: Activ
 
     // Interface to communicate with the controller
 
-
     interface LoginListener {
         fun onLoginClicked(email: String, password: String)
+        fun onGoogleLoginClicked() // Add this line
     }
 
     private var loginListener: LoginListener? = null
@@ -54,7 +55,15 @@ class CustomerLoginView(private val context: Context, private val binding: Activ
             loginUser()
         }
 
+        binding.buttonLoginGoogle.setOnClickListener{
+            loginListener?.onGoogleLoginClicked()
+        }
+
+
     }
+
+
+
 
     private fun loginUser() {
         val email: String = binding.customerEmail.text.toString()
@@ -95,4 +104,6 @@ class CustomerLoginView(private val context: Context, private val binding: Activ
     fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
+
+
 }

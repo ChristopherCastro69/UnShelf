@@ -120,18 +120,7 @@
             tools:ignore="TextSizeCheck"
             android:textColor="@color/white"/>
 
-        <Button
-            android:id="@+id/buttonLoginFacebook"
-            android:layout_width="250dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bt_primary"
-            android:fontFamily="@font/jost_medium"
-            android:text="Login with Facebook"
-            android:textSize="15dp"
-            tools:ignore="TextSizeCheck"
-            android:textColor="@color/white"/>
+
 
         <LinearLayout
             android:id="@+id/linearLayout5"

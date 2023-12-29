@@ -31,7 +31,7 @@ class ProductViewModel : ViewModel() {
                     val storeName = document.getString("storeName") ?: "Unknown"
                     val categories = document.get("categories") as? List<String> ?: listOf("Unknown")
                     val description = document.getString("description") ?: "Unknown"
-                     val discount = document.getDouble("discount") ?: 0.00
+                    val discount = document.getDouble("discount") ?: 0.00
                     val voucherCode = document.getString("voucherCode") ?: ""
                     val expirationDate = document.getString("expirationDate") ?: "0/00/0000"
                     val name = document.getString("productName") ?: "Unknown"
@@ -52,6 +52,7 @@ class ProductViewModel : ViewModel() {
 
     fun fetchInactiveProductsForSeller(sellerId: String, storeId: String) {
         val db = Firebase.firestore
+
         db.collection("products")
             .whereEqualTo("sellerID", sellerId) // Assuming you store 'sellerId' in each product document
             .whereEqualTo("active", false) // Add this line to filter by isActive status
