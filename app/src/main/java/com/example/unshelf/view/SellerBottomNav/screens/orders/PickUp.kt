@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -47,6 +48,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.unshelf.R
 import com.example.unshelf.ui.theme.DarkPalmLeaf
+import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.productView.CartItem
 import com.example.unshelf.view.productView.CheckBox
@@ -72,28 +74,40 @@ fun PickUPCompose() {
         modifier = Modifier.fillMaxSize(),
         color = Color.White
     ) {
-        Column {
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Menu(
                 modifier = Modifier
                     .fillMaxWidth()
             )
             Row(
                 modifier = Modifier
-                    .background(color = Color.White) // Optional: Set background color
+                    .background(color = Color.White)
+                    .padding(16.dp),
+
             ) {
-                // First Column
                 Column(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(0.6f)
                         .background(Color.White)
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Row {
+                    Row(
+                        modifier = Modifier
+                        .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_calendar),
                             contentDescription = "Calendar"
                         )
-                        Text(text = "Set Date")
+                        Text(
+                            text = "Set Date",
+                            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03))
+                        )
                         Button(
                             onClick = {
 
@@ -106,12 +120,20 @@ fun PickUPCompose() {
                             )
                         }
                     }
-                    Row {
+                    Row (
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_clock),
                             contentDescription = "Calendar"
                         )
-                        Text(text = "Set Time")
+                        Text(
+                            text = "Set Time",
+                            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03))
+                        )
                         Button(
                             onClick = {
 
@@ -129,26 +151,31 @@ fun PickUPCompose() {
                 // Second Column
                 Column(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(0.4f)
                         .background(Color.White)
                         .verticalScroll(rememberScrollState())
+                        .padding(top = 16.dp)
                 ) {
-                    Row {
+                    Row  {
                         val isChecked = remember { mutableStateOf(false) }
                         CheckBox(
-                            Modifier.padding(start = 8.dp),
+                            Modifier.padding(start = 8.dp, end = 8.dp, top = 4.dp),
                             checkedState = isChecked,
                             onCheckedChange = {
-
                             }
                         )
                         Text(
-                            text = "As soon as possible"
+                            text = "As soon as possible",
+                            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03))
                         )
                     }
                 }
             }
             TextInputExample()
+            repeat(5) {
+                PickUpItem()
+            }
+
         }
     }
 }
@@ -216,7 +243,7 @@ fun TextInputExample() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(Color.White),
     ) {
         Column(
@@ -254,18 +281,27 @@ fun TextInputExample() {
 @Composable
 fun PickUpItem() {
     Row (
-        modifier = Modifier.paint(
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .paint(
             painterResource(id = R.drawable.ic_pickup_container),
             contentScale = ContentScale.FillBounds
-        )
+        ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_loc), contentDescription = "Location")
-        Text (text = "Pickup Location Address")
+        Image(painter = painterResource(id = R.drawable.ic_loc), contentDescription = "Location", modifier = Modifier.padding(start = 16.dp))
+        Text (
+            text = "Pickup Location \n Address",
+            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+            fontSize = 16.sp
+        )
         Button(
             onClick = {
 
             },
-            colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
+            colors = ButtonDefaults.buttonColors(MiddleGreenYellow),
+            modifier = Modifier.padding(end = 16.dp)
         ) {
             Text(
                 text = "View in Maps",

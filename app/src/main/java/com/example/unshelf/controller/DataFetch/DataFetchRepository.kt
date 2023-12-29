@@ -28,15 +28,11 @@ class DataFetchRepository {
         }
 
     fun fetchData() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             try {
                 val result = db.collection("products").get().await()
-
-                // Switch to the main dispatcher to update the Compose state
-                CoroutineScope(Dispatchers.Main).launch {
-                    products.value = result.toObjects(Product::class.java)
-                    isLoading.value = false
-                }
+                products.value = result.toObjects(Product::class.java)
+                isLoading.value = false
             } catch (e: Exception) {
                 isLoading.value = false
             }
