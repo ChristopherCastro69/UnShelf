@@ -115,6 +115,9 @@
 <!--            android:name=".view.SellerBottomNav.screens.orders.OrderView"-->
 <!--            android:exported="false"/>-->
         <activity
+            android:name=".view.productView.OrderTracking"
+            android:exported="false" />
+        <activity
             android:name=".view.SellerBottomNav.screens.orders.OrderApprovalView"
             android:exported="false"/>
         <activity

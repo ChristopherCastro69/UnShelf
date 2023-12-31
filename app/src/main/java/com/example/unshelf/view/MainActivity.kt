@@ -19,6 +19,7 @@ import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
 import com.example.unshelf.view.SellerBottomNav.screens.orders.PickUp
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 import com.example.unshelf.view.StartUI.MainUI
+import com.example.unshelf.view.productView.OrderTracking
 import com.example.unshelf.view.productView.ProductMainView
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testBtnRegister, CustomerRegister::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnPmain, product_main::class.java);
 //        UI_Tester_Helper.UI_Test(this, testBtnPmain, cart::class.java);
-        UI_Tester_Helper.UI_Test(this, testBtnCart, PickUp::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnCart, OrderTracking::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnWallet, Balance::class.java);
         UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivitySeller::class.java);
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
