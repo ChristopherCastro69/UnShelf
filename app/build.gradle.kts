@@ -58,6 +58,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.13.0")
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
     //Jetpack Compose dependencies
 
@@ -134,6 +135,10 @@ dependencies {
     implementation ("com.google.firebase:firebase-appcheck-safetynet:16.1.2")
 
 
+    //for the chat section
+    implementation ("androidx.compose.ui:ui:1.5.4")
+    implementation ("androidx.compose.material:material:1.5.4")
+    implementation ("androidx.compose.ui:ui-tooling-preview:1.5.4")
 
 
 }

@@ -97,6 +97,7 @@
     <string name="follower_count">999 </string>
     <string name="profile">Edit Profile</string>
     <string name="title_activity_google_map">GoogleMap</string>
+    <string name="default_web_client_id">googleAuth\n</string>
 
     <string-array name="city_options">
         <item>Cebu City</item>
