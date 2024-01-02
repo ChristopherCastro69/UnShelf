@@ -81,10 +81,14 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
     val isAllCheckout = remember {mutableStateOf(true)}
     val context = LocalContext.current
     val total = remember { mutableStateOf(calculateTotal(cart)) }
+    println("total: ${total.value}")
     val storeActive = (mutableMapOf <String, MutableState<Boolean>>())
-    for((storeID, products) in cart) {
-        storeActive.getOrPut(storeID) { mutableStateOf(true) }
+    for((storeID, isActive) in cart) {
+        println("I will execute")
+        storeActive.getOrPut(storeID) { mutableStateOf(isAllCheckout.value) }
     }
+    val stores = storeActive.keys
+
 
     Scaffold(
         topBar = {
@@ -144,15 +148,16 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
                     checked = isAllCheckout.value,
                     onCheckedChange = {
                         isAllCheckout.value = it
+
                         for((storeID, isActive) in storeActive) {
                             isActive.value = isAllCheckout.value
                         }
+
                         if(isAllCheckout.value) {
                             total.value = calculateTotal(cart)
                         } else {
                             total.value = 0.0
                         }
-
                     },
                     colors = CheckboxDefaults.colors(
                         checkedColor = PalmLeaf,
@@ -222,9 +227,11 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
                     .fillMaxWidth()
                     .size(3.dp)
             )
-            for ((storeID, productList) in cart) {
-                val isActive = storeActive.get(storeID)!!
-                total.value = CartGroup(isActive, products = productList, total, isAllCheckout)
+            for(store in stores) {
+                val pList = cart.get(store)!!
+                var isActive = storeActive.get(store)!!
+                println("List: " + pList + "\n${isActive.value}")
+                CartGroup(isActive.value, pList, total, isAllCheckout)
             }
         }
     }
@@ -233,28 +240,45 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
 
 @Composable
 fun CartGroup(
-    isActive : MutableState<Boolean>,
-    products : MutableList<Product>,
+    isActive : Boolean,
+    products : List<Product>,
     total:  MutableState<Double>,
     isAll : MutableState<Boolean>,
-    ) :   Double{
-    var storeChecked = remember { isActive }
+) :   Double{
+    var storeChecked = isActive
     var inactiveAll = remember { mutableStateOf(false) }
     var flag = remember { mutableStateOf(false) }
+    var activeCtr = 0
 
-    if(isAll.value) {
-        flag.value = false
-        storeChecked.value = true
-        inactiveAll.value = true
-    }
-
-    if(flag.value && !storeChecked.value) {
-        inactiveAll.value = true
-        flag.value = false
-        products.forEach { product ->
-            product.active = true
+//    if(isAll.value) {
+//        //flag.value = false
+//        storeChecked = true
+//        inactiveAll.value = true
+//    }
+//
+    if(storeChecked) {
+        for(product in products) {
+            if(product.active) {
+                activeCtr++
+            }
         }
     }
+
+    if(activeCtr > 0) {
+        storeChecked = true
+    } else {
+        storeChecked = false
+    }
+
+    println("Active: ${activeCtr}")
+
+//    if(flag.value && !storeChecked.value) {
+//        inactiveAll.value = true
+//        flag.value = false
+//        products.forEach { product ->
+//            product.active = true
+//        }
+//    }
 
     Column(
         modifier = Modifier
@@ -267,14 +291,18 @@ fun CartGroup(
                     .padding(end = 5.dp)
                     .align(Alignment.CenterVertically)
                     .size(25.dp),
-                checked = storeChecked.value,
+                checked = storeChecked,
                 onCheckedChange = {
-                    storeChecked.value = it
-                    if(!storeChecked.value) {
+                    storeChecked = it
+                    if(!storeChecked) {
                         isAll.value = false
-                        inactiveAll.value = true
+                        for(product in products) {
+                            if(product.active) {
+                                product.active = false
+                            }
+                        }
                     }
-                    total.value += calculateTotal(storeChecked.value, products)
+                    //total.value += calculateTotal(storeChecked, products)
                 },
                 colors = CheckboxDefaults.colors(
                     checkedColor = PalmLeaf,
@@ -283,40 +311,44 @@ fun CartGroup(
             )
 
 
-            Image(
-                painter = painterResource(id = R.drawable.ic_market_stall),
-                contentDescription = "store icon",
-                modifier = Modifier.size(25.dp)
-            )
-            Text(
-                text = products.get(0).storeName,
-                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(start = 6.dp)
-                    .align(Alignment.CenterVertically)
-            )
-        }
-        Column {
-            products.forEach { product ->
-                CartItem(p = product, total, storeChecked, inactiveAll, isAll)
-            }
-            if(storeChecked.value && inactiveAll.value) {
-                inactiveAll.value = false
-            }
-            if(storeChecked.value) {
-                for(product in products) {
-                    if(!product.active) {
-                        flag.value = true
-                        storeChecked.value = false
-                    } else {
-                        flag.value = false
-                    }
-                }
-            }
+        Image(
+            painter = painterResource(id = R.drawable.ic_market_stall),
+            contentDescription = "store icon",
+            modifier = Modifier.size(25.dp)
+        )
+//            Text(
+//                text = products.get(0).storeName,
+//                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+//                fontSize = 16.sp,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier
+//                    .padding(start = 6.dp)
+//                    .align(Alignment.CenterVertically)
+//            )
+//        }
+//        Column {
+//            products.forEach { product ->
+//                //CartItem(p = product, total, mutableStateOf(storeChecked), inactiveAll, isAll)
+//            }
+//            if(storeChecked && inactiveAll.value) {
+//                inactiveAll.value = false
+//            }
+//            if(storeChecked.value) {
+//                for(product in products) {
+//                    if(!product.active) {
+//                        flag.value = true
+//                        storeChecked.value = false
+//                        println("I got executed")
+//                    } else {
+//                        flag.value = false
+//                        println("Break got executed")
+//                        break
+//                    }
+//                }
+//            }
 
-        }
+
+         }
     }
     Spacer(
         Modifier
@@ -325,7 +357,7 @@ fun CartGroup(
             .size(3.dp)
     )
 
-    return total.value
+    return 0.0
 }
 
 
