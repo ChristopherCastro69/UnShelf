@@ -82,6 +82,7 @@ class CartView : ComponentActivity() {
 @Composable
 fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
     var isAllCheckout = remember {mutableStateOf(true)}
+    var isProductSelected = remember {mutableStateOf(true)}
     val context = LocalContext.current
     var total = remember { mutableStateOf(calculateTotal(cart)) }
     var storeActive = (mutableMapOf <String, MutableState<Boolean>>())
@@ -235,9 +236,9 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
             for ((storeID, products) in cart) {
                 val isActive = storeActive[storeID]!!
 
-                CartGroup(isActive, products, total)
+                CartGroup(isActive, products, total, isProductSelected)
                 for (product in products) {
-                    if (product.active) {
+                    if (product.active && isProductSelected.value) {
                         flag++
                     }
                 }
@@ -260,6 +261,7 @@ fun CartGroup(
     isActive : MutableState<Boolean>,
     productList: MutableList<Product>,
     total:  MutableState<Double>,
+    isProductSelected : MutableState<Boolean>
 ) {
     var storeChecked = isActive
     var activeCtr = 0
@@ -330,125 +332,8 @@ fun CartGroup(
         Column {
             products.forEach { p ->
                 println(p.productName + " in store: " + p.active)
-                //product.active = CartItem(mutableStateOf(product), storeChecked, total)
+                isProductSelected.value = CartItem(p, total, isProductSelected)
                 //var productChecked by remember { mutableStateOf(p.active) }
-                var productChecked by remember { mutableStateOf(p.active) }
-                productChecked = p.active
-
-                val qty = remember { mutableStateOf(p.quantity)}
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp)
-                ) {
-                    println("productChecked: " + productChecked)
-                    Checkbox(
-                        modifier = Modifier
-                            .padding(end = 5.dp)
-                            .align(Alignment.CenterVertically)
-                            .size(25.dp),
-                        checked = p.active,
-                        onCheckedChange = {
-                            productChecked = it
-                            p.active = productChecked
-                            println("Product: " + p.active)
-                            if (!productChecked) {
-                                total.value -= (p.sellingPrice * qty.value)
-                            } else {
-                                total.value += (p.sellingPrice * qty.value)
-                            }
-                        },
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = PalmLeaf,
-                            uncheckedColor = PalmLeaf
-                        )
-                    )
-
-                    Image(
-                        painter = rememberAsyncImagePainter(p.thumbnail),
-                        contentDescription = "product thumbnail",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .border(2.dp, color = MediumSpringBud, shape = RoundedCornerShape(10.dp))
-                    )
-                    Column(
-                        modifier = Modifier.padding(start = 8.dp)
-                    ) {
-                        Text(
-                            text = p.productName,
-                            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .align(Alignment.Start)
-                        )
-                        Row(modifier = Modifier.padding(top = 5.dp)) {
-                            Text(
-                                text = "Quantity",
-                                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                                fontSize = 15.sp,
-                                modifier = Modifier
-                                    .weight(1F)
-                                    .align(Alignment.CenterVertically)
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_minus_active),
-                                contentDescription = "Decrease Quantity",
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .clickable {
-                                        if (qty.value > 1) {
-                                            qty.value = maxOf(qty.value - 1, 1)
-                                            p.quantity = qty.value
-                                            if(productChecked) {
-                                                total.value -= p.sellingPrice
-                                            }
-                                        }
-                                        CartController.addToCart(p, "cart")
-                                    }
-                            )
-                            Text(
-                                text = "${qty.value}",
-                                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                                fontSize = 16.sp,
-                                modifier = Modifier
-                                    .padding(horizontal = 6.dp)
-                                    .align(Alignment.CenterVertically)
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_plust_active),
-                                contentDescription = "Increase Quantity",
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .clickable {
-                                        qty.value += 1
-                                        p.quantity = qty.value
-                                        if (productChecked) {
-                                            total.value += p.sellingPrice
-                                        }
-                                        CartController.addToCart(p, "cart")
-                                    }
-                            )
-                        }
-                        Spacer(
-                            Modifier
-                                .fillMaxWidth()
-                                .background(MediumSpringBud)
-                                .size(2.dp)
-                        )
-                        Text(
-                            text = "₱ ${String.format("%.2f", p.sellingPrice * qty.value)}",
-                            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                            fontSize = 17.sp,
-                            modifier = Modifier
-                                .padding(6.dp)
-                                .align(Alignment.End)
-                        )
-                    }
-                }
             }
             activeCtr = 0
             for(product in products) {
@@ -472,7 +357,131 @@ fun CartGroup(
     )
 }
 
+@Composable
+fun CartItem(
+    p: Product,
+    total: MutableState<Double>,
+    isProductSelected: MutableState<Boolean>
+    ) : Boolean {
+    var productChecked by remember { mutableStateOf(p.active) }
+    productChecked = p.active
 
+    val qty = remember { mutableStateOf(p.quantity)}
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp)
+    ) {
+        println("productChecked: " + productChecked)
+        Checkbox(
+            modifier = Modifier
+                .padding(end = 5.dp)
+                .align(Alignment.CenterVertically)
+                .size(25.dp),
+            checked = p.active,
+            onCheckedChange = {
+                productChecked = it
+                p.active = productChecked
+                println("Product: " + p.active)
+                if (!productChecked) {
+                    total.value -= (p.sellingPrice * qty.value)
+                } else {
+                    total.value += (p.sellingPrice * qty.value)
+                }
+            },
+            colors = CheckboxDefaults.colors(
+                checkedColor = PalmLeaf,
+                uncheckedColor = PalmLeaf
+            )
+        )
+
+        Image(
+            painter = rememberAsyncImagePainter(p.thumbnail),
+            contentDescription = "product thumbnail",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(120.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .border(2.dp, color = MediumSpringBud, shape = RoundedCornerShape(10.dp))
+        )
+        Column(
+            modifier = Modifier.padding(start = 8.dp)
+        ) {
+            Text(
+                text = p.productName,
+                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.Start)
+            )
+            Row(modifier = Modifier.padding(top = 5.dp)) {
+                Text(
+                    text = "Quantity",
+                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                    fontSize = 15.sp,
+                    modifier = Modifier
+                        .weight(1F)
+                        .align(Alignment.CenterVertically)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_minus_active),
+                    contentDescription = "Decrease Quantity",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            if (qty.value > 1) {
+                                qty.value = maxOf(qty.value - 1, 1)
+                                p.quantity = qty.value
+                                if(productChecked) {
+                                    total.value -= p.sellingPrice
+                                }
+                            }
+                            CartController.addToCart(p, "cart")
+                        }
+                )
+                Text(
+                    text = "${qty.value}",
+                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .padding(horizontal = 6.dp)
+                        .align(Alignment.CenterVertically)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_plust_active),
+                    contentDescription = "Increase Quantity",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            qty.value += 1
+                            p.quantity = qty.value
+                            if (productChecked) {
+                                total.value += p.sellingPrice
+                            }
+                            CartController.addToCart(p, "cart")
+                        }
+                )
+            }
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .background(MediumSpringBud)
+                    .size(2.dp)
+            )
+            Text(
+                text = "₱ ${String.format("%.2f", p.sellingPrice * qty.value)}",
+                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                fontSize = 17.sp,
+                modifier = Modifier
+                    .padding(6.dp)
+                    .align(Alignment.End)
+            )
+        }
+    }
+    return productChecked
+}
 
 
 fun calculateTotal(cart: MutableMap<String, MutableList<Product>>): Double {
