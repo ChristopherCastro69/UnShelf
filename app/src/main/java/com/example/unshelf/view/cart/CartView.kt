@@ -227,11 +227,11 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
                     .fillMaxWidth()
                     .size(3.dp)
             )
-            for((storeID, products) in cart) {
-                products.forEach {
-                    println("Store1: " + storeActive[storeID]!!.value + " Product ${it.productName} -> " + it.active)
-                }
-            }
+//            for((storeID, products) in cart) {
+//                products.forEach {
+//                    println("Store1: " + storeActive[storeID]!!.value + " Product ${it.productName} -> " + it.active)
+//                }
+//            }
             var flag = 0
             for ((storeID, products) in cart) {
                 val isActive = storeActive[storeID]!!
@@ -273,7 +273,7 @@ fun CartGroup(
             activeCtr++
         }
     }
-    println("Active: " + activeCtr)
+//    println("Active: " + activeCtr)
     if(activeCtr > 0) {
         storeChecked.value = true
     } else {
@@ -331,7 +331,7 @@ fun CartGroup(
         }
         Column {
             products.forEach { p ->
-                println(p.productName + " in store: " + p.active)
+                //println(p.productName + " in store: " + p.active)
                 isProductSelected.value = CartItem(p, total, isProductSelected)
                 //var productChecked by remember { mutableStateOf(p.active) }
             }
@@ -346,7 +346,7 @@ fun CartGroup(
             } else {
                 storeChecked.value = false
             }
-            println("Post-Active: " + activeCtr)
+            //println("Post-Active: " + activeCtr)
         }
     }
     Spacer(
@@ -373,7 +373,7 @@ fun CartItem(
             .fillMaxWidth()
             .padding(vertical = 5.dp)
     ) {
-        println("productChecked: " + productChecked)
+        //println("productChecked: " + productChecked)
         Checkbox(
             modifier = Modifier
                 .padding(end = 5.dp)
@@ -383,7 +383,7 @@ fun CartItem(
             onCheckedChange = {
                 productChecked = it
                 p.active = productChecked
-                println("Product: " + p.active)
+                //println("Product: " + p.active)
                 if (!productChecked) {
                     total.value -= (p.sellingPrice * qty.value)
                 } else {
