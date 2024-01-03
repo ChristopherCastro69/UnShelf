@@ -21,6 +21,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,18 +36,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.lifecycleScope
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.controller.Cart.CartController
 import com.example.unshelf.controller.Checkout.CheckoutSessionController
+import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class CheckoutUI: ComponentActivity() {
@@ -50,8 +54,10 @@ class CheckoutUI: ComponentActivity() {
         super.onCreate(savedInstanceState)
         var checkouturl = ""
         var checkoutID = ""
+        var cart = CartController.storeMapped
+        var storeMapped = CartController.storeActiveState
         lifecycleScope.launch {
-            val checkoutSesh = CheckoutSessionController().createCheckoutSession()
+            val checkoutSesh = CheckoutSessionController().createCheckoutSession(cart)
             if(checkoutSesh!=null) {
                 checkouturl = checkoutSesh.data.attributes.checkout_url
                 Log.d("CheckoutSesh", "$checkouturl")
@@ -64,7 +70,7 @@ class CheckoutUI: ComponentActivity() {
 
 
         setContent{
-            CheckoutPage(this, onClick = {
+            CheckoutPage(cart, storeMapped, onClick = {
                 redirect(checkouturl, checkoutID)
             })
         }
@@ -77,16 +83,29 @@ class CheckoutUI: ComponentActivity() {
     }
 }
 
-@Preview
-@Composable
-fun PreviewCheckout() {
-    CheckoutPage(null,onClick = {println("hello")})
-}
+//@Preview
+//@Composable
+//fun PreviewCheckout() {
+//    CheckoutPage(null,onClick = {println("hello")})
+//}
 
 
 @Composable
-fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
+fun CheckoutPage(
+    cart :  MutableMap<String, MutableList<Product>>,
+    storeMapped :  MutableMap<String, MutableState<Boolean>>,
+    onClick: () -> Unit) {
     val context = LocalContext.current
+    //var transactionFee by remember{ mutableStateOf(0.0) }
+    var totalAmount by remember{ mutableStateOf(0.0) }
+    //var totalWithTransactionFee by remember{ mutableStateOf(0.0) }
+    var subTotal = 0.0
+    for((_, products) in cart) {
+        products.forEach{
+            if(it.active)
+                totalAmount += (it.sellingPrice * it.quantity)
+        }
+    }
     Scaffold(
         topBar = {
             Box(
@@ -100,8 +119,7 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
                         modifier = Modifier
                             .width(35.dp),
                         onClick = {
-                            if (activity != null)
-                                activity.onBackPressed()
+                            (context as? Activity)?.finish()
                         }
                     ) {
                         Icon(
@@ -137,7 +155,7 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
             ) {
                 Row {
                     Text(
-                        text = "Total\n₱240.00",
+                        text = "Total\n₱ ${String.format("%.2f", totalAmount)}",
                         color = DeepMossGreen,
                         style = TextStyle(
                             fontSize = 20.sp,
@@ -188,64 +206,74 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
                 )
 
                 LazyColumn {
-                    items(2) { index ->
-                        storeGrouped()
+                    item {
+                        for((storeID, products) in cart) {
+                            if(storeMapped[storeID]!!.value) {
+                                val amount = storeGrouped(products)
+                                subTotal += amount
+//                                if(amount < 110.0) {
+//                                    transactionFee += (amount * 0.5)
+//                                } else {
+//                                    transactionFee += (amount * 0.03)
+//                                }
+                            }
+                        }
                     }
                     item {
                         Column(modifier = Modifier
                             .fillMaxWidth()
                             .background(Color.White)
                             .padding(10.dp)) {
-                            Row() {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.wallet),
-                                    contentDescription = "wallet icon",
-                                    tint = DeepMossGreen,
-                                    modifier = Modifier.size(25.dp)
-                                        .align(Alignment.CenterVertically)
-                                )
-                                Text(
-                                    text = "Payment Method",
-                                    color = DeepMossGreen,
-                                    style = TextStyle(
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 5.dp)
-                                )
-                                Row(Modifier.clickable {
-
-                                }) {
-                                    Text(
-                                        text = "Select a\npayment method",
-                                        color = DeepMossGreen,
-                                        style = TextStyle(
-                                            fontSize = 13.sp,
-                                            textAlign = TextAlign.Right,
-                                        ),
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .padding(start = 5.dp)
-                                            .weight(1F)
-                                            .clickable {
-
-                                            }
-                                    )
-                                    Icon(
-                                        imageVector = Icons.Filled.ArrowForwardIos,
-                                        contentDescription = "To Pickup Details",
-                                        tint = DeepMossGreen,
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .size(20.dp)
-                                            .clickable {
-
-                                            }
-                                    )
-                                }
-                            }
+//                            Row() {
+//                                Icon(
+//                                    painter = painterResource(id = R.drawable.wallet),
+//                                    contentDescription = "wallet icon",
+//                                    tint = DeepMossGreen,
+//                                    modifier = Modifier.size(25.dp)
+//                                        .align(Alignment.CenterVertically)
+//                                )
+//                                Text(
+//                                    text = "Payment Method",
+//                                    color = DeepMossGreen,
+//                                    style = TextStyle(
+//                                        fontSize = 15.sp,
+//                                        fontWeight = FontWeight.Bold
+//                                    ),
+//                                    modifier = Modifier
+//                                        .align(Alignment.CenterVertically)
+//                                        .padding(start = 5.dp)
+//                                )
+//                                Row(Modifier.clickable {
+//
+//                                }) {
+//                                    Text(
+//                                        text = "Select a\npayment method",
+//                                        color = DeepMossGreen,
+//                                        style = TextStyle(
+//                                            fontSize = 15.sp,
+//                                            textAlign = TextAlign.Right,
+//                                        ),
+//                                        modifier = Modifier
+//                                            .align(Alignment.CenterVertically)
+//                                            .padding(start = 5.dp)
+//                                            .weight(1F)
+//                                            .clickable {
+//
+//                                            }
+//                                    )
+//                                    Icon(
+//                                        imageVector = Icons.Filled.ArrowForwardIos,
+//                                        contentDescription = "To Pickup Details",
+//                                        tint = DeepMossGreen,
+//                                        modifier = Modifier
+//                                            .align(Alignment.CenterVertically)
+//                                            .size(20.dp)
+//                                            .clickable {
+//
+//                                            }
+//                                    )
+//                                }
+//                            }
                             Row(
                                 modifier = Modifier
                                     .padding(vertical = 8.dp)
@@ -254,13 +282,13 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
                                     painter = painterResource(id = R.drawable.ic_receipt),
                                     contentDescription = "store icon",
                                     tint = DeepMossGreen,
-                                    modifier = Modifier.size(25.dp)
+                                    modifier = Modifier.size(30.dp)
                                 )
                                 Text(
                                     text = "Payment Details",
                                     color = DeepMossGreen,
                                     style = TextStyle(
-                                        fontSize = 15.sp,
+                                        fontSize = 17.sp,
                                         fontWeight = FontWeight.Bold
                                     ),
                                     modifier = Modifier
@@ -276,7 +304,7 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
                                     text = "Subtotal",
                                     color = DeepMossGreen,
                                     style = TextStyle(
-                                        fontSize = 13.sp
+                                        fontSize = 17.sp
                                     ),
                                     modifier = Modifier
                                         .align(Alignment.CenterVertically)
@@ -284,10 +312,10 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
                                         .weight(1F)
                                 )
                                 Text(
-                                    text = "₱ 240.00",
+                                    text = "₱ ${String.format("%.2f", subTotal)}",
                                     color = DeepMossGreen,
                                     style = TextStyle(
-                                        fontSize = 13.sp,
+                                        fontSize = 17.sp,
                                         textAlign = TextAlign.Right,
                                     ),
                                     modifier = Modifier
@@ -296,34 +324,34 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
                                         .weight(1F)
                                 )
                             }
-                            Row(
-                                modifier = Modifier
-                                    .padding(vertical = 8.dp)
-                            ) {
-                                Text(
-                                    text = "Transaction Fees",
-                                    color = DeepMossGreen,
-                                    style = TextStyle(
-                                        fontSize = 13.sp
-                                    ),
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 5.dp)
-                                        .weight(1F)
-                                )
-                                Text(
-                                    text = "₱ 0.00",
-                                    color = DeepMossGreen,
-                                    style = TextStyle(
-                                        fontSize = 13.sp,
-                                        textAlign = TextAlign.Right,
-                                    ),
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 5.dp)
-                                        .weight(1F)
-                                )
-                            }
+//                            Row(
+//                                modifier = Modifier
+//                                    .padding(vertical = 8.dp)
+//                            ) {
+//                                Text(
+//                                    text = "Transaction Fees",
+//                                    color = DeepMossGreen,
+//                                    style = TextStyle(
+//                                        fontSize = 15.sp
+//                                    ),
+//                                    modifier = Modifier
+//                                        .align(Alignment.CenterVertically)
+//                                        .padding(start = 5.dp)
+//                                        .weight(1F)
+//                                )
+//                                Text(
+//                                    text = "₱ 0.00",
+//                                    color = DeepMossGreen,
+//                                    style = TextStyle(
+//                                        fontSize = 15.sp,
+//                                        textAlign = TextAlign.Right,
+//                                    ),
+//                                    modifier = Modifier
+//                                        .align(Alignment.CenterVertically)
+//                                        .padding(start = 5.dp)
+//                                        .weight(1F)
+//                                )
+//                            }
                             Row(
                                 modifier = Modifier
                                     .padding(vertical = 8.dp)
@@ -332,7 +360,7 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
                                     text = "Total Payment",
                                     color = DeepMossGreen,
                                     style = TextStyle(
-                                        fontSize = 13.sp
+                                        fontSize = 17.sp
                                     ),
                                     modifier = Modifier
                                         .align(Alignment.CenterVertically)
@@ -340,10 +368,10 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
                                         .weight(1F)
                                 )
                                 Text(
-                                    text = "₱ 240.00",
+                                    text = "₱ ${String.format("%.2f", subTotal)}",
                                     color = DeepMossGreen,
                                     style = TextStyle(
-                                        fontSize = 13.sp,
+                                        fontSize = 17.sp,
                                         textAlign = TextAlign.Right,
                                         fontWeight = FontWeight.Bold
                                     ),
@@ -352,6 +380,7 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
                                         .padding(start = 5.dp)
                                         .weight(1F)
                                 )
+                                totalAmount = subTotal
                             }
                         }
 
@@ -366,7 +395,11 @@ fun CheckoutPage(activity: Activity?, onClick: () -> Unit) {
     }
 }
 @Composable
-fun storeGrouped() {
+fun storeGrouped(
+    products : MutableList<Product>
+) : Double {
+    val context = LocalContext.current
+    var subtotal = 0.0
     Column(modifier = Modifier.background(Color(0xffC8DD96))) {
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -381,10 +414,10 @@ fun storeGrouped() {
                         modifier = Modifier.size(25.dp)
                     )
                     Text(
-                        text = "Store name",
+                        text = "${products.get(0).storeName}",
                         color = DeepMossGreen,
                         style = TextStyle(
-                            fontSize = 16.sp,
+                            fontSize = 17.sp,
                         ),
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
@@ -396,7 +429,7 @@ fun storeGrouped() {
                     text = "For Pickup",
                     color = PalmLeaf,
                     style = TextStyle(
-                        fontSize = 13.sp,
+                        fontSize = 15.sp,
                     ),
                     modifier = Modifier
                         .border(2.dp, color = MediumSpringBud, shape = RoundedCornerShape(4.dp))
@@ -406,7 +439,8 @@ fun storeGrouped() {
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                         .clickable {
-
+                            val intent = Intent(context, PickUp::class.java)
+                            context.startActivity(intent)
                         }
                 ) {
                     Image(
@@ -432,19 +466,19 @@ fun storeGrouped() {
                                 .padding(start = 4.dp)
                         )
                         Text(
-                            text = "Pickup Location",
+                            text = "Location: \t2F CityMall, N. Bacalso St.",
                             color = DeepMossGreen,
                             style = TextStyle(
-                                fontSize = 13.sp
+                                fontSize = 15.sp
                             ),
                             modifier = Modifier
                                 .padding(start = 4.dp)
                         )
                         Text(
-                            text = "Pickup Date | Pickup Time",
+                            text = "Date:\t January 14, 2024\nTime:\t 10:00 a.m.",
                             color = DeepMossGreen,
                             style = TextStyle(
-                                fontSize = 13.sp
+                                fontSize = 15.sp
                             ),
                             modifier = Modifier
                                 .padding(start = 4.dp)
@@ -470,8 +504,11 @@ fun storeGrouped() {
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Column{
-                    for(i in 1..3) {
-                        productDetails()
+                    products.forEach{product ->
+                        if(product.active) {
+                            productDetails(product)
+                            subtotal += (product.sellingPrice * product.quantity)
+                        }
                     }
                 }
             }
@@ -482,10 +519,10 @@ fun storeGrouped() {
                 .background(color = MiddleGreenYellow)
         )
         Text(
-            text = "Subtotal: ₱ 120.00",
+            text = "Subtotal: ₱ ${String.format("%.2f", subtotal)}",
             color = DeepMossGreen,
             style = TextStyle(
-                fontSize = 13.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold
             ),
             modifier = Modifier
@@ -498,17 +535,20 @@ fun storeGrouped() {
                 .background(color = MiddleGreenYellow)
         )
     }
+    return subtotal
 }
 
 @Composable
-fun productDetails() {
+fun productDetails(
+    p : Product
+) {
     Row (
         modifier = Modifier
             .padding(5.dp)
     ){
         Image (
-            painter = rememberAsyncImagePainter("https://i.pinimg.com/736x/3c/d5/dd/3cd5dd10fdaef74c958d22ef340b8bb0.jpg"),
-            contentDescription = "salad",
+            painter = rememberAsyncImagePainter(p.thumbnail),
+            contentDescription = "product img",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(73.dp)
@@ -523,38 +563,39 @@ fun productDetails() {
                 .weight(1F)
         ){
             Text(
-                text = "Fruit Salad",
+                text = p.productName,
                 color = DeepMossGreen,
                 style = TextStyle(
-                    fontSize = 13.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Medium,
                 ),
                 modifier = Modifier
                     .padding(start = 4.dp)
             )
+
             Text(
-                text = "Purchase by piece",
+                text = "Consume before: ${p.expirationDate}",
                 color = PalmLeaf,
                 style = TextStyle(
-                    fontSize = 13.sp
+                    fontSize = 15.sp
                 ),
                 modifier = Modifier
                     .padding(start = 4.dp)
             )
             Text(
-                text = "Consume before: date",
+                text = "",
                 color = PalmLeaf,
                 style = TextStyle(
-                    fontSize = 13.sp
+                    fontSize = 15.sp
                 ),
                 modifier = Modifier
                     .padding(start = 4.dp)
             )
             Text(
-                text = "₱ 40.00",
+                text = "₱ ${p.sellingPrice}",
                 color = DeepMossGreen,
                 style = TextStyle(
-                    fontSize = 13.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                 ),
                 modifier = Modifier
@@ -562,10 +603,10 @@ fun productDetails() {
             )
         }
         Text(
-            text = "x2",
+            text = "x${p.quantity}",
             color = DeepMossGreen,
             style = TextStyle(
-                fontSize = 13.sp
+                fontSize = 15.sp
             ),
             modifier = Modifier
                 .padding(start = 4.dp)

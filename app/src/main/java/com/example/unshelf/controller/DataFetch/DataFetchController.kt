@@ -11,10 +11,6 @@ class DataFetchController : ViewModel() {
     val isLoading = repository.isLoading
 
     init {
-        fetchData()
-    }
-
-    private fun fetchData() {
         repository.fetchData()
     }
 
