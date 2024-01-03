@@ -17,9 +17,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -47,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.controller.Cart.CartController
 import com.example.unshelf.controller.FilterDesign.CategoryFilter
 import com.example.unshelf.controller.FilterDesign.DiscountFilter
 import com.example.unshelf.model.entities.Product
@@ -54,60 +52,69 @@ import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
-import com.example.unshelf.view.product.cart
+import com.example.unshelf.view.cart.CartView
 import com.example.unshelf.view.productView.ProductMainView
 
 @Preview
 @Composable
 fun Marketplace(){
+    val cart = CartController.fetchCart()
     val context = LocalContext.current
     Scaffold(
         topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(height = 50.dp)
-                    .background(color = PalmLeaf)
-                    .padding(horizontal = 10.dp)
-            ) {
-                Row(modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .weight(1F)
-                    .fillMaxHeight()
-                    .padding(vertical = 10.dp)
-                    .background(Color.White, RoundedCornerShape(10.dp))
-                    .align(Alignment.CenterVertically)
+            Column{
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(height = 50.dp)
+                        .background(color = PalmLeaf)
+                        .padding(horizontal = 10.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
+                    Row(modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .weight(1F)
+                        .fillMaxHeight()
+                        .padding(vertical = 10.dp)
+                        .background(Color.White, RoundedCornerShape(10.dp))
+                        .align(Alignment.CenterVertically)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
                             contentDescription = "Search button",
                             tint = PalmLeaf,
                             modifier = Modifier
                                 .size(30.dp)
                                 .padding(5.dp)
                                 .align(Alignment.CenterVertically)
-                    )
-                    Text(
+                        )
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically),
+                            text = "Search",
+                            color = MiddleGreenYellow,
+                            fontSize = 16.sp
+                        )
+                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_cart),
+                        contentDescription = "Cart button",
                         modifier = Modifier
-                            .align(Alignment.CenterVertically),
-                        text = "Search",
-                        color = MiddleGreenYellow,
-                        fontSize = 16.sp
+                            .fillMaxHeight()
+                            .padding(5.dp)
+                            .align(Alignment.CenterVertically)
+                            .clickable {
+                                val intent = Intent(context, CartView::class.java)
+                                context.startActivity(intent)
+                            }
                     )
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.ic_cart),
-                    contentDescription = "Cart button",
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(5.dp)
-                        .align(Alignment.CenterVertically)
-                        .clickable {
-                            val intent = Intent(context, cart::class.java)
-                            context.startActivity(intent)
-                        }
-                )
+                Spacer(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(MediumSpringBud)
+                        .size(3.dp))
             }
+
         }
     ){innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {

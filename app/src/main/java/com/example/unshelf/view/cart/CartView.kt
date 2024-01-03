@@ -1,6 +1,7 @@
 package com.example.unshelf.view.cart
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.compose.material3.Checkbox
 import androidx.activity.ComponentActivity
@@ -58,12 +59,14 @@ import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.view.checkout.CheckoutUI
 
 
 class CartView : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var cart = CartController.storeMapped
+
         if(cart.isEmpty()) {
             cart = CartController.getCart()
         }
@@ -72,23 +75,25 @@ class CartView : ComponentActivity() {
                 product.active = true
             }
         }
+        CartController.setStoreState()
+        var storeStates = CartController.storeActiveState
         setContent {
-            CartLayout(cart)
+            CartLayout(cart, storeStates)
         }
 
     }
 
 }
 @Composable
-fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
+fun CartLayout(
+    cart : MutableMap<String, MutableList<Product>>,
+    storeActive : MutableMap<String, MutableState<Boolean>>
+)
+    {
     var isAllCheckout = remember {mutableStateOf(true)}
     var isProductSelected = remember {mutableStateOf(true)}
     val context = LocalContext.current
     var total = remember { mutableStateOf(calculateTotal(cart)) }
-    var storeActive = (mutableMapOf <String, MutableState<Boolean>>())
-    for((storeID, _) in cart) {
-        storeActive.getOrPut(storeID) { mutableStateOf(true) }
-    }
     val stores = storeActive.keys
     val activeCtr = remember { CartController.cartList.itemList.size }
 
@@ -149,6 +154,7 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
                     checked = isAllCheckout.value,
                     onCheckedChange = {
                         isAllCheckout.value = it
+                        isProductSelected = isAllCheckout
                         for((storeID, products) in cart) {
                             val isActive = storeActive[storeID]!!
                             isActive.value = isAllCheckout.value
@@ -201,7 +207,8 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
                 Spacer(modifier = Modifier.padding(end = 10.dp))
                 Button(
                     onClick = {
-
+                        val intent = Intent(context, CheckoutUI::class.java)
+                        context.startActivity(intent)
                     },
                     colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
                     modifier = Modifier
@@ -238,11 +245,12 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
 
                 CartGroup(isActive, products, total, isProductSelected)
                 for (product in products) {
-                    if (product.active && isProductSelected.value) {
+                    if (product.active) {
                         flag++
                     }
                 }
             }
+            println("isProductsSelected: ${isProductSelected.value}")
 
             for((storeID, products) in cart) {
                 products.forEach {
@@ -266,7 +274,7 @@ fun CartGroup(
     var storeChecked = isActive
     var activeCtr = 0
     var products = productList
-
+    val allCtr = remember { productList.size }
 
     for(product in products) {
         if(product.active) {
@@ -332,7 +340,7 @@ fun CartGroup(
         Column {
             products.forEach { p ->
                 //println(p.productName + " in store: " + p.active)
-                isProductSelected.value = CartItem(p, total, isProductSelected)
+                CartItem(p, total, isProductSelected)
                 //var productChecked by remember { mutableStateOf(p.active) }
             }
             activeCtr = 0
@@ -366,6 +374,7 @@ fun CartItem(
     var productChecked by remember { mutableStateOf(p.active) }
     productChecked = p.active
 
+
     val qty = remember { mutableStateOf(p.quantity)}
 
     Row(
@@ -385,6 +394,7 @@ fun CartItem(
                 p.active = productChecked
                 //println("Product: " + p.active)
                 if (!productChecked) {
+                    isProductSelected.value = false
                     total.value -= (p.sellingPrice * qty.value)
                 } else {
                     total.value += (p.sellingPrice * qty.value)

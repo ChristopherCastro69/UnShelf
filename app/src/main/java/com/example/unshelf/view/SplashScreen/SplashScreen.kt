@@ -13,6 +13,7 @@ import com.example.unshelf.view.MainActivity
 import com.example.unshelf.R
 import com.example.unshelf.R.id.splashscreen
 import com.example.unshelf.controller.DataFetch.DataFetchController
+import com.example.unshelf.view.StartUI.MainUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -42,7 +43,7 @@ class SplashScreen : AppCompatActivity() {
 
         alphaAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                val i = Intent(this@SplashScreen, MainActivity::class.java)
+                val i = Intent(this@SplashScreen, MainUI::class.java)
                 startActivity(i)
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                 finish()

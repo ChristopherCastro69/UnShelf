@@ -30,8 +30,17 @@ class CheckoutSessionController() {
     private val gson = Gson()
     val db = Firebase.firestore
 
-    suspend fun createCheckoutSession() : FullCheckoutModel? {
-        val products = db.collection("products").get().await().toObjects(Product::class.java)
+    suspend fun createCheckoutSession(cart :  MutableMap<String, MutableList<Product>>) : FullCheckoutModel? {
+        var products = mutableListOf<Product>()
+        for((storeID, productList) in cart) {
+            productList.forEach() {
+                if(it.active) {
+                    products.add(it)
+                    println(it.productName + ": " + it.quantity)
+                }
+            }
+        }
+        //val products = db.collection("products").get().await().toObjects(Product::class.java)
         val currentUser = FirebaseAuth.getInstance().currentUser
         var email = ""
         var name = ""
@@ -55,26 +64,37 @@ class CheckoutSessionController() {
             name = name,
             phone = number,
         )
-        val liSalad = partLineItem(
-            amount = (products.get(0).price * 100).toInt(),
-            name = products.get(0).productName,
-            sellerID = products.get(0).sellerID,
-            quantity = 2,
-            images = listOf(products.get(0).thumbnail),
-        )
-        val liSalad2 = partLineItem(
-            amount = (products.get(1).price * 100).toInt(),
-            name = products.get(1).productName,
-            sellerID = products.get(1).sellerID,
-            quantity = 2,
-            images = listOf(products.get(1).thumbnail),
-        )
-        val basketList: List<partLineItem> = listOf(
-            liSalad, liSalad2
-        )
+        var checkoutList = mutableListOf<partLineItem>()
+        products.forEach{ product ->
+            val lineItem = partLineItem(
+                amount = (product.sellingPrice * 100).toInt(),
+                name = product.productName,
+                sellerID = product.storeName,
+                quantity = product.quantity,
+                images = listOf(product.thumbnail),
+            )
+            checkoutList.add(lineItem)
+        }
+//        val liSalad = partLineItem(
+//            amount = (products.get(0).price * 100).toInt(),
+//            name = products.get(0).productName,
+//            sellerID = products.get(0).storeName,
+//            quantity = 2,
+//            images = listOf(products.get(0).thumbnail),
+//        )
+//        val liSalad2 = partLineItem(
+//            amount = (products.get(1).price * 100).toInt(),
+//            name = products.get(1).productName,
+//            sellerID = products.get(1).storeName,
+//            quantity = 2,
+//            images = listOf(products.get(1).thumbnail),
+//        )
+//        val basketList: List<partLineItem> = listOf(
+//            liSalad, liSalad2
+//        )
         val att = partAttributes(
             billing = billing,
-            line_items = basketList,
+            line_items = checkoutList,
             payment_method_types = listOf("gcash", "paymaya"),
             send_email_receipt = true,
             show_line_items = true
@@ -137,6 +157,10 @@ class CheckoutSessionController() {
     suspend fun placeOrder(checkoutID: String) {
         val checkoutResponse = retrieveCheckout(checkoutID)
         if(checkoutResponse!= null) {
+            var amountPerProduct = checkoutResponse.data.attributes.lineItems
+            for(product in amountPerProduct) {
+                product.amount = product.amount / 100.0
+            }
             val timestamp = checkoutResponse.data.attributes.paidAt
             val date = Date(timestamp * 1000)
             val paymentID = checkoutResponse.data.attributes.payments.get(0).id
