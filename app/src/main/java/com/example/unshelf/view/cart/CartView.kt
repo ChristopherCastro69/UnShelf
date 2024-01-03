@@ -1,5 +1,6 @@
 package com.example.unshelf.view.cart
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.compose.material3.Checkbox
 import androidx.activity.ComponentActivity
@@ -22,10 +23,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,8 +33,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,11 +60,11 @@ import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.PalmLeaf
 
 
-class cartView : ComponentActivity() {
+class CartView : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var cart = CartController.storeMapped
-        if(cart.isEmpty() || cart == null) {
+        if(cart.isEmpty()) {
             cart = CartController.getCart()
         }
         for ((_, productList) in cart) {
@@ -79,13 +81,15 @@ class cartView : ComponentActivity() {
 }
 @Composable
 fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
-    val isAllCheckout = remember {mutableStateOf(true)}
+    var isAllCheckout = remember {mutableStateOf(true)}
     val context = LocalContext.current
-    val total = remember { mutableStateOf(calculateTotal(cart)) }
-    val storeActive = (mutableMapOf <String, MutableState<Boolean>>())
-    for((storeID, products) in cart) {
+    var total = remember { mutableStateOf(calculateTotal(cart)) }
+    var storeActive = (mutableMapOf <String, MutableState<Boolean>>())
+    for((storeID, _) in cart) {
         storeActive.getOrPut(storeID) { mutableStateOf(true) }
     }
+    val stores = storeActive.keys
+    val activeCtr = remember { CartController.cartList.itemList.size }
 
     Scaffold(
         topBar = {
@@ -100,12 +104,11 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
                         modifier = Modifier
                             .width(35.dp),
                         onClick = {
-//                            if (activity != null)
-//                                activity.onBackPressed()
+                            (context as? Activity)?.finish()
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBackIos,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
                             contentDescription = "Back button",
                             tint = Color.White,
                             modifier = Modifier
@@ -145,19 +148,24 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
                     checked = isAllCheckout.value,
                     onCheckedChange = {
                         isAllCheckout.value = it
-                        for((storeID, isActive) in storeActive) {
+                        for((storeID, products) in cart) {
+                            val isActive = storeActive[storeID]!!
                             isActive.value = isAllCheckout.value
+                            for (product in products) {
+                                product.active = isAllCheckout.value
+                            }
                         }
+
                         if(isAllCheckout.value) {
                             total.value = calculateTotal(cart)
                         } else {
                             total.value = 0.0
                         }
-
                     },
                     colors = CheckboxDefaults.colors(
                         checkedColor = PalmLeaf,
-                        uncheckedColor = PalmLeaf)
+                        uncheckedColor = PalmLeaf
+                    )
                 )
 
                 Text (
@@ -192,11 +200,7 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
                 Spacer(modifier = Modifier.padding(end = 10.dp))
                 Button(
                     onClick = {
-//                val intent = Intent(context, CheckoutUI::class.java)
-//                context.startActivity(intent)
-                        /*for (prod in checkoutProductList) {
-                            println(prod)
-                        }*/
+
                     },
                     colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
                     modifier = Modifier
@@ -222,10 +226,30 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
                     .fillMaxWidth()
                     .size(3.dp)
             )
-            for ((storeID, productList) in cart) {
-                val isActive = storeActive.get(storeID)!!
-                total.value = CartGroup(isActive, products = productList, total, isAllCheckout, storeActive)
+            for((storeID, products) in cart) {
+                products.forEach {
+                    println("Store1: " + storeActive[storeID]!!.value + " Product ${it.productName} -> " + it.active)
+                }
             }
+            var flag = 0
+            for ((storeID, products) in cart) {
+                val isActive = storeActive[storeID]!!
+
+                CartGroup(isActive, products, total)
+                for (product in products) {
+                    if (product.active) {
+                        flag++
+                    }
+                }
+            }
+
+            for((storeID, products) in cart) {
+                products.forEach {
+                    println("Flag: ${flag} Store: " + storeActive[storeID]!!.value + " Product ${it.productName} -> " + it.active)
+                }
+            }
+
+            isAllCheckout.value = flag == activeCtr
         }
     }
 }
@@ -234,28 +258,24 @@ fun CartLayout(cart : MutableMap<String, MutableList<Product>>) {
 @Composable
 fun CartGroup(
     isActive : MutableState<Boolean>,
-    products : MutableList<Product>,
+    productList: MutableList<Product>,
     total:  MutableState<Double>,
-    isAll : MutableState<Boolean>,
-    allStores : MutableMap<String, MutableState<Boolean>>
-    ) :   Double{
-    val allTotal = remember{total.value}
-    var storeChecked = remember { isActive }
-    var inactiveAll = remember { mutableStateOf(false) }
-    var flag = remember { mutableStateOf(false) }
+) {
+    var storeChecked = isActive
+    var activeCtr = 0
+    var products = productList
 
-    if(isAll.value) {
-        flag.value = false
-        storeChecked.value = true
-        inactiveAll.value = true
-    }
 
-    if(flag.value && !storeChecked.value) {
-        inactiveAll.value = true
-        flag.value = false
-        products.forEach { product ->
-            product.active = true
+    for(product in products) {
+        if(product.active) {
+            activeCtr++
         }
+    }
+    println("Active: " + activeCtr)
+    if(activeCtr > 0) {
+        storeChecked.value = true
+    } else {
+        storeChecked.value = false
     }
 
     Column(
@@ -272,17 +292,25 @@ fun CartGroup(
                 checked = storeChecked.value,
                 onCheckedChange = {
                     storeChecked.value = it
-                    if(!storeChecked.value) {
-                        isAll.value = false
-                        inactiveAll.value = true
+                    if(storeChecked.value && activeCtr==0) {
+                        products.forEach{
+                            it.active = true
+                        }
                     }
-                    total.value += calculateTotal(storeChecked.value, products)
+                    total.value += calculateTotal(storeChecked, products)
+                    if(!storeChecked.value) {
+                        for(product in products) {
+                            if(product.active) {
+                                product.active = false
+                            }
+                        }
+                    }
                 },
                 colors = CheckboxDefaults.colors(
                     checkedColor = PalmLeaf,
-                    uncheckedColor = PalmLeaf)
+                    uncheckedColor = PalmLeaf
+                )
             )
-
 
             Image(
                 painter = painterResource(id = R.drawable.ic_market_stall),
@@ -300,25 +328,140 @@ fun CartGroup(
             )
         }
         Column {
-            products.forEach { product ->
-                CartItem(p = product, total, storeChecked, inactiveAll, isAll)
-            }
-            //if all products are inactive, uncheck the checkbox for the store
-            if(storeChecked.value && inactiveAll.value) {
-                inactiveAll.value = false
-            }
-            if(storeChecked.value) {
-                for(product in products) {
-                    if(!product.active) {
-                        flag.value = true
-                        storeChecked.value = false
-                    } else {
-                        flag.value = false
-                        break
+            products.forEach { p ->
+                println(p.productName + " in store: " + p.active)
+                //product.active = CartItem(mutableStateOf(product), storeChecked, total)
+                //var productChecked by remember { mutableStateOf(p.active) }
+                var productChecked by remember { mutableStateOf(p.active) }
+                productChecked = p.active
+
+                val qty = remember { mutableStateOf(p.quantity)}
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp)
+                ) {
+                    println("productChecked: " + productChecked)
+                    Checkbox(
+                        modifier = Modifier
+                            .padding(end = 5.dp)
+                            .align(Alignment.CenterVertically)
+                            .size(25.dp),
+                        checked = p.active,
+                        onCheckedChange = {
+                            productChecked = it
+                            p.active = productChecked
+                            println("Product: " + p.active)
+                            if (!productChecked) {
+                                total.value -= (p.sellingPrice * qty.value)
+                            } else {
+                                total.value += (p.sellingPrice * qty.value)
+                            }
+                        },
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = PalmLeaf,
+                            uncheckedColor = PalmLeaf
+                        )
+                    )
+
+                    Image(
+                        painter = rememberAsyncImagePainter(p.thumbnail),
+                        contentDescription = "product thumbnail",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .border(2.dp, color = MediumSpringBud, shape = RoundedCornerShape(10.dp))
+                    )
+                    Column(
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) {
+                        Text(
+                            text = p.productName,
+                            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .align(Alignment.Start)
+                        )
+                        Row(modifier = Modifier.padding(top = 5.dp)) {
+                            Text(
+                                text = "Quantity",
+                                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                                fontSize = 15.sp,
+                                modifier = Modifier
+                                    .weight(1F)
+                                    .align(Alignment.CenterVertically)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_minus_active),
+                                contentDescription = "Decrease Quantity",
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {
+                                        if (qty.value > 1) {
+                                            qty.value = maxOf(qty.value - 1, 1)
+                                            p.quantity = qty.value
+                                            if(productChecked) {
+                                                total.value -= p.sellingPrice
+                                            }
+                                        }
+                                        CartController.addToCart(p, "cart")
+                                    }
+                            )
+                            Text(
+                                text = "${qty.value}",
+                                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                                fontSize = 16.sp,
+                                modifier = Modifier
+                                    .padding(horizontal = 6.dp)
+                                    .align(Alignment.CenterVertically)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_plust_active),
+                                contentDescription = "Increase Quantity",
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {
+                                        qty.value += 1
+                                        p.quantity = qty.value
+                                        if (productChecked) {
+                                            total.value += p.sellingPrice
+                                        }
+                                        CartController.addToCart(p, "cart")
+                                    }
+                            )
+                        }
+                        Spacer(
+                            Modifier
+                                .fillMaxWidth()
+                                .background(MediumSpringBud)
+                                .size(2.dp)
+                        )
+                        Text(
+                            text = "₱ ${String.format("%.2f", p.sellingPrice * qty.value)}",
+                            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                            fontSize = 17.sp,
+                            modifier = Modifier
+                                .padding(6.dp)
+                                .align(Alignment.End)
+                        )
                     }
                 }
             }
-
+            activeCtr = 0
+            for(product in products) {
+                if(product.active) {
+                    activeCtr++
+                }
+            }
+            if(activeCtr > 0) {
+                storeChecked.value = true
+            } else {
+                storeChecked.value = false
+            }
+            println("Post-Active: " + activeCtr)
         }
     }
     Spacer(
@@ -327,133 +470,10 @@ fun CartGroup(
             .background(MediumSpringBud)
             .size(3.dp)
     )
-
-    return total.value
 }
 
 
-@Composable
-fun CartItem(p: Product, total:  MutableState<Double>, isActive : MutableState<Boolean>, inactiveAll : MutableState<Boolean>, isAll : MutableState<Boolean>){
-    var productChecked = remember { mutableStateOf(p.active) }
-    var qty = remember { mutableStateOf(p.quantity) }
 
-    if(!isActive.value) {
-        productChecked.value = false
-    } else if (inactiveAll.value) {
-        productChecked.value = true
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 5.dp)
-    ) {
-        Checkbox(
-            modifier = Modifier
-                .padding(end = 5.dp)
-                .align(Alignment.CenterVertically)
-                .size(25.dp),
-            checked = productChecked.value,
-            enabled = isActive.value,
-            onCheckedChange = {
-                productChecked.value = it
-                if(isActive.value) p.active = productChecked.value
-                if (!productChecked.value) {
-                    isAll.value = false
-                    total.value -= (p.sellingPrice * qty.value)
-                } else if (productChecked.value && isActive.value) {
-                    total.value += (p.sellingPrice * qty.value)
-                }
-            },
-            colors = CheckboxDefaults.colors(
-                checkedColor = PalmLeaf,
-                uncheckedColor = PalmLeaf)
-        )
-
-        Image(
-            painter = rememberAsyncImagePainter(p.thumbnail),
-            contentDescription = "product thumbnail",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(120.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .border(2.dp, color = MediumSpringBud, shape = RoundedCornerShape(10.dp))
-        )
-        Column(
-            modifier = Modifier.padding(start = 8.dp)
-        ) {
-            Text(
-                text = p.productName,
-                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .align(Alignment.Start)
-            )
-            Row(modifier = Modifier.padding(top = 5.dp)) {
-                Text(
-                    text = "Quantity",
-                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                    fontSize = 15.sp,
-                    modifier = Modifier
-                        .weight(1F)
-                        .align(Alignment.CenterVertically)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.ic_minus_active),
-                    contentDescription = "Decrease Quantity",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable {
-                            if (qty.value > 1) {
-                                qty.value = maxOf(qty.value - 1, 1)
-                                p.quantity = qty.value
-                                if(productChecked.value)
-                                total.value -= p.sellingPrice
-                            }
-                            CartController.addToCart(p, "cart")
-                        }
-                )
-                Text(
-                    text = "${qty.value}",
-                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .padding(horizontal = 6.dp)
-                        .align(Alignment.CenterVertically)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.ic_plust_active),
-                    contentDescription = "Increase Quantity",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable {
-                            qty.value += 1
-                            p.quantity = qty.value
-                            if (productChecked.value) {
-                                total.value += p.sellingPrice
-                            }
-                            CartController.addToCart(p, "cart")
-                        }
-                )
-            }
-            Spacer(
-                Modifier
-                    .fillMaxWidth()
-                    .background(MediumSpringBud)
-                    .size(2.dp)
-            )
-            Text(
-                text = "₱ ${String.format("%.2f", p.sellingPrice * qty.value)}",
-                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                fontSize = 17.sp,
-                modifier = Modifier
-                    .padding(6.dp)
-                    .align(Alignment.End)
-            )
-        }
-    }
-}
 
 fun calculateTotal(cart: MutableMap<String, MutableList<Product>>): Double {
     var total = 0.0
@@ -467,12 +487,12 @@ fun calculateTotal(cart: MutableMap<String, MutableList<Product>>): Double {
     return total
 }
 
-fun calculateTotal(isActive: Boolean, productList: MutableList<Product>): Double {
+fun calculateTotal(isActive: MutableState<Boolean>, productList: MutableList<Product>): Double {
     var total = 0.0
 
     for (product in productList) {
         if(product.active) {
-            if(isActive) {
+            if(isActive.value) {
                 total += (product.sellingPrice * product.quantity)
             } else {
                 total -= (product.sellingPrice * product.quantity)
