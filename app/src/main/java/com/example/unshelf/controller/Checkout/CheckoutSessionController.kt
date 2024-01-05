@@ -69,7 +69,7 @@ class CheckoutSessionController() {
             val lineItem = partLineItem(
                 amount = (product.sellingPrice * 100).toInt(),
                 name = product.productName,
-                sellerID = product.storeName,
+                sellerID = product.sellerID,
                 quantity = product.quantity,
                 images = listOf(product.thumbnail),
             )
