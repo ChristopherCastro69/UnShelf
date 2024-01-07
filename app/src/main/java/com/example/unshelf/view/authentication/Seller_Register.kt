@@ -42,7 +42,7 @@ class Seller_Register : AppCompatActivity() {
         val phoneNumber:  Long = binding.tfSellerPhone.text.toString().toLong()
         val address : String = "Cebu City"
         val storeName : String = binding.tfSellerStoreName.text.toString()
-        val adminVerified : String = "Pending"
+        val adminVerified : String = "Requires Action"
 
         val rating : Long = 0;
         val followers : Int = 0;
