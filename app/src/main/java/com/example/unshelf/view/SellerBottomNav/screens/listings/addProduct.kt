@@ -168,6 +168,7 @@ fun AddProducts(productId: String? = null, navController: NavController) {
                             expirationDateString,
                             DateTimeFormatter.ofPattern("MM/dd/yyyy")
                         )
+                        Log.d("AddProduct", "Parsed expiration date: ${pickedDate.value}")
                     } catch (e: DateTimeParseException) {
                         Log.e("AddProduct", "Error parsing date: $expirationDateString", e)
                         // Set to default date or handle the error as needed
@@ -467,100 +468,6 @@ fun Thumbnail() {
 
 }
 
-
-
-@Composable
-fun ProductGallery() {
-    val pickImageLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val imageUri: Uri? = result.data?.data
-                imageUri?.let { galleryImageUris.add(it) }
-            }
-        }
-    )
-
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)) {
-        Text(
-            text = "Product gallery",
-            fontFamily = JostFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            color = Color.Black,
-        )
-
-        // Horizontal scrollable row for product images
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-        ) {
-            galleryImageUris.forEachIndexed { index, uri ->
-                if (!uri.toString().isNullOrEmpty()) {
-                    // DisplayImage(imageUri = uri)
-                }
-                Box {
-                    Image(
-                        painter = rememberAsyncImagePainter(uri),
-                        contentDescription = "Selected Product Image",
-                        modifier = Modifier
-                            .size(150.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop // Adjust the scaling to fit the size of the container
-                    )
-                    // Position the delete button on the bottom right of the image
-                    IconButton(
-                        onClick = {
-                            // Remove the image from the list based on index
-                            galleryImageUris.removeAt(index)
-                        },
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .size(24.dp)
-                            .background(
-                                color = Color.Black.copy(alpha = 0.5f),
-                                shape = CircleShape
-                            )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Image",
-                            tint = Color.White
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-
-            // Button to add new images
-            Box(
-                modifier = Modifier
-                    .size(150.dp)
-                    .padding(16.dp)
-                    .background(PalmLeaf, shape = RoundedCornerShape(10.dp))
-                    .clickable {
-                        val intent = Intent(Intent.ACTION_PICK)
-                        intent.type = "image/*"
-                        pickImageLauncher.launch(intent)
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Image",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-}
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDescription() {
@@ -584,75 +491,6 @@ fun ProductDescription() {
             modifier = Modifier.fillMaxWidth(),
             singleLine = false
         )
-    }
-}
-
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun HashtagAddButton(onAdd: () -> Unit, text: String, onTextChange: (String) -> Unit) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-    // Define the colors for the TextField
-    val textFieldColors = TextFieldDefaults.textFieldColors(
-        containerColor = Color.Transparent, // Background color is set to transparent
-        unfocusedIndicatorColor = Color.Transparent, // This will remove the underline
-        focusedIndicatorColor = Color.Transparent // This will remove the underline when the TextField is focused
-    )
-
-    Box(
-        contentAlignment = Alignment.CenterStart,
-        modifier = Modifier
-            .padding(12.dp)
-            .background(
-                PalmLeaf,
-                RoundedCornerShape(16.dp)
-            )  // Set the background color of the Box, not the TextField
-
-    ) {
-        Row(
-
-        ) {
-            TextField(
-                value = text,
-                onValueChange = onTextChange,
-                placeholder = { Text("#hashtags", fontSize = 12.sp, color = Color.White) },
-                textStyle = TextStyle(fontSize = 12.sp),
-                colors = textFieldColors,
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {
-                    onAdd()
-                    keyboardController?.hide()
-                }),
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .width(100.dp)
-
-                // Set a fixed width for the TextField
-            )
-            IconButton(onClick = {
-                onAdd()
-                keyboardController?.hide()
-            }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Hashtag", tint = Color.White)
-            }
-        }
-    }
-}
-
-@Composable
-fun HashtagChip(text: String) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .wrapContentWidth()
-            .border(2.dp, Color.Green, RoundedCornerShape(16.dp)) // Set the border color to green
-            .background(
-                Color.Transparent,
-                RoundedCornerShape(16.dp)
-            ) // Set the background to transparent
-            .padding(16.dp)
-    ) {
-        Text(text, fontSize = 12.sp, color = PalmLeaf)
     }
 }
 
@@ -785,6 +623,8 @@ fun ExpirationDate() {
     val updateDate = { date: LocalDate ->
         pickedDate.value = date
         textDate = DateTimeFormatter.ofPattern("MM/dd/yyyy").format(date)
+        stringDate.value = textDate
+        Log.d("ExpirationDate", "Updated pickedDate: ${pickedDate.value}")
     }
 
     OutlinedTextField(
@@ -862,10 +702,8 @@ fun AddButton(navController: NavController,sellerId: String, storeId: String, pr
             )
             if(flag){
                 saveProductToFirestore(context, navController,sellerId, storeId, product)
-
             }
             else{
-
                 updateProductToFirestore(context, navController,sellerId, storeId, product, productId.toString())
             }
 
@@ -906,6 +744,164 @@ fun UnlistItemButton(onClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun HashtagAddButton(onAdd: () -> Unit, text: String, onTextChange: (String) -> Unit) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    // Define the colors for the TextField
+    val textFieldColors = TextFieldDefaults.textFieldColors(
+        containerColor = Color.Transparent, // Background color is set to transparent
+        unfocusedIndicatorColor = Color.Transparent, // This will remove the underline
+        focusedIndicatorColor = Color.Transparent // This will remove the underline when the TextField is focused
+    )
+
+    Box(
+        contentAlignment = Alignment.CenterStart,
+        modifier = Modifier
+            .padding(12.dp)
+            .background(
+                PalmLeaf,
+                RoundedCornerShape(16.dp)
+            )  // Set the background color of the Box, not the TextField
+
+    ) {
+        Row(
+
+        ) {
+            TextField(
+                value = text,
+                onValueChange = onTextChange,
+                placeholder = { Text("#hashtags", fontSize = 12.sp, color = Color.White) },
+                textStyle = TextStyle(fontSize = 12.sp),
+                colors = textFieldColors,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    onAdd()
+                    keyboardController?.hide()
+                }),
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .width(100.dp)
+
+                // Set a fixed width for the TextField
+            )
+            IconButton(onClick = {
+                onAdd()
+                keyboardController?.hide()
+            }) {
+                Icon(Icons.Default.Add, contentDescription = "Add Hashtag", tint = Color.White)
+            }
+        }
+    }
+}
+
+@Composable
+fun HashtagChip(text: String) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .wrapContentWidth()
+            .border(2.dp, Color.Green, RoundedCornerShape(16.dp)) // Set the border color to green
+            .background(
+                Color.Transparent,
+                RoundedCornerShape(16.dp)
+            ) // Set the background to transparent
+            .padding(16.dp)
+    ) {
+        Text(text, fontSize = 12.sp, color = PalmLeaf)
+    }
+}
+@Composable
+fun ProductGallery() {
+    val pickImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val imageUri: Uri? = result.data?.data
+                imageUri?.let { galleryImageUris.add(it) }
+            }
+        }
+    )
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp)) {
+        Text(
+            text = "Product gallery",
+            fontFamily = JostFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Black,
+        )
+
+        // Horizontal scrollable row for product images
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+            galleryImageUris.forEachIndexed { index, uri ->
+                if (!uri.toString().isNullOrEmpty()) {
+                    // DisplayImage(imageUri = uri)
+                }
+                Box {
+                    Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = "Selected Product Image",
+                        modifier = Modifier
+                            .size(150.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop // Adjust the scaling to fit the size of the container
+                    )
+                    // Position the delete button on the bottom right of the image
+                    IconButton(
+                        onClick = {
+                            // Remove the image from the list based on index
+                            galleryImageUris.removeAt(index)
+                        },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(24.dp)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.5f),
+                                shape = CircleShape
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Image",
+                            tint = Color.White
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+
+            // Button to add new images
+            Box(
+                modifier = Modifier
+                    .size(150.dp)
+                    .padding(16.dp)
+                    .background(PalmLeaf, shape = RoundedCornerShape(10.dp))
+                    .clickable {
+                        val intent = Intent(Intent.ACTION_PICK)
+                        intent.type = "image/*"
+                        pickImageLauncher.launch(intent)
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Image",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
+}
 @Composable
 fun UnlistProductDialog(
     showConfirmationDialog: MutableState<Boolean>,
@@ -935,6 +931,7 @@ fun UnlistProductDialog(
         )
     }
 }
+
 
 
 //Hello
