@@ -11,7 +11,8 @@ data class Order(
     val customerID: String = "",
     var products: List<LineItem> = listOf(),
     val totalAmount: Double = 0.0,
-    val fee: Double = 0.0,
+    val paymongoFee: Double = 0.0,
+    val unshelfFee: Double = 0.0,
     val netAmount: Double = 0.0,
     val orderStatus: String = "",
     val paymentMethod: String = ""

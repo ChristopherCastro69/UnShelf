@@ -37,6 +37,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
@@ -155,7 +156,7 @@ fun PageInAppBalance(activity: Activity?) {
                             .padding(top = 30.dp)
                     )
                     Text(
-                        text = "P300,000.00",
+                        text = "₱ 300,000.00",
                         color = Color(0xff386641),
                         style = TextStyle(
                             fontSize = 20.sp,
@@ -214,7 +215,7 @@ fun PageInAppBalance(activity: Activity?) {
                 .align(alignment = Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = "Payment Options",
+                    text = "Recent Transactions",
                     color = DeepMossGreen,
                     style = TextStyle(
                         fontSize = 18.sp,
@@ -222,18 +223,6 @@ fun PageInAppBalance(activity: Activity?) {
                     modifier = Modifier
                         .align(alignment = Alignment.CenterStart)
                 )
-                IconButton (modifier = Modifier
-                    .align(alignment = Alignment.CenterEnd),onClick={}) {
-                    Icon(
-                        imageVector = Icons.Filled.AddCircle,
-                        contentDescription = "icon plus circle",
-                        tint = DeepMossGreen,
-                        modifier = Modifier
-                            .align(alignment = Alignment.CenterEnd)
-                            .fillMaxHeight()
-                            .width(40.dp)
-                    )
-                }
             }
             Spacer(modifier = Modifier.height(45.dp))
             LazyColumn {
@@ -264,6 +253,7 @@ fun PaymentMethodsList() {
             Image(
                 painter = painterResource(id = R.drawable.gcash_logo),
                 contentDescription = "Gcash Logo",
+                contentScale = ContentScale.Inside,
                 modifier = Modifier
                     .width(60.dp)
                     .fillMaxHeight()
@@ -275,13 +265,25 @@ fun PaymentMethodsList() {
                     .align(Alignment.CenterVertically)
                     .weight(1F)
             ) {
-                Text(
-                    text = "Gcash",
-                    color = Color(0xff386641),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold),
-                )
+                Row {
+                    Text(
+                        text = "Gcash",
+                        color = Color(0xff386641),
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold),
+                    )
+                    Text(
+                        text = "Gcash",
+                        color = Color(0xff386641),
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold),
+                        textAlign = TextAlign.Right,
+                        modifier = Modifier.weight(1F).padding(end = 10.dp)
+                    )
+                }
+
                 Text(
                     text = "<<Account number>>",
                     color = Color(0xff386641),
@@ -296,44 +298,44 @@ fun PaymentMethodsList() {
                 )
             }
         }
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-        ) {
-            Row () {
-                IconButton(
-                    modifier = Modifier
-                        .size(35.dp)
-                        .padding(end = 5.dp, top = 8.dp),
-                    onClick = {
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = "Edit button",
-                        tint = DeepMossGreen,
-                        modifier = Modifier
-                            .fillMaxSize()
-                    )
-                }
-                IconButton(
-                    modifier = Modifier
-                        .size(35.dp)
-                        .padding(end = 5.dp, top = 8.dp),
-                    onClick = {
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "Delete button",
-                        tint = WatermelonRed,
-                        modifier = Modifier
-                            .fillMaxSize()
-                    )
-                }
-            }
-
-        }
+//        Box(
+//            modifier = Modifier
+//                .align(Alignment.TopEnd)
+//        ) {
+//            Row () {
+//                IconButton(
+//                    modifier = Modifier
+//                        .size(35.dp)
+//                        .padding(end = 5.dp, top = 8.dp),
+//                    onClick = {
+//                    }
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Filled.Edit,
+//                        contentDescription = "Edit button",
+//                        tint = DeepMossGreen,
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                    )
+//                }
+//                IconButton(
+//                    modifier = Modifier
+//                        .size(35.dp)
+//                        .padding(end = 5.dp, top = 8.dp),
+//                    onClick = {
+//                    }
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Filled.Delete,
+//                        contentDescription = "Delete button",
+//                        tint = WatermelonRed,
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                    )
+//                }
+//            }
+//
+//        }
 
     }
 }
