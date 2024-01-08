@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 
 
 //val ordersList = null
-    // Add more orders as per your data
+// Add more orders as per your data
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,12 +50,19 @@ import kotlinx.coroutines.launch
 
 fun Orders(navController: NavController) {
     val orderViewModel:OrderController = viewModel()
-    LaunchedEffect(0) {
-        orderViewModel.fetchOrder()
+    if(OrderController.orderList.value.isEmpty()) {
+        OrderController.fetchOrder()
     }
-    val orders = orderViewModel.orders.collectAsState()
+
+
+
+    val orders = remember{ orderViewModel.orderList }
     var selectedTabIndex by remember { mutableStateOf(0) }
-    val filterOptions = listOf("Pending", "Approved", "Cancelled", "Refunded", "Paid")
+    val filterOptions = listOf("Pending", "Approved",  "Completed", "Cancelled", "Refunded")
+
+    for(order in orders.value) {
+        println("Order " + order.checkoutID + " amount: " + order.netAmount)
+    }
 
     Scaffold(
         topBar = {
@@ -73,7 +80,7 @@ fun Orders(navController: NavController) {
                     containerColor = PalmLeaf
                 ),
 
-            )
+                )
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -86,11 +93,17 @@ fun Orders(navController: NavController) {
                     )
                 }
             }
-            LazyColumn {
-               items(orders.value) { order ->
-                   Log.d("OrderCard", "${order}")
-                    OrderCard(order.products, order)
+            if(orders.value.isNotEmpty()) {
+                LazyColumn {
+                    items(orders.value) { order ->
+                        OrderCard(order.products, order)
+                    }
                 }
+            } else {
+                CircularProgressIndicator(color = PalmLeaf, modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(50.dp)
+                    .padding(top = 10.dp))
             }
         }
     }
@@ -140,7 +153,7 @@ fun OrderCard(products: List<LineItem>, order: Order) {
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier.fillMaxHeight()
                 ) {
-                    Text(text = "₱${String.format("%.2f", product.amount/100.0)}", fontWeight = FontWeight.Bold)
+                    Text(text = "₱${String.format("%.2f", product.amount)}", fontWeight = FontWeight.Bold)
                     Text(text = "${order.orderStatus}", color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
                 }
             }
