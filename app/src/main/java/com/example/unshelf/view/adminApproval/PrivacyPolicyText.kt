@@ -6,7 +6,7 @@ Team Leviathans Privacy Policy
 
 Last Updated: [Date]
 
-Welcome to Unshelf App. This Privacy Policy is designed to help you understand how we collect, use, disclose, and safeguard your personal information when you use our services through our [Your Company Name] mobile application (the "App") and website (collectively, the "Services").
+Welcome to Unshelf App. This Privacy Policy is designed to help you understand how we collect, use, disclose, and safeguard your personal information when you use our services through our mobile application UnShelf and website (collectively, the "Services").
 
 1. Information We Collect:
 
@@ -50,7 +50,7 @@ We implement reasonable security measures to protect your information from unaut
 
 We may update this Privacy Policy to reflect changes in our practices or legal requirements. We will notify you of any material changes through the App or other means.
 
-If you have any questions or concerns about this Privacy Policy, please contact us at [Your Contact Information].
+If you have any questions or concerns about this Privacy Policy, please contact us at topitops123@gmail.com.
 
 By using our Services, you agree to the terms of this Privacy Policy.
 
