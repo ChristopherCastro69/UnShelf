@@ -5,9 +5,12 @@ package com.example.unshelf.controller
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.navigation.NavHostController
 import com.example.unshelf.model.authentication.LoginAuthenticationManager
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
+import com.example.unshelf.view.adminApproval.VerificationS
 import com.example.unshelf.view.authentication.SellerLoginView
+import com.example.unshelf.view.authentication.Verification
 
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -18,6 +21,7 @@ import com.google.firebase.firestore.firestore
 
 class SellerLoginController(private val context: Context, private val view: SellerLoginView, private val model: LoginAuthenticationManager) :
     SellerLoginView.LoginListener {
+
 
     fun init() {
         view.setLoginListener(this)
@@ -31,7 +35,7 @@ class SellerLoginController(private val context: Context, private val view: Sell
                 val firebaseAuth = model.firebaseAuth
                 if (firebaseAuth.currentUser!!.isEmailVerified) {
                     // Go to the main activity for sellers
-                    val intent = Intent(context, MainNavigationActivitySeller::class.java)
+                    val intent = Intent(context, VerificationS::class.java)
                     context.startActivity(intent)
                 } else {
                     view.showToast("Email not verified, Please verify your email.")

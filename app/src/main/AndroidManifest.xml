@@ -137,6 +137,23 @@
             android:name=".view.authentication.ResetPassword"
             android:exported="false"
             />
+        <activity
+            android:name=".view.adminApproval.VerificationS"
+            android:exported="false"
+            />
+        <activity
+            android:name=".view.adminApproval.PrivacyPolicy"
+            android:exported="false"
+            />
+        <activity
+            android:name=".view.adminApproval.VerificationMessage"
+            android:exported="false"
+            />
+        <activity
+            android:name=".view.adminApproval.RejectedMessage"
+            android:exported="false"
+            />
+
 
     </application>
 </manifest>
