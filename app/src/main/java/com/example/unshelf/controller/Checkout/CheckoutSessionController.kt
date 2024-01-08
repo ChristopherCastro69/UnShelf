@@ -1,19 +1,11 @@
 package com.example.unshelf.controller.Checkout
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.unshelf.controller.DataFetch.DataFetchController
 import com.example.unshelf.model.checkout.*
 import com.example.unshelf.model.entities.Order
 import com.example.unshelf.model.entities.Product
-import com.example.unshelf.model.entities.ProductDetailsModel
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -166,12 +158,13 @@ class CheckoutSessionController() {
             val paymentID = checkoutResponse.data.attributes.payments.get(0).id
             val customerID = FirebaseAuth.getInstance().currentUser?.uid
             val totalAmount = checkoutResponse.data.attributes.payments.get(0).attributes.amount / 100.0
-            val fee = checkoutResponse.data.attributes.payments.get(0).attributes.fee / 100.0
-            val netAmount = totalAmount - fee
+            val paymongoFee = checkoutResponse.data.attributes.payments.get(0).attributes.fee / 100.0
+            val unshelfFee = totalAmount * 0.01
+            val netAmount = totalAmount - (paymongoFee + unshelfFee)
             val method = checkoutResponse.data.attributes.paymentMethodUsed
             val products = checkoutResponse.data.attributes.lineItems
             val status = checkoutResponse.data.attributes.payments.get(0).attributes.status
-            val order = Order(checkoutID,paymentID,date,customerID.toString(),products,totalAmount,fee,netAmount,status,method)
+            val order = Order(checkoutID,paymentID,date,customerID.toString(),products,totalAmount,paymongoFee,unshelfFee, netAmount,status,method)
             db.collection("orders").add(order).await()
         }
     }
