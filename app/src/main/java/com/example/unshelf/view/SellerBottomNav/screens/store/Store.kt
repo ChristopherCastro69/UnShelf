@@ -1,7 +1,8 @@
 package com.example.unshelf.view.SellerBottomNav.screens.store
 
 import JostFontFamily
-import androidx.activity.ComponentActivity
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,39 +19,34 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.DeliveryDining
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.LocalOffer
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material.icons.filled.Store
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.unshelf.R
+import com.example.unshelf.model.admin.logoutUser
 import com.example.unshelf.ui.theme.DeepMossGreen
-import com.example.unshelf.ui.theme.PalmLeaf
+import kotlinx.coroutines.launch
 
-
-class StoreView: ComponentActivity(){
-
-}
+//@Preview
 @Composable
 fun Store() {
-
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,10 +56,9 @@ fun Store() {
 
         ProfileHeader()
         Spacer(modifier = Modifier.height(24.dp))
-        ProfileOptions()
+        ProfileOptions(context)
     }
 }
-
 @Composable
 fun ProfileHeader() {
     Row(
@@ -74,12 +69,12 @@ fun ProfileHeader() {
     ) {
         // Profile picture
         Image(
-            painter = painterResource(id = R.drawable.profile), // Replace with the actual profile picture resource ID
+            painter = painterResource(id = R.drawable.avatar1),
             contentDescription = "Profile Picture",
             modifier = Modifier
-                .size(80.dp) // Adjust size as needed
+                .size(80.dp)
                 .clip(CircleShape)
-                .background(DeepMossGreen) // Replace with the color of the profile picture background if needed
+                .background(DeepMossGreen),
         )
         Spacer(modifier = Modifier.width(24.dp))
         // Profile info
@@ -123,33 +118,51 @@ fun ProfileHeader() {
     }
 }
 
-
 @Composable
-fun ProfileOptions() {
+fun ProfileOptions(context: Context) {
     val options = listOf(
-//        "Edit Profile" to Icons.Default.Store,
-        "Delivery Settings" to Icons.Default.DeliveryDining,
-        "Pickup Settings" to Icons.Default.ShoppingBag,
-        "Store Locations" to Icons.Default.LocationOn,
-        "Promotions" to Icons.Default.LocalOffer,
-        "Settings" to Icons.Default.Settings,
-        "Language" to Icons.Default.Language,
+        "Edit Profile" to Icons.Default.Store,
+
+//        "Delivery Settings" to Icons.Default.DeliveryDining,
+//        "Pickup Settings" to Icons.Default.ShoppingBag,
+//        "Store Locations" to Icons.Default.LocationOn,
+//        "Promotions" to Icons.Default.LocalOffer,
+//        "Settings" to Icons.Default.Settings,
+//        "Language" to Icons.Default.Language,
         "Log Out" to Icons.Default.ExitToApp
+
     )
 
     Column {
         options.forEach { (option, icon) ->
-            ProfileOptionItem(option, icon)
+            ProfileOptionItem(option, icon, context)
         }
     }
 }
 
 @Composable
-fun ProfileOptionItem(option: String, icon: ImageVector) {
+fun ProfileOptionItem(option: String, icon: ImageVector, context: Context) {
+    val coroutineScope = rememberCoroutineScope()
+
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Handle click */ }
+            .clickable {
+            /* Handle click */
+                if (option == "Edit Profile") {
+                    // Launch the Profile activity using Intent
+                    val intent = Intent(context, SellerProfile::class.java)
+                    context.startActivity(intent)
+                }
+                else if (option == "Log Out"){
+                    coroutineScope.launch {
+                        logoutUser(context)
+                    }
+                }
+                else {
+                    // Handle other options
+                }}
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -174,6 +187,7 @@ fun ProfileOptionItem(option: String, icon: ImageVector) {
         )
     }
 }
+
 
 @Composable
 fun CustomTopBar() {
@@ -214,7 +228,6 @@ fun CustomTopBar() {
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

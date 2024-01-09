@@ -153,6 +153,10 @@
             android:name=".view.adminApproval.RejectedMessage"
             android:exported="false"
             />
+        <activity
+            android:name=".view.SellerBottomNav.screens.store.SellerProfile"
+            android:exported="false"
+            />
 
 
     </application>
