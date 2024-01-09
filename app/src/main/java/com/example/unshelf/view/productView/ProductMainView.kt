@@ -66,7 +66,6 @@ class ProductMainView : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val user: Boolean = intent.getBooleanExtra("user",false)
         val product: Product? = intent.getParcelableExtra("product")
-
         setContent {
             // Your Compose UI goes here
             ProductMain(product, user)
