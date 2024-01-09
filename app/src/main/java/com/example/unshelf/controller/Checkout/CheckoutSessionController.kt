@@ -159,12 +159,10 @@ class CheckoutSessionController() {
             for(product in products) {
                 val id = product.sellerID!!
                 if(!storeIDs.contains(id)) {
-                    println("Order ID: " + id )
                     storeIDs = storeIDs + id
                 }
 
             }
-            println("Order ADD: " + storeIDs )
             for(storeID in storeIDs) {
                 val filteredProducts = FilterBySeller().meetsCriteria(storeID, products)
                 var totalAmount = 0.0

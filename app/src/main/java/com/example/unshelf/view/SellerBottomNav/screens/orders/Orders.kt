@@ -38,9 +38,8 @@ fun Orders(navController: NavController) {
     if(OrderController.orderList.value.isEmpty()) {
         OrderController.fetchOrder()
     }
-
-
-
+    //OrderController.fetchOrder()
+    val isLoading = remember { OrderController.isLoading }
     val orders = remember{ orderViewModel.orderList }
     var selectedTabIndex by remember { mutableStateOf(0) }
     val filterOptions = listOf("Pending", "Approved",  "Completed", "Cancelled", "Refunded")
@@ -78,7 +77,7 @@ fun Orders(navController: NavController) {
                     )
                 }
             }
-            if(orders.value.isNotEmpty()) {
+            if(!isLoading.value) {
                 LazyColumn {
                     items(orders.value) { order ->
                         OrderCard(order.products, order)

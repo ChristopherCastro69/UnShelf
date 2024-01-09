@@ -47,15 +47,34 @@ import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MediumSpringBud
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class CheckoutUI: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
         var checkouturl = ""
         var checkoutID = ""
-        var cart = CartController.storeMapped
-        var storeMapped = CartController.storeActiveState
+        var cart: MutableMap<String, MutableList<Product>>
+        var storeMapped: MutableMap<String, MutableState<Boolean>>
+        var fromWhere : String? = intent.getStringExtra("from")!!
+        var isBuyNow : Product?
+        if(fromWhere.equals("buynow")) {
+            isBuyNow = intent.getParcelableExtra("buyNow")!!
+            cart = mutableMapOf(Pair(isBuyNow.storeID,mutableListOf(isBuyNow)))
+            storeMapped = mutableMapOf(Pair(isBuyNow.storeID, mutableStateOf(true)))
+        } else {
+            cart = CartController.storeMapped
+            storeMapped = CartController.storeActiveState
+        }
+
+//        println("isBuyNow: " + isBuyNow!!.productName + " x" + isBuyNow!!.quantity)
+        //if(isBuyNow!=null) {
+//        } else {
+//
+//        }
+
         lifecycleScope.launch {
             val checkoutSesh = CheckoutSessionController().createCheckoutSession(cart)
             if(checkoutSesh!=null) {
@@ -70,7 +89,7 @@ class CheckoutUI: ComponentActivity() {
 
 
         setContent{
-            CheckoutPage(cart, storeMapped, onClick = {
+            CheckoutPage(cart, storeMapped, fromWhere!!, onClick = {
                 redirect(checkouturl, checkoutID)
             })
         }
@@ -94,6 +113,7 @@ class CheckoutUI: ComponentActivity() {
 fun CheckoutPage(
     cart :  MutableMap<String, MutableList<Product>>,
     storeMapped :  MutableMap<String, MutableState<Boolean>>,
+    fromWhere : String,
     onClick: () -> Unit) {
     val context = LocalContext.current
     //var transactionFee by remember{ mutableStateOf(0.0) }
@@ -146,13 +166,93 @@ fun CheckoutPage(
             }
         },
         bottomBar = {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(height = 65.dp)
                     .padding(5.dp)
                     .background(Color.White)
             ) {
+                if(fromWhere.equals("buynow")) {
+                    Row(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_receipt),
+                            contentDescription = "store icon",
+                            tint = DeepMossGreen,
+                            modifier = Modifier.size(30.dp)
+                        )
+                        Text(
+                            text = "Payment Details",
+                            color = DeepMossGreen,
+                            style = TextStyle(
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 5.dp)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = "Subtotal",
+                            color = DeepMossGreen,
+                            style = TextStyle(
+                                fontSize = 17.sp
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 5.dp)
+                                .weight(1F)
+                        )
+                        Text(
+                            text = "₱ ${String.format("%.2f", totalAmount)}",
+                            color = DeepMossGreen,
+                            style = TextStyle(
+                                fontSize = 17.sp,
+                                textAlign = TextAlign.Right,
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 5.dp)
+                                .weight(1F)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = "Total Payment",
+                            color = DeepMossGreen,
+                            style = TextStyle(
+                                fontSize = 17.sp
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 5.dp)
+                                .weight(1F)
+                        )
+                        Text(
+                            text = "₱ ${String.format("%.2f", totalAmount)}",
+                            color = DeepMossGreen,
+                            style = TextStyle(
+                                fontSize = 17.sp,
+                                textAlign = TextAlign.Right,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 5.dp)
+                                .weight(1F)
+                        )
+                    }
+                }
                 Row {
                     Text(
                         text = "Total\n₱ ${String.format("%.2f", totalAmount)}",
@@ -163,7 +263,6 @@ fun CheckoutPage(
                             textAlign = TextAlign.Right,
                         ),
                         modifier = Modifier
-                            .fillMaxHeight()
                             .weight(1F)
                             .wrapContentHeight(align = Alignment.CenterVertically)
                     )
@@ -183,7 +282,6 @@ fun CheckoutPage(
                                 textAlign = TextAlign.Center,
                             ),
                             modifier = Modifier
-                                .fillMaxHeight()
                                 .wrapContentHeight(align = Alignment.CenterVertically)
                         )
 
@@ -219,11 +317,14 @@ fun CheckoutPage(
                             }
                         }
                     }
-                    item {
-                        Column(modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White)
-                            .padding(10.dp)) {
+                    if(fromWhere.equals("basket")) {
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White)
+                                    .padding(10.dp)
+                            ) {
 //                            Row() {
 //                                Icon(
 //                                    painter = painterResource(id = R.drawable.wallet),
@@ -274,56 +375,56 @@ fun CheckoutPage(
 //                                    )
 //                                }
 //                            }
-                            Row(
-                                modifier = Modifier
-                                    .padding(vertical = 8.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_receipt),
-                                    contentDescription = "store icon",
-                                    tint = DeepMossGreen,
-                                    modifier = Modifier.size(30.dp)
-                                )
-                                Text(
-                                    text = "Payment Details",
-                                    color = DeepMossGreen,
-                                    style = TextStyle(
-                                        fontSize = 17.sp,
-                                        fontWeight = FontWeight.Bold
-                                    ),
+                                Row(
                                     modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 5.dp)
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .padding(vertical = 8.dp)
-                            ) {
-                                Text(
-                                    text = "Subtotal",
-                                    color = DeepMossGreen,
-                                    style = TextStyle(
-                                        fontSize = 17.sp
-                                    ),
+                                        .padding(vertical = 8.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_receipt),
+                                        contentDescription = "store icon",
+                                        tint = DeepMossGreen,
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                    Text(
+                                        text = "Payment Details",
+                                        color = DeepMossGreen,
+                                        style = TextStyle(
+                                            fontSize = 17.sp,
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(start = 5.dp)
+                                    )
+                                }
+                                Row(
                                     modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 5.dp)
-                                        .weight(1F)
-                                )
-                                Text(
-                                    text = "₱ ${String.format("%.2f", subTotal)}",
-                                    color = DeepMossGreen,
-                                    style = TextStyle(
-                                        fontSize = 17.sp,
-                                        textAlign = TextAlign.Right,
-                                    ),
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 5.dp)
-                                        .weight(1F)
-                                )
-                            }
+                                        .padding(vertical = 8.dp)
+                                ) {
+                                    Text(
+                                        text = "Subtotal",
+                                        color = DeepMossGreen,
+                                        style = TextStyle(
+                                            fontSize = 17.sp
+                                        ),
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(start = 5.dp)
+                                            .weight(1F)
+                                    )
+                                    Text(
+                                        text = "₱ ${String.format("%.2f", subTotal)}",
+                                        color = DeepMossGreen,
+                                        style = TextStyle(
+                                            fontSize = 17.sp,
+                                            textAlign = TextAlign.Right,
+                                        ),
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(start = 5.dp)
+                                            .weight(1F)
+                                    )
+                                }
 //                            Row(
 //                                modifier = Modifier
 //                                    .padding(vertical = 8.dp)
@@ -352,38 +453,39 @@ fun CheckoutPage(
 //                                        .weight(1F)
 //                                )
 //                            }
-                            Row(
-                                modifier = Modifier
-                                    .padding(vertical = 8.dp)
-                            ) {
-                                Text(
-                                    text = "Total Payment",
-                                    color = DeepMossGreen,
-                                    style = TextStyle(
-                                        fontSize = 17.sp
-                                    ),
+                                Row(
                                     modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 5.dp)
-                                        .weight(1F)
-                                )
-                                Text(
-                                    text = "₱ ${String.format("%.2f", subTotal)}",
-                                    color = DeepMossGreen,
-                                    style = TextStyle(
-                                        fontSize = 17.sp,
-                                        textAlign = TextAlign.Right,
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 5.dp)
-                                        .weight(1F)
-                                )
-                                totalAmount = subTotal
+                                        .padding(vertical = 8.dp)
+                                ) {
+                                    Text(
+                                        text = "Total Payment",
+                                        color = DeepMossGreen,
+                                        style = TextStyle(
+                                            fontSize = 17.sp
+                                        ),
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(start = 5.dp)
+                                            .weight(1F)
+                                    )
+                                    Text(
+                                        text = "₱ ${String.format("%.2f", subTotal)}",
+                                        color = DeepMossGreen,
+                                        style = TextStyle(
+                                            fontSize = 17.sp,
+                                            textAlign = TextAlign.Right,
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(start = 5.dp)
+                                            .weight(1F)
+                                    )
+                                    totalAmount = subTotal
+                                }
                             }
-                        }
 
+                        }
                     }
                 }
 
