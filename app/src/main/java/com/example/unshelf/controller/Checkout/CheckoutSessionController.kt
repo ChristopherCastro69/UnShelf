@@ -1,6 +1,7 @@
 package com.example.unshelf.controller.Checkout
 
 import android.util.Log
+import com.example.unshelf.controller.FilterDesign.FilterBySeller
 import com.example.unshelf.model.checkout.*
 import com.example.unshelf.model.entities.Order
 import com.example.unshelf.model.entities.Product
@@ -16,7 +17,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import java.io.IOException
+import java.math.RoundingMode
 import java.util.Date
+import java.util.UUID
 
 class CheckoutSessionController() {
     private val gson = Gson()
@@ -147,26 +150,51 @@ class CheckoutSessionController() {
     }
 
     suspend fun placeOrder(checkoutID: String) {
+
         val checkoutResponse = retrieveCheckout(checkoutID)
         if(checkoutResponse!= null) {
-            var amountPerProduct = checkoutResponse.data.attributes.lineItems
-            for(product in amountPerProduct) {
-                product.amount = product.amount / 100.0
-            }
-            val timestamp = checkoutResponse.data.attributes.paidAt
-            val date = Date(timestamp * 1000)
-            val paymentID = checkoutResponse.data.attributes.payments.get(0).id
-            val customerID = FirebaseAuth.getInstance().currentUser?.uid
-            val totalAmount = checkoutResponse.data.attributes.payments.get(0).attributes.amount / 100.0
-            val paymongoFee = checkoutResponse.data.attributes.payments.get(0).attributes.fee / 100.0
-            val unshelfFee = totalAmount * 0.01
-            val netAmount = totalAmount - (paymongoFee + unshelfFee)
-            val method = checkoutResponse.data.attributes.paymentMethodUsed
+            val refNo = generateRefNo()
             val products = checkoutResponse.data.attributes.lineItems
-            val status = checkoutResponse.data.attributes.payments.get(0).attributes.status
-            val order = Order(checkoutID,paymentID,date,customerID.toString(),products,totalAmount,paymongoFee,unshelfFee, netAmount,status,method)
-            db.collection("orders").add(order).await()
+            var storeIDs = listOf<String>()
+            for(product in products) {
+                val id = product.sellerID!!
+                if(!storeIDs.contains(id)) {
+                    println("Order ID: " + id )
+                    storeIDs = storeIDs + id
+                }
+
+            }
+            println("Order ADD: " + storeIDs )
+            for(storeID in storeIDs) {
+                val filteredProducts = FilterBySeller().meetsCriteria(storeID, products)
+                var totalAmount = 0.0
+                var finalProducts = listOf<OrderLineItem>()
+
+                for(product in filteredProducts) {
+                    product.amount = product.amount / 100.0
+                    totalAmount += (product.amount * product.quantity)
+                    finalProducts = finalProducts + (OrderLineItem(product.amount, product.currency, product.images, product.name, product.quantity))
+                }
+
+                val timestamp = checkoutResponse.data.attributes.paidAt
+                val date = Date(timestamp * 1000)
+                val paymentID = checkoutResponse.data.attributes.payments.get(0).id
+                val customerID = FirebaseAuth.getInstance().currentUser?.uid
+                val paymongoFee = (totalAmount * 0.02).toBigDecimal().setScale(2, RoundingMode.DOWN).toDouble()
+                val unshelfFee = (totalAmount * 0.03).toBigDecimal().setScale(2, RoundingMode.DOWN).toDouble()
+                val netAmount = totalAmount - (paymongoFee + unshelfFee)
+                val method = checkoutResponse.data.attributes.paymentMethodUsed
+                val status = checkoutResponse.data.attributes.payments.get(0).attributes.status
+
+                val order = Order(refNo, checkoutID,paymentID,date,customerID.toString(),storeID,finalProducts,totalAmount,paymongoFee,unshelfFee, netAmount,status,method)
+                db.collection("orders").add(order).await()
+            }
         }
+    }
+
+    fun generateRefNo(): String {
+        val refNo = UUID.randomUUID().toString().substring(0..7)
+        return refNo
     }
 }
 

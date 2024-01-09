@@ -23,42 +23,44 @@ object OrderController : ViewModel() {
 
     fun fetchOrder(){
         CoroutineScope(Dispatchers.Default).launch {
-            val orderFetch = db.collection("orders").get().await()
-            orderList.value = orderFetch.toObjects(Order::class.java)
-            var storeOrder: Order? = null
-            for (order in orderList.value) {
-                val items = order.products
-                for (item in items) {
-                    if (item.sellerID.equals(currentUser)) {
-                        if (storeOrder == null) {
-                            storeOrder = Order(
-                                order.checkoutID,
-                                order.paymentID,
-                                order.paymentTimestamp,
-                                order.customerID,
-                                listOf(),
-                                0.0,
-                                0.0,
-                                0.0,
-                                0.0,
-                                order.orderStatus,
-                                order.paymentMethod
-                            )
-                        }
-                        storeOrder.products = storeOrder.products.plus(item)
-                    }
-                }
-                if (storeOrder != null) {
-                    storeOrders = storeOrders.plus(storeOrder)
-                }
-                storeOrder = null
-            }
-            orderList.value = storeOrders
-            isLoading.value = false
-            println("isLoading: " + isLoading)
-            for(order in orderList.value) {
-                println("OrderList " + order.checkoutID + " amount: " + order.netAmount)
-            }
+//            val orderFetch = db.collection("orders").get().await()
+//            orderList.value = orderFetch.toObjects(Order::class.java)
+//            var storeOrder: Order? = null
+//            for (order in orderList.value) {
+//                val items = order.products
+//                for (item in items) {
+//                    if (item.sellerID.equals(currentUser)) {
+//                        if (storeOrder == null) {
+//                            storeOrder = Order(
+//                                order.refNo,
+//                                order.checkoutID,
+//                                order.paymentID,
+//                                order.paymentTimestamp,
+//                                order.customerID,
+//                                order.sellerID,
+//                                listOf(),
+//                                order.totalAmount,
+//                                order.paymongoFee,
+//                                order.unshelfFee,
+//                                order.netAmount,
+//                                order.orderStatus,
+//                                order.paymentMethod
+//                            )
+//                        }
+//                        storeOrder.products = storeOrder.products.plus(item)
+//                    }
+//                }
+//                if (storeOrder != null) {
+//                    storeOrders = storeOrders.plus(storeOrder)
+//                }
+//                storeOrder = null
+//            }
+//            orderList.value = storeOrders
+//            isLoading.value = false
+//            println("isLoading: " + isLoading)
+//            for(order in orderList.value) {
+//                println("OrderList " + order.checkoutID + " amount: " + order.netAmount)
+//            }
         }
 
     }

@@ -38,12 +38,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.substring
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.example.unshelf.R
+import com.example.unshelf.ui.theme.DarkDeepMossGreen
+import com.example.unshelf.ui.theme.DarkMiddleGreenYellow
+import com.example.unshelf.ui.theme.DarkYellowGreen
 import com.example.unshelf.ui.theme.DeepMossGreen
+import com.example.unshelf.ui.theme.MediumSpringBud
+import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.WatermelonRed
+import com.example.unshelf.ui.theme.YellowGreen
 import com.example.unshelf.view.Seller.SellerProfile
 
 class Balance: ComponentActivity() {
@@ -148,7 +155,7 @@ fun PageInAppBalance(activity: Activity?) {
                 Box() {
                     Text(
                         text = "Account Balance",
-                        color = Color(0xff386641),
+                        color = DeepMossGreen,
                         style = TextStyle(
                             fontSize = 15.sp),
                         modifier = Modifier
@@ -157,7 +164,7 @@ fun PageInAppBalance(activity: Activity?) {
                     )
                     Text(
                         text = "₱ 300,000.00",
-                        color = Color(0xff386641),
+                        color = DeepMossGreen,
                         style = TextStyle(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold),
@@ -184,6 +191,7 @@ fun PageInAppBalance(activity: Activity?) {
                             color = Color(0xFF184E20),
                             style = TextStyle(
                                 fontSize = 15.sp),
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .align(alignment = Alignment.Center))
                     }
@@ -201,6 +209,7 @@ fun PageInAppBalance(activity: Activity?) {
                             color = Color(0xFF184E20),
                             style = TextStyle(
                                 fontSize = 15.sp),
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .align(alignment = Alignment.Center))
                     }
@@ -267,35 +276,76 @@ fun PaymentMethodsList() {
             ) {
                 Row {
                     Text(
-                        text = "Gcash",
-                        color = Color(0xff386641),
+                        text = "Ref #: ${"S7ZkutTycrZucnpconS7awU4".substring(0,12)}...",
+                        color = DeepMossGreen,
                         style = TextStyle(
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold),
                     )
                     Text(
-                        text = "Gcash",
-                        color = Color(0xff386641),
+                        text = "₱ ${String.format("%.2f", 200.0)}",
+                        color = DeepMossGreen,
                         style = TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = 17.sp,
                             fontWeight = FontWeight.Bold),
                         textAlign = TextAlign.Right,
                         modifier = Modifier.weight(1F).padding(end = 10.dp)
                     )
                 }
 
-                Text(
-                    text = "<<Account number>>",
-                    color = Color(0xff386641),
-                    style = TextStyle(
-                        fontSize = 13.sp),
-                )
-                Text(
-                    text = "<<Account name>>",
-                    color = Color(0xff386641),
-                    style = TextStyle(
-                        fontSize = 13.sp),
-                )
+                Row {
+                    Text(
+                        text = "Total: ",
+                        color = DeepMossGreen,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                    Text(
+                        text = "+ ₱ ${String.format("%.2f", 224.6)}",
+                        color = Color(0xFF50C907),
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                }
+                Row {
+                    Text(
+                        text = "Paymongo fee: ",
+                        color = DeepMossGreen,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                    Text(
+                        text = "- ₱ ${String.format("%.2f", 9.6)}",
+                        color = WatermelonRed,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                }
+                Row {
+                    Text(
+                        text = "UnShelf fee: ",
+                        color = DeepMossGreen,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                    Text(
+                        text = "- ₱ ${String.format("%.2f", 9.6)}",
+                        color = WatermelonRed,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                    Text(
+                        text = "paid",
+                        color = PalmLeaf,
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                        ),
+                        textAlign = TextAlign.End,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .weight(1F).padding(end = 10.dp)
+                    )
+                }
             }
         }
 //        Box(
