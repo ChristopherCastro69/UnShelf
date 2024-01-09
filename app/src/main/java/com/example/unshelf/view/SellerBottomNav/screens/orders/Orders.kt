@@ -35,12 +35,11 @@ import com.example.unshelf.ui.theme.PalmLeaf
 
 fun Orders(navController: NavController) {
     val orderViewModel:OrderController = viewModel()
+//    OrderController.orderList.value = emptyList()
     if(OrderController.orderList.value.isEmpty()) {
         OrderController.fetchOrder()
     }
-
-
-
+//    OrderController.fetchOrder()
     val orders = remember{ orderViewModel.orderList }
     var selectedTabIndex by remember { mutableStateOf(0) }
     val filterOptions = listOf("Pending", "Approved",  "Completed", "Cancelled", "Refunded")
