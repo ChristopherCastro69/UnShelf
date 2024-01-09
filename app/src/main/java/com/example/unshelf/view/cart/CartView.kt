@@ -208,6 +208,7 @@ fun CartLayout(
                 Button(
                     onClick = {
                         val intent = Intent(context, CheckoutUI::class.java)
+                        intent.putExtra("from", "basket")
                         context.startActivity(intent)
                     },
                     colors = ButtonDefaults.buttonColors(DarkPalmLeaf),

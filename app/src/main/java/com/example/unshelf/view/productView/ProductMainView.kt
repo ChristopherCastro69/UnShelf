@@ -192,6 +192,8 @@ fun PMMenu(product : Product?) {
             Button(
                 onClick = {
                     val intent = Intent(context, CheckoutUI::class.java)
+                    intent.putExtra("from", "buynow")
+                    intent.putExtra("buyNow", product)
                     context.startActivity(intent)
                 },
                 colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
