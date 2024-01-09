@@ -371,7 +371,7 @@ fun PMContent(product: Product?) {
 
 @Composable
 fun itemQuantity(
-    qty: Int = 0
+    qty: Int = 1
 ) : Int {
     var (qty, setQty)  = remember { mutableStateOf(qty) }
     Row (
@@ -389,7 +389,7 @@ fun itemQuantity(
                 .weight(1F)
         )
         var isZero = false
-        if(qty==0) {
+        if(qty==1) {
             isZero = true
         }
         Image(

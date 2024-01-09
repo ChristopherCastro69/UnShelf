@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import com.example.unshelf.R
+import com.example.unshelf.controller.OrderController
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
 import com.example.unshelf.model.admin.getAdminVerificationStatus
 import com.example.unshelf.ui.theme.DeepMossGreen
@@ -46,6 +47,7 @@ import kotlinx.coroutines.launch
 class VerificationS : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        OrderController.orderList.value = emptyList()
         setContent {
             VerificationScreen()
         }

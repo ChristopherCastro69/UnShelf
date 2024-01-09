@@ -1,6 +1,7 @@
     package com.example.unshelf.view.SellerBottomNav.screens.dashboard
 
     import JostFontFamily
+    import android.content.Intent
     import android.os.Build
     import android.util.Log
     import androidx.annotation.RequiresApi
@@ -39,6 +40,7 @@
 
     import androidx.compose.foundation.Canvas
     import androidx.compose.foundation.background
+    import androidx.compose.foundation.clickable
     import androidx.compose.foundation.layout.Box
     import androidx.compose.foundation.layout.fillMaxWidth
     import androidx.compose.foundation.layout.height
@@ -53,12 +55,14 @@
     import androidx.compose.ui.text.font.FontFamily
     import androidx.compose.ui.graphics.nativeCanvas
     import androidx.compose.ui.graphics.toArgb
+    import androidx.compose.ui.platform.LocalContext
     import androidx.lifecycle.viewmodel.compose.viewModel
     import com.example.unshelf.controller.OrderController
     import com.example.unshelf.ui.theme.Champagne
     import com.example.unshelf.ui.theme.PalmLeaf
     import com.example.unshelf.ui.theme.WatermelonRed
     import com.example.unshelf.ui.theme.YellowGreen
+    import com.example.unshelf.view.Wallet.Balance
     import kotlin.random.Random
 
 
@@ -78,6 +82,7 @@
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun Dashboard() {
+        val context = LocalContext.current
         LaunchedEffect(key1 = Unit) {
             fetchUserDetails { sId, stId ->
                 sellerId.value = sId
@@ -103,10 +108,13 @@
             ) {
                 // Chat icon on the left
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_chat),
-                    contentDescription = "Chat",
+                    painter = painterResource(id = R.drawable.wallet),
+                    contentDescription = "Wallet",
                     tint = Color.Unspecified, // Add tint color if required
-                    modifier = Modifier.size(32.dp) // Increased size as needed
+                    modifier = Modifier.size(35.dp).clickable {
+                        val intent = Intent(context, Balance::class.java)
+                        context.startActivity(intent)
+                    }
                 )
 
                 Text(
