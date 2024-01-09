@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Modifier.*
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +45,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.example.unshelf.R
+import com.example.unshelf.controller.Wallet.WalletController
+import com.example.unshelf.model.entities.Order
 import com.example.unshelf.ui.theme.DarkDeepMossGreen
 import com.example.unshelf.ui.theme.DarkMiddleGreenYellow
 import com.example.unshelf.ui.theme.DarkYellowGreen
@@ -56,17 +60,20 @@ import com.example.unshelf.view.Seller.SellerProfile
 class Balance: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WalletController.getReceipts()
 
         setContent {
-            PageInAppBalance(this)
+            PageInAppBalance()
         }
     }
-
 
 }
 
 @Composable
-fun PageInAppBalance(activity: Activity?) {
+fun PageInAppBalance() {
+    val context = LocalContext.current
+    var totalBalance = remember { WalletController.totalBalance }
+    var sales = remember { WalletController.salesList }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -92,8 +99,7 @@ fun PageInAppBalance(activity: Activity?) {
                         modifier = Modifier
                             .width(35.dp),
                         onClick = {
-                            if(activity != null)
-                                activity.onBackPressed()
+                            (context as? Activity)?.finish()
                         }
                     ) {
                         Icon(
@@ -163,7 +169,7 @@ fun PageInAppBalance(activity: Activity?) {
                             .padding(top = 30.dp)
                     )
                     Text(
-                        text = "₱ 300,000.00",
+                        text = "₱ ${String.format("%.2f", totalBalance.value)}",
                         color = DeepMossGreen,
                         style = TextStyle(
                             fontSize = 20.sp,
@@ -183,7 +189,7 @@ fun PageInAppBalance(activity: Activity?) {
                             .background(color = Color(0xff8dba72))
                             .weight(1F)
                             .clickable {
-                                activity?.startActivity(Intent(activity, SellerProfile::class.java))
+                                context.startActivity(Intent(context, SellerProfile::class.java))
                             }
                     ) {
                         Text(
@@ -235,9 +241,11 @@ fun PageInAppBalance(activity: Activity?) {
             }
             Spacer(modifier = Modifier.height(45.dp))
             LazyColumn {
-                items(8) { index ->
-                    PaymentMethodsList()
-                    Spacer(modifier = Modifier.height(10.dp))
+                item {
+                    for(sale in sales.value) {
+                        PaymentMethodsList(sale)
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                 }
             }
 
@@ -249,7 +257,7 @@ fun PageInAppBalance(activity: Activity?) {
 
 
 @Composable
-fun PaymentMethodsList() {
+fun PaymentMethodsList(sale : Order) {
     Box (
         modifier = Modifier
             .fillMaxWidth()
@@ -259,8 +267,12 @@ fun PaymentMethodsList() {
             .background(Color(0xffEAFBE0))
     ){
         Row {
+            var paymentMethodLogo = R.drawable.gcash_logo
+            if(sale.paymentMethod.equals("paymaya")) {
+                paymentMethodLogo = R.drawable.maya_logo
+            }
             Image(
-                painter = painterResource(id = R.drawable.gcash_logo),
+                painter = painterResource(id = paymentMethodLogo),
                 contentDescription = "Gcash Logo",
                 contentScale = ContentScale.Inside,
                 modifier = Modifier
@@ -268,6 +280,7 @@ fun PaymentMethodsList() {
                     .fillMaxHeight()
                     .padding(start = 8.dp)
             )
+
             Column(
                 modifier = Modifier
                     .padding(horizontal = 5.dp)
@@ -276,14 +289,14 @@ fun PaymentMethodsList() {
             ) {
                 Row {
                     Text(
-                        text = "Ref #: ${"S7ZkutTycrZucnpconS7awU4".substring(0,12)}...",
+                        text = "Ref #: ${sale.refNo}",
                         color = DeepMossGreen,
                         style = TextStyle(
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold),
                     )
                     Text(
-                        text = "₱ ${String.format("%.2f", 200.0)}",
+                        text = "₱ ${String.format("%.2f", sale.netAmount)}",
                         color = DeepMossGreen,
                         style = TextStyle(
                             fontSize = 17.sp,
@@ -301,7 +314,7 @@ fun PaymentMethodsList() {
                             fontSize = 13.sp),
                     )
                     Text(
-                        text = "+ ₱ ${String.format("%.2f", 224.6)}",
+                        text = "+ ₱ ${String.format("%.2f", sale.totalAmount)}",
                         color = Color(0xFF50C907),
                         style = TextStyle(
                             fontSize = 13.sp),
@@ -315,7 +328,7 @@ fun PaymentMethodsList() {
                             fontSize = 13.sp),
                     )
                     Text(
-                        text = "- ₱ ${String.format("%.2f", 9.6)}",
+                        text = "- ₱ ${String.format("%.2f", sale.paymongoFee)}",
                         color = WatermelonRed,
                         style = TextStyle(
                             fontSize = 13.sp),
@@ -329,13 +342,13 @@ fun PaymentMethodsList() {
                             fontSize = 13.sp),
                     )
                     Text(
-                        text = "- ₱ ${String.format("%.2f", 9.6)}",
+                        text = "- ₱ ${String.format("%.2f", sale.unshelfFee)}",
                         color = WatermelonRed,
                         style = TextStyle(
                             fontSize = 13.sp),
                     )
                     Text(
-                        text = "paid",
+                        text = "${sale.orderStatus}",
                         color = PalmLeaf,
                         style = TextStyle(
                             fontSize = 15.sp,
@@ -390,8 +403,8 @@ fun PaymentMethodsList() {
     }
 }
 
-@Preview
-@Composable
-private fun PageInAppBalancePreview() {
-    PageInAppBalance(null)
-}
+//@Preview
+//@Composable
+//private fun PageInAppBalancePreview() {
+//    PageInAppBalance()
+//}

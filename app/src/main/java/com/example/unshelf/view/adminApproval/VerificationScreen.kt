@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 class VerificationS : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        OrderController.orderList.value = emptyList()
+        OrderController.fetchOrder()
         setContent {
             VerificationScreen()
         }
