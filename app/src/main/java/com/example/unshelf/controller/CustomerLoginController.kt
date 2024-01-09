@@ -19,7 +19,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 
-class CustomerLoginController(private val context: Context, private val view: CustomerLoginView, private val model: LoginAuthenticationManager) :
+class
+
+CustomerLoginController(private val context: Context, private val view: CustomerLoginView, private val model: LoginAuthenticationManager) :
     CustomerLoginView.LoginListener {
 
     companion object {
@@ -38,9 +40,8 @@ class CustomerLoginController(private val context: Context, private val view: Cu
                 // Login is successful
                 val firebaseAuth = model.firebaseAuth
                 if (firebaseAuth.currentUser!!.isEmailVerified) {
-                    // go to main activity
-                    val intent = Intent(context, MainNavigationActivityBuyer::class.java)
-                    context.startActivity(intent)
+                    // Check if the user is registered as a customer in Firestore
+                    checkIfRegisteredAsCustomer(firebaseAuth.currentUser?.uid ?: "")
                 } else {
                     view.showToast("Email not verified, Please verify your email.")
                     view.changeInProgress(false)
@@ -52,6 +53,29 @@ class CustomerLoginController(private val context: Context, private val view: Cu
         })
     }
 
+    private fun checkIfRegisteredAsCustomer(userId: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("customers").document(userId).get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // User is registered as a customer, proceed to MainNavigationActivityBuyer
+                    val intent = Intent(context, MainNavigationActivityBuyer::class.java)
+                    context.startActivity(intent)
+                } else {
+                    // User is not registered as a customer
+                    view.showToast("You are not registered as a customer. Please register.")
+                    // Redirect to registration screen (Customer_Register class)
+                    // Replace the next line with the code to navigate to the registration screen
+                    // val intent = Intent(context, Customer_Register::class.java)
+                    // context.startActivity(intent)
+                    view.changeInProgress(false)
+                }
+            }
+            .addOnFailureListener { e ->
+                view.showToast("Failed to check customer registration: ${e.localizedMessage}")
+                view.changeInProgress(false)
+            }
+    }
     // In CustomerLoginController
     override fun onGoogleLoginClicked() {
         initiateGoogleSignIn()

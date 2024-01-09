@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.unshelf.R
 import com.example.unshelf.model.entities.Order
 import com.example.unshelf.ui.theme.DarkPalmLeaf
@@ -38,13 +40,14 @@ class OrderApprovalView: ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContent {
-            OrderApproval()
+            val navController = rememberNavController()
+            OrderApproval(navController)
         }
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrderApproval() {
+fun OrderApproval(navController: NavController) {
     val context = LocalContext.current;
     Scaffold(
         topBar = {
@@ -61,7 +64,7 @@ fun OrderApproval() {
                 ),
 
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {navController.navigateUp()}) {
                         Icon(Icons.Filled.ArrowBack, "Back Button", tint = Color.White)
                     }
                 }
@@ -76,7 +79,7 @@ fun OrderApproval() {
                     contentScale = ContentScale.Crop)
                 Row(modifier = Modifier.padding(20.dp, 20.dp)) {
                     Column {
-                        Text(text = "${""}", // Product name
+                        Text(text = "${"Product"}", // Product name
                             fontFamily = JostFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 24.sp)
@@ -176,10 +179,3 @@ fun OrderApproval() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewOrdersApproval() {
-    Column {
-        OrderApproval()
-    }
-}

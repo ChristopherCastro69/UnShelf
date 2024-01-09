@@ -37,12 +37,20 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.substring
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.example.unshelf.R
+import com.example.unshelf.ui.theme.DarkDeepMossGreen
+import com.example.unshelf.ui.theme.DarkMiddleGreenYellow
+import com.example.unshelf.ui.theme.DarkYellowGreen
 import com.example.unshelf.ui.theme.DeepMossGreen
+import com.example.unshelf.ui.theme.MediumSpringBud
+import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.WatermelonRed
+import com.example.unshelf.ui.theme.YellowGreen
 import com.example.unshelf.view.Seller.SellerProfile
 
 class Balance: ComponentActivity() {
@@ -147,7 +155,7 @@ fun PageInAppBalance(activity: Activity?) {
                 Box() {
                     Text(
                         text = "Account Balance",
-                        color = Color(0xff386641),
+                        color = DeepMossGreen,
                         style = TextStyle(
                             fontSize = 15.sp),
                         modifier = Modifier
@@ -155,8 +163,8 @@ fun PageInAppBalance(activity: Activity?) {
                             .padding(top = 30.dp)
                     )
                     Text(
-                        text = "P300,000.00",
-                        color = Color(0xff386641),
+                        text = "₱ 300,000.00",
+                        color = DeepMossGreen,
                         style = TextStyle(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold),
@@ -183,6 +191,7 @@ fun PageInAppBalance(activity: Activity?) {
                             color = Color(0xFF184E20),
                             style = TextStyle(
                                 fontSize = 15.sp),
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .align(alignment = Alignment.Center))
                     }
@@ -200,6 +209,7 @@ fun PageInAppBalance(activity: Activity?) {
                             color = Color(0xFF184E20),
                             style = TextStyle(
                                 fontSize = 15.sp),
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .align(alignment = Alignment.Center))
                     }
@@ -214,7 +224,7 @@ fun PageInAppBalance(activity: Activity?) {
                 .align(alignment = Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = "Payment Options",
+                    text = "Recent Transactions",
                     color = DeepMossGreen,
                     style = TextStyle(
                         fontSize = 18.sp,
@@ -222,18 +232,6 @@ fun PageInAppBalance(activity: Activity?) {
                     modifier = Modifier
                         .align(alignment = Alignment.CenterStart)
                 )
-                IconButton (modifier = Modifier
-                    .align(alignment = Alignment.CenterEnd),onClick={}) {
-                    Icon(
-                        imageVector = Icons.Filled.AddCircle,
-                        contentDescription = "icon plus circle",
-                        tint = DeepMossGreen,
-                        modifier = Modifier
-                            .align(alignment = Alignment.CenterEnd)
-                            .fillMaxHeight()
-                            .width(40.dp)
-                    )
-                }
             }
             Spacer(modifier = Modifier.height(45.dp))
             LazyColumn {
@@ -264,6 +262,7 @@ fun PaymentMethodsList() {
             Image(
                 painter = painterResource(id = R.drawable.gcash_logo),
                 contentDescription = "Gcash Logo",
+                contentScale = ContentScale.Inside,
                 modifier = Modifier
                     .width(60.dp)
                     .fillMaxHeight()
@@ -275,65 +274,118 @@ fun PaymentMethodsList() {
                     .align(Alignment.CenterVertically)
                     .weight(1F)
             ) {
-                Text(
-                    text = "Gcash",
-                    color = Color(0xff386641),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold),
-                )
-                Text(
-                    text = "<<Account number>>",
-                    color = Color(0xff386641),
-                    style = TextStyle(
-                        fontSize = 13.sp),
-                )
-                Text(
-                    text = "<<Account name>>",
-                    color = Color(0xff386641),
-                    style = TextStyle(
-                        fontSize = 13.sp),
-                )
-            }
-        }
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-        ) {
-            Row () {
-                IconButton(
-                    modifier = Modifier
-                        .size(35.dp)
-                        .padding(end = 5.dp, top = 8.dp),
-                    onClick = {
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = "Edit button",
-                        tint = DeepMossGreen,
-                        modifier = Modifier
-                            .fillMaxSize()
+                Row {
+                    Text(
+                        text = "Ref #: ${"S7ZkutTycrZucnpconS7awU4".substring(0,12)}...",
+                        color = DeepMossGreen,
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold),
+                    )
+                    Text(
+                        text = "₱ ${String.format("%.2f", 200.0)}",
+                        color = DeepMossGreen,
+                        style = TextStyle(
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold),
+                        textAlign = TextAlign.Right,
+                        modifier = Modifier.weight(1F).padding(end = 10.dp)
                     )
                 }
-                IconButton(
-                    modifier = Modifier
-                        .size(35.dp)
-                        .padding(end = 5.dp, top = 8.dp),
-                    onClick = {
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "Delete button",
-                        tint = WatermelonRed,
-                        modifier = Modifier
-                            .fillMaxSize()
-                    )
-                }
-            }
 
+                Row {
+                    Text(
+                        text = "Total: ",
+                        color = DeepMossGreen,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                    Text(
+                        text = "+ ₱ ${String.format("%.2f", 224.6)}",
+                        color = Color(0xFF50C907),
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                }
+                Row {
+                    Text(
+                        text = "Paymongo fee: ",
+                        color = DeepMossGreen,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                    Text(
+                        text = "- ₱ ${String.format("%.2f", 9.6)}",
+                        color = WatermelonRed,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                }
+                Row {
+                    Text(
+                        text = "UnShelf fee: ",
+                        color = DeepMossGreen,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                    Text(
+                        text = "- ₱ ${String.format("%.2f", 9.6)}",
+                        color = WatermelonRed,
+                        style = TextStyle(
+                            fontSize = 13.sp),
+                    )
+                    Text(
+                        text = "paid",
+                        color = PalmLeaf,
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                        ),
+                        textAlign = TextAlign.End,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .weight(1F).padding(end = 10.dp)
+                    )
+                }
+            }
         }
+//        Box(
+//            modifier = Modifier
+//                .align(Alignment.TopEnd)
+//        ) {
+//            Row () {
+//                IconButton(
+//                    modifier = Modifier
+//                        .size(35.dp)
+//                        .padding(end = 5.dp, top = 8.dp),
+//                    onClick = {
+//                    }
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Filled.Edit,
+//                        contentDescription = "Edit button",
+//                        tint = DeepMossGreen,
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                    )
+//                }
+//                IconButton(
+//                    modifier = Modifier
+//                        .size(35.dp)
+//                        .padding(end = 5.dp, top = 8.dp),
+//                    onClick = {
+//                    }
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Filled.Delete,
+//                        contentDescription = "Delete button",
+//                        tint = WatermelonRed,
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                    )
+//                }
+//            }
+//
+//        }
 
     }
 }

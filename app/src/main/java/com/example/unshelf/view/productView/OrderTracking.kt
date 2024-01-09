@@ -35,7 +35,6 @@ import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
-import com.example.unshelf.view.SellerBottomNav.screens.orders.PickUPCompose
 
 class OrderTracking : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

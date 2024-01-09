@@ -3,7 +3,6 @@ package com.example.unshelf.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Spinner
 import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
 import com.example.unshelf.view.AddressManager.AddressManager
@@ -16,7 +15,7 @@ import com.example.unshelf.view.product.product_main
 import com.example.unshelf.view.Wallet.Balance
 import com.example.unshelf.view.checkout.CheckoutUI
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
-import com.example.unshelf.view.SellerBottomNav.screens.orders.PickUp
+import com.example.unshelf.view.checkout.PickUp
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 import com.example.unshelf.view.StartUI.MainUI
 import com.example.unshelf.view.productView.OrderTracking

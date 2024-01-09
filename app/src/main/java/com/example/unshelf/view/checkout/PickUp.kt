@@ -1,8 +1,7 @@
-package com.example.unshelf.view.SellerBottomNav.screens.orders
+package com.example.unshelf.view.checkout
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -11,18 +10,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -45,18 +41,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.example.unshelf.R
 import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
-import com.example.unshelf.view.productView.CartItem
 import com.example.unshelf.view.productView.CheckBox
-import com.example.unshelf.view.productView.MyComposable
-import com.example.unshelf.view.productView.checkoutProductList
-import com.example.unshelf.view.productView.getProducts
-import com.example.unshelf.view.productView.storesInfo
-import kotlinx.coroutines.launch
 
 class PickUp : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -251,7 +240,7 @@ fun TextInputExample() {
                 .padding(16.dp)
                 .background(Color.White)
                 .paint(
-                    painterResource(id = R.drawable.ic_textinput_container),
+                    painterResource(id = R.drawable.ic_pickup_container),
                     contentScale = ContentScale.FillBounds
                 )
         ) {

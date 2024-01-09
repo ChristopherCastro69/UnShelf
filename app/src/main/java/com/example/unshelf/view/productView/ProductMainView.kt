@@ -3,6 +3,7 @@ package com.example.unshelf.view.productView
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,21 +24,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.DefaultShadowColor
@@ -52,29 +47,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
-import com.example.unshelf.model.entities.Customer
+import com.example.unshelf.controller.Cart.CartController
 import com.example.unshelf.model.entities.Product
-import com.example.unshelf.model.entities.Seller
 import com.example.unshelf.ui.theme.DarkPalmLeaf
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.checkout.CheckoutUI
-import com.example.unshelf.view.BuyerBottomNav.main.BuyerScreens
-import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.StartUI.initialMarketNav
-import com.example.unshelf.view.authentication.Customer_Login
-import com.example.unshelf.view.product.cart
-import com.example.unshelf.view.product.product_main
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.CoroutineScope
+import com.example.unshelf.view.cart.CartView
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProductMainView : ComponentActivity() {
@@ -99,6 +83,7 @@ fun ProductContent() {
 @Composable
 fun ProductMain(product : Product?, user : Boolean) {
     product as Product
+    val qty = remember{ mutableStateOf(product.quantity) }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -162,57 +147,70 @@ fun PMMenu(product : Product?) {
             println("were do you go")
         }
     }
-    Row(
-        modifier = Modifier.run {
-            padding(top = 10.dp)
-                .fillMaxWidth()
-                .shadow(
-                    elevation = 50.dp,
-                    shape = RectangleShape,
-                    clip = false,
-                    ambientColor = DefaultShadowColor,
-                    spotColor = DefaultShadowColor,
-                )
-        },
-        horizontalArrangement = Arrangement.Center, // justify-content: center
-    ) {
-        Button(
-            onClick = {
-                println("It didnt run :(")
-                isButtonClicked = !isButtonClicked
-                println("Button Value ${isButtonClicked}")
+    Column {
+        product?.quantity = itemQuantity()
+        Row(
+            modifier = Modifier.run {
+                padding(top = 10.dp)
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 50.dp,
+                        shape = RectangleShape,
+                        clip = false,
+                        ambientColor = DefaultShadowColor,
+                        spotColor = DefaultShadowColor,
+                    )
             },
-            colors = ButtonDefaults.buttonColors(MiddleGreenYellow),
-            modifier = Modifier
-                .height(50.dp)
-                .padding(bottom = 10.dp, start = 20.dp)
-                .align(Alignment.CenterVertically)
-                .weight(1F)
+            horizontalArrangement = Arrangement.Center, // justify-content: center
         ) {
-            Text(
-                text = "ADD TO BASKET",
-                color = DeepMossGreen
-            )
-        }
-        Button(
-            onClick = {
-                val intent = Intent(context, CheckoutUI::class.java)
-                context.startActivity(intent)
-            },
-            colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
-            modifier = Modifier
-                .height(50.dp)
-                .padding(bottom = 10.dp, start = 10.dp, end = 20.dp)
-                .align(Alignment.CenterVertically)
-                .weight(1F)
+            Button(
+                onClick = {
+//                    println("It didnt run :(")
+//                    isButtonClicked = !isButtonClicked
+//                    println("Button Value ${isButtonClicked}")
+                    if(product != null) {
+                        try {
+                            CartController.addToCart(product, "product")
+                            Toast.makeText( context,"Added to basket!", Toast.LENGTH_SHORT).show()
+                        } catch(e : Exception) {
+                            Toast.makeText( context,"Failed to basket", Toast.LENGTH_SHORT).show()
+                        }
 
-        ) {
-            Text(
-                text = "BUY NOW",
-                color = Color.White
-            )
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(MiddleGreenYellow),
+                modifier = Modifier
+                    .height(50.dp)
+                    .padding(bottom = 10.dp, start = 20.dp)
+                    .align(Alignment.CenterVertically)
+                    .weight(1F)
+            ) {
+                Text(
+                    text = "ADD TO BASKET",
+                    color = DeepMossGreen
+                )
+            }
+            Button(
+                onClick = {
+                    val intent = Intent(context, CheckoutUI::class.java)
+                    context.startActivity(intent)
+                },
+                colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
+                modifier = Modifier
+                    .height(50.dp)
+                    .padding(bottom = 10.dp, start = 10.dp, end = 20.dp)
+                    .align(Alignment.CenterVertically)
+                    .weight(1F)
+
+            ) {
+                Text(
+                    text = "BUY NOW",
+                    color = Color.White
+                )
+            }
         }
     }
+
 }
 
 @Composable
@@ -247,7 +245,7 @@ fun PMNavigation(product : Product?, user: Boolean) {
                     .height(55.dp)
                     .width(55.dp)
                     .clickable {
-                        val intent = Intent(context, CartActivity::class.java)
+                        val intent = Intent(context, CartView::class.java)
                         context.startActivity(intent)
                     },
                 contentScale = ContentScale.Crop,
@@ -366,18 +364,15 @@ fun PMContent(product: Product?) {
                     )
                 }
             }
-            Row () {
-
-            }
         }
     }
 }
 
 
 @Composable
-fun VariationItem(
+fun itemQuantity(
     qty: Int = 0
-) {
+) : Int {
     var (qty, setQty)  = remember { mutableStateOf(qty) }
     Row (
         modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp)
@@ -402,7 +397,7 @@ fun VariationItem(
             contentDescription = "Decrease Quantity",
             modifier = Modifier
                 .padding(end = 10.dp)
-                .size(35.dp)
+                .size(30.dp)
                 .clickable {
                     if (isZero)
                         setQty(qty)
@@ -413,7 +408,7 @@ fun VariationItem(
         Text(
             text = "${qty}",
             color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-            fontSize = 25.sp,
+            fontSize = 18.sp,
             modifier = Modifier.align(Alignment.CenterVertically)
 
         )
@@ -422,12 +417,13 @@ fun VariationItem(
             contentDescription = "Increase Quantity",
             modifier = Modifier
                 .padding(start = 10.dp)
-                .size(35.dp)
+                .size(30.dp)
                 .clickable {
                     setQty(qty + 1)
                 }
         )
     }
+    return qty
 }
 
 

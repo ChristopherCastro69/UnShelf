@@ -5,19 +5,25 @@ package com.example.unshelf.controller
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.navigation.NavHostController
 import com.example.unshelf.model.authentication.LoginAuthenticationManager
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
+import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
+import com.example.unshelf.view.adminApproval.VerificationS
 import com.example.unshelf.view.authentication.SellerLoginView
+import com.example.unshelf.view.authentication.Verification
 
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 
 class SellerLoginController(private val context: Context, private val view: SellerLoginView, private val model: LoginAuthenticationManager) :
     SellerLoginView.LoginListener {
+
 
     fun init() {
         view.setLoginListener(this)
@@ -28,20 +34,44 @@ class SellerLoginController(private val context: Context, private val view: Sell
         view.changeInProgress(true)
         model.loginUser(email, password, OnCompleteListener { task: Task<AuthResult?> ->
             if (task.isSuccessful) {
+                // Login is successful
                 val firebaseAuth = model.firebaseAuth
                 if (firebaseAuth.currentUser!!.isEmailVerified) {
-                    // Go to the main activity for sellers
-                    val intent = Intent(context, MainNavigationActivitySeller::class.java)
-                    context.startActivity(intent)
+                    // Check if the user is registered as a customer in Firestore
+                    checkIfRegisteredAsSeller(firebaseAuth.currentUser?.uid ?: "")
                 } else {
                     view.showToast("Email not verified, Please verify your email.")
                     view.changeInProgress(false)
                 }
             } else {
-                view.showToast(task.exception!!.localizedMessage)
+                view.showToast("Invalid email or password")
                 view.changeInProgress(false)
             }
         })
+    }
+
+    private fun checkIfRegisteredAsSeller(userId: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("sellers").document(userId).get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // User is registered as a customer, proceed to MainNavigationActivityBuyer
+                    val intent = Intent(context, VerificationS::class.java)
+                    context.startActivity(intent)
+                } else {
+                    // User is not registered as a customer
+                    view.showToast("You are not registered as a seller. Please register.")
+                    // Redirect to registration screen (Customer_Register class)
+                    // Replace the next line with the code to navigate to the registration screen
+                    // val intent = Intent(context, Customer_Register::class.java)
+                    // context.startActivity(intent)
+                    view.changeInProgress(false)
+                }
+            }
+            .addOnFailureListener { e ->
+                view.showToast("Failed to check customer registration: ${e.localizedMessage}")
+                view.changeInProgress(false)
+            }
     }
 }
 

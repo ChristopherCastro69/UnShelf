@@ -74,7 +74,7 @@ data class Address(
 )
 
 data class LineItem(
-    val amount: Int,
+    var amount: Double,
     val currency: String,
     @SerializedName("description")
     val sellerID: String?,
@@ -82,8 +82,20 @@ data class LineItem(
     val name: String,
     val quantity: Int
 ){
-    constructor() : this(0, "", "", listOf(), "", 0)
+    constructor() : this(0.0, "", "", listOf(), "", 0)
 }
+
+data class OrderLineItem(
+    var amount: Double,
+    val currency: String,
+    val images: List<String>,
+    val name: String,
+    val quantity: Int
+){
+    constructor() : this(0.0, "", listOf(),"",  0)
+}
+
+
 
 data class Payment(
     val id: String,
