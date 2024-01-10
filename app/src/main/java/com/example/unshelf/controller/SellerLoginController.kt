@@ -5,14 +5,9 @@ package com.example.unshelf.controller
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.navigation.NavHostController
 import com.example.unshelf.model.authentication.LoginAuthenticationManager
-import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
-import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.adminApproval.VerificationS
 import com.example.unshelf.view.authentication.SellerLoginView
-import com.example.unshelf.view.authentication.Verification
-
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
