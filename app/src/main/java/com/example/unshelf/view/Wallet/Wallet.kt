@@ -210,12 +210,6 @@ fun PageInAppBalance(user : String) {
                                     .background(color = Color(0xff8dba72))
                                     .weight(1F)
                                     .clickable {
-                                        context.startActivity(
-                                            Intent(
-                                                context,
-                                                SellerProfile::class.java
-                                            )
-                                        )
                                     }
                             ) {
                                 Text(
