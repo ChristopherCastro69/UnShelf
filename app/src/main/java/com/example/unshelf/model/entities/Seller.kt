@@ -1,6 +1,10 @@
 
 package com.example.unshelf.model.entities
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 class Seller(
     val sellerID : String = "",
     override val email: String = "",
@@ -10,4 +14,4 @@ class Seller(
     override val address: String = "",
     val storeName: String= "",
     val adminVerified: String = ""
-) : User()
+) : User(), Parcelable

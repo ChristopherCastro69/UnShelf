@@ -28,6 +28,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -230,36 +231,43 @@ fun CartLayout(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            Spacer(
-                Modifier
-                    .fillMaxWidth()
-                    .size(3.dp)
-            )
+            if(CartController.isLoading.value == true) {
+                CircularProgressIndicator(color = PalmLeaf, modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(50.dp)
+                    .padding(top = 10.dp))
+            } else {
+                Spacer(
+                    Modifier
+                        .fillMaxWidth()
+                        .size(3.dp)
+                )
 //            for((storeID, products) in cart) {
 //                products.forEach {
 //                    println("Store1: " + storeActive[storeID]!!.value + " Product ${it.productName} -> " + it.active)
 //                }
 //            }
-            var flag = 0
-            for ((storeID, products) in cart) {
-                val isActive = storeActive[storeID]!!
+                var flag = 0
+                for ((storeID, products) in cart) {
+                    val isActive = storeActive[storeID]!!
 
-                CartGroup(isActive, products, total, isProductSelected)
-                for (product in products) {
-                    if (product.active) {
-                        flag++
+                    CartGroup(isActive, products, total, isProductSelected)
+                    for (product in products) {
+                        if (product.active) {
+                            flag++
+                        }
                     }
                 }
-            }
-            println("isProductsSelected: ${isProductSelected.value}")
+                println("isProductsSelected: ${isProductSelected.value}")
 
-            for((storeID, products) in cart) {
-                products.forEach {
-                    println("Flag: ${flag} Store: " + storeActive[storeID]!!.value + " Product ${it.productName} -> " + it.active)
+                for ((storeID, products) in cart) {
+                    products.forEach {
+                        println("Flag: ${flag} Store: " + storeActive[storeID]!!.value + " Product ${it.productName} -> " + it.active)
+                    }
                 }
-            }
 
-            isAllCheckout.value = flag == activeCtr
+                isAllCheckout.value = flag == activeCtr
+            }
         }
     }
 }

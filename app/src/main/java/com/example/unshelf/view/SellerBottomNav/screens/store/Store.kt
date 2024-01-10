@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.unshelf.R
+import com.example.unshelf.controller.User.UserController
 import com.example.unshelf.model.admin.logoutBuyer
 import com.example.unshelf.model.admin.logoutUser
 import com.example.unshelf.ui.theme.DeepMossGreen
@@ -91,14 +92,15 @@ fun ProfileHeader() {
         Column(
             modifier = Modifier.weight(1f)
         ) {
+            val seller = UserController.seller!!
             Text(
-                text = "Julie's Bakeshop",
+                text = "${seller.storeName}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 color = DeepMossGreen
             )
             Text(
-                text = "Poblacion Binuangan Street",
+                text = "${seller.address}",
                 fontSize = 14.sp,
                 color = DeepMossGreen
             )
