@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -32,10 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.unshelf.R
+import com.example.unshelf.model.admin.logoutUser
 import com.example.unshelf.ui.theme.DeepMossGreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun Profile() {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -51,7 +56,12 @@ fun Profile() {
                 val strings_1 = listOf("Addresses", "Subscriptions", "Referals", "Vouchers")
                 val strings_2 = listOf("Help Center", "Settings", "Customer Support", "Log out")
                 strings_1.forEach { name ->
-                    BuyerSettings(name)
+                    BuyerSettings(name){
+                        if (name == "Addresses") {
+                            // Call the function here
+
+                        }
+                    }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
@@ -62,7 +72,14 @@ fun Profile() {
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 strings_2.forEach { name ->
-                    BuyerSettings(name)
+                    BuyerSettings(name) {
+                        if (name == "Log out") {
+                            // Call the logoutUser function here
+                            coroutineScope.launch {
+                                logoutUser(context)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -175,7 +192,7 @@ fun BuyerProfileDetails () {
 
 
 @Composable
-fun BuyerSettings(option: String) {
+fun BuyerSettings(option: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth(0.8f)
