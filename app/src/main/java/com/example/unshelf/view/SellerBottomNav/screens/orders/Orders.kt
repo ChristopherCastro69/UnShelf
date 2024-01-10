@@ -3,6 +3,7 @@ package com.example.unshelf.view.SellerBottomNav.screens.orders
 import JostFontFamily
 import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,16 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.unshelf.R
 import com.example.unshelf.controller.OrderController
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.entities.Order
 import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.view.Wallet.Wallet
 
 
 //val ordersList = null
@@ -35,6 +39,7 @@ import com.example.unshelf.ui.theme.PalmLeaf
 
 fun Orders(navController: NavController) {
     val orderViewModel:OrderController = viewModel()
+    val context = LocalContext.current
     if(OrderController.orderList.value.isEmpty()) {
         OrderController.fetchOrder()
     }
@@ -50,21 +55,28 @@ fun Orders(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text("Orders",
-                        modifier = Modifier
-                            .padding(start = 5.dp),
-                        color = Color.White,
-                        fontFamily = JostFontFamily,
-                        fontWeight = FontWeight.Medium,
-                    ) },
-
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = PalmLeaf
-                ),
-
+            Row(modifier = Modifier.background(PalmLeaf).height(55.dp)) {
+                Text("Orders",
+                    modifier = Modifier
+                        .padding(start = 10.dp).align(Alignment.CenterVertically),
+                    color = Color.White,
+                    fontFamily = JostFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 23.sp
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(id = R.drawable.wallet),
+                    contentDescription = "Wallet",
+                    tint = Color.Unspecified, // Add tint color if required
+                    modifier = Modifier.align(Alignment.CenterVertically).padding(end = 10.dp)
+                        .clickable {
+                            val intent = Intent(context, Wallet::class.java)
+                            intent.putExtra("user", "seller")
+                            context.startActivity(intent)
+                        }
+                )
+            }
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
