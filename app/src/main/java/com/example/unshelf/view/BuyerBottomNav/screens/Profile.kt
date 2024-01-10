@@ -163,7 +163,7 @@ fun Profile() {
 @Composable
 fun BuyerProfileDetails () {
     val buyerImages = listOf(R.drawable.buyer_receipt_ic,R.drawable.buyer_payment_ic,R.drawable.buyer_location_ic,R.drawable.buyer_favorites_ic)
-    val buyerNames = listOf("Activity", "Payment", "Order Tracking", "Favorites")
+    val buyerNames = listOf("Activity", "Payments", "Order Tracking", "Favorites")
 
     Column (
         modifier = Modifier
@@ -184,9 +184,8 @@ fun BuyerProfileDetails () {
                 modifier = Modifier,
             ) {
                 Spacer(Modifier.weight(0.2f))
-                Icon(
-                    imageVector = Icons.Filled.Person,
-                    tint = Color.White,
+                Image(
+                    painter = painterResource(id = R.drawable.avatar1),
                     contentDescription = "Back",
                     modifier = Modifier
                         .height(80.dp)
@@ -257,7 +256,7 @@ fun BuyerProfileDetails () {
                         modifier = Modifier
                             .width(35.dp)
                             .height(35.dp).clickable {
-                                if(buyerNames[i].equals("Payment")) {
+                                if(buyerNames[i].equals("Payments")) {
                                     val intent = Intent(context, Wallet::class.java)
                                     intent.putExtra("user", "buyer")
                                     context.startActivity(intent)
