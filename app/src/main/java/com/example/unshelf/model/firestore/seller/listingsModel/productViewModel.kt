@@ -16,6 +16,8 @@ class ProductViewModel : ViewModel() {
     val products = _products.asStateFlow()
 
     fun fetchActiveProductsForSeller(sellerId: String, storeId: String) {
+        Log.d("ProductViewModel", "Fetching active products for seller: $sellerId, store: $storeId")
+
         val db = Firebase.firestore
         db.collection("products")
             .whereEqualTo("sellerID", sellerId) // Assuming you store 'sellerId' in each product document
@@ -44,6 +46,7 @@ class ProductViewModel : ViewModel() {
                     Product(id, seller, store,storeName, name, quantity, price, sellingPrice, discount, voucherCode, categories, thumbnailUri, description,  expirationDate, isActive)
                 }
                 _products.value = productList
+                Log.d("ProductViewModel", "Product list size: ${productList.size}")
             }
             .addOnFailureListener { exception ->
                 Log.w("ProductViewModel", "Error getting documents: ", exception)

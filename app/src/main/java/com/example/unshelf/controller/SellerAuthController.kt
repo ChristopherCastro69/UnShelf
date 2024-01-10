@@ -14,7 +14,7 @@ class SellerAuthController ( // Please modify class diagram and add this class a
         address: String,
         storeName: String,
 
-        rating: Long,
+        rating: Double,
         followers: Int,
         adminVerified: String,
         callback: (Boolean, String?) -> Unit

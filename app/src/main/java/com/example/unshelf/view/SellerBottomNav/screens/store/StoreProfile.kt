@@ -3,6 +3,7 @@ package com.example.unshelf.view.SellerBottomNav.screens.store
 import JostFontFamily
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,9 +31,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,14 +49,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.unshelf.R
-import com.example.unshelf.model.admin.logoutBuyer
 import com.example.unshelf.model.admin.logoutUser
+import com.example.unshelf.model.firestore.seller.StoreProfileModel.fetchStoreDetails
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.WatermelonRed
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
+import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
 import kotlinx.coroutines.launch
 
 var showLogoutConfirmationDialog = mutableStateOf(false)
+var storeName = mutableStateOf("")
+var rating = mutableStateOf(1.0)
+var followers = mutableStateOf(0)
+var address = mutableStateOf("")
+
 //@Preview
 @Composable
 fun Store() {
@@ -71,6 +82,34 @@ fun Store() {
 }
 @Composable
 fun ProfileHeader() {
+//    val storeProfileModel : StoreProfileModel = viewModel()
+//    val stores by storeProfileModel.store.collectAsState()
+    val IDseller = sellerId.value
+    Log.d(
+        "Profile",
+        "LaunchedEffect Seller ID: ${IDseller}, Store ID: ${storeId.value}"
+    )
+    var isLoadingDetails by remember { mutableStateOf(false) }
+    LaunchedEffect(IDseller){
+        IDseller?.let {
+            isLoadingDetails = true
+            fetchStoreDetails(it, onSuccess = { store ->
+                storeName.value = store.storeName
+                rating.value = store.rating
+                followers.value = store.followers
+                address.value = store.address
+
+                isLoadingDetails = false
+            }, onFailure = { exception ->
+                Log.e(
+                    "AddProducts",
+                    "Error fetching product details: ${exception.message}",
+                    exception
+                )
+                isLoadingDetails = false
+            })
+        }
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,23 +131,23 @@ fun ProfileHeader() {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "Julie's Bakeshop",
+                text = storeName.value,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 color = DeepMossGreen
             )
             Text(
-                text = "Poblacion Binuangan Street",
+                text = address.value,
                 fontSize = 14.sp,
                 color = DeepMossGreen
             )
             Text(
-                text = "⭐ 9.9 Rating",
+                text = "⭐ ${rating.value} Rating",
                 fontSize = 14.sp,
                 color = DeepMossGreen
             )
             Text(
-                text = "699 Followers",
+                text = "${followers.value} Followers",
                 fontSize = 12.sp,
                 color = DeepMossGreen
             )

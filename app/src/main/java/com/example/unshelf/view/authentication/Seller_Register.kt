@@ -44,7 +44,7 @@ class Seller_Register : AppCompatActivity() {
         val storeName : String = binding.tfSellerStoreName.text.toString()
         val adminVerified : String = "Requires Action"
 
-        val rating : Long = 0;
+        val rating : Double = 0.0;
         val followers : Int = 0;
 
 

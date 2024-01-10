@@ -16,7 +16,7 @@ class SellerAuthModel {
         fullName: String,
         address: String,
         storeName: String,
-        rating: Long,
+        rating: Double,
         followers: Int,
         adminVerified: String,
         callback: (Boolean, String?) -> Unit)
@@ -34,7 +34,7 @@ class SellerAuthModel {
                     sellerDocument.set(seller)
                         .addOnSuccessListener {
                             // Create a store in the 'stores' collection with an auto-generated ID
-                            val newStore = Store("", uid, address, rating, followers, adminVerified)
+                            val newStore = Store("", uid, address, rating, followers, adminVerified, storeName, fullName, "")
                             val storeDocument = firestore.collection("stores").document() // Firestore generates the ID
 
                             storeDocument.set(newStore)

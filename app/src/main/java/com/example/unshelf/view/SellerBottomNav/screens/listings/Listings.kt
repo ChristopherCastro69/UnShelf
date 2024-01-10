@@ -3,6 +3,7 @@ package com.example.unshelf.view.SellerBottomNav.screens.listings
 // or, if you're using StateFlow or LiveData:
 import JostFontFamily
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -209,6 +210,7 @@ fun ProductList(sellerId: String, storeId: String, navController: NavController,
 
     // This will reload products based on the active tab
     LaunchedEffect(selectedIndex) {
+        Log.d("ProductViewModel", "Selected index changed: $selectedIndex")
         when (selectedIndex) {
             0 -> productViewModel.fetchActiveProductsForSeller(sellerId, storeId)
             1 -> productViewModel.fetchInactiveProductsForSeller(sellerId, storeId)
@@ -225,7 +227,17 @@ fun ProductList(sellerId: String, storeId: String, navController: NavController,
                 ProductCard(product, navController, productViewModel, LocalContext.current)
             }
         }
-    } else {
+    } else if (products.isEmpty()){
+            // Show text when products list is empty
+            Text(
+                text = "No products available.",
+                fontSize = 20.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(16.dp)
+            )
+
+    }
+    else {
         // Show a loading indicator or message while waiting for products to load
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator() // or a custom loading component

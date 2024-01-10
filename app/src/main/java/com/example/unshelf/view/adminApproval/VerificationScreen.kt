@@ -131,6 +131,11 @@ fun VerificationScreen(){
                             val intent = Intent(context, RejectedMessage::class.java)
                             context.startActivity(intent)
                         }
+                        "Banned"->{
+                            val intent = Intent(context, BannedMessage::class.java)
+                            context.startActivity(intent)
+                        }
+
                         else -> {
                             // Handle other cases if needed
                         }

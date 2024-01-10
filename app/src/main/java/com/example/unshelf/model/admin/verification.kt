@@ -32,50 +32,131 @@ suspend fun getAdminVerificationStatus(): String {
 suspend fun sendVerificationToAdmin() {
     val userId = Firebase.auth.currentUser?.uid ?: return
 
-    val querySnapshot = Firebase.firestore.collection("sellers")
-        .whereEqualTo("sellerID", userId)
-        .get()
-        .await()
+    val firestore = Firebase.firestore
+    val batch = firestore.batch()
 
-    if (!querySnapshot.isEmpty) {
-        val documentSnapshot = querySnapshot.documents[0]
+    // Update the "adminVerified" field in the "sellers" collection
+    val sellersRef = firestore.collection("sellers").whereEqualTo("sellerID", userId)
+    val sellersQuerySnapshot = sellersRef.get().await()
 
-        try {
-            // Update the adminVerified field to "Pending"
-            documentSnapshot.reference.update("adminVerified", "Pending").await()
+    if (!sellersQuerySnapshot.isEmpty) {
+        val sellerDocumentSnapshot = sellersQuerySnapshot.documents[0]
+        val sellerReference = sellerDocumentSnapshot.reference
 
-            // Show a success message (you can replace this with your own UI logic)
-            println("Verification sent successfully!")
-        } catch (e: Exception) {
-            // Handle exceptions (e.g., FirebaseFirestoreException)
-            println("Failed to send verification: ${e.message}")
+        batch.update(sellerReference, "adminVerified", "Pending")
+    }
+
+    // Update the "verified" field in the "stores" collection
+    val storesRef = firestore.collection("stores").whereEqualTo("sellerID", userId)
+    val storesQuerySnapshot = storesRef.get().await()
+
+    if (!storesQuerySnapshot.isEmpty) {
+        val storeDocumentSnapshots = storesQuerySnapshot.documents
+
+        for (storeDocumentSnapshot in storeDocumentSnapshots) {
+            val storeReference = storeDocumentSnapshot.reference
+            batch.update(storeReference, "verified", "Pending")
         }
+    }
+
+    try {
+        // Commit the batched write
+        batch.commit().await()
+
+        // Show a success message (you can replace this with your own UI logic)
+        println("Verification sent successfully!")
+    } catch (e: Exception) {
+        // Handle exceptions (e.g., FirebaseFirestoreException)
+        println("Failed to send verification: ${e.message}")
     }
 }
 
 suspend fun rejectVerificationToAdmin() {
     val userId = Firebase.auth.currentUser?.uid ?: return
 
-    val querySnapshot = Firebase.firestore.collection("sellers")
-        .whereEqualTo("sellerID", userId)
-        .get()
-        .await()
+    val firestore = Firebase.firestore
+    val batch = firestore.batch()
 
-    if (!querySnapshot.isEmpty) {
-        val documentSnapshot = querySnapshot.documents[0]
+    // Update the "adminVerified" field in the "sellers" collection
+    val sellersRef = firestore.collection("sellers").whereEqualTo("sellerID", userId)
+    val sellersQuerySnapshot = sellersRef.get().await()
 
-        try {
-            // Update the adminVerified field to "Pending"
-            documentSnapshot.reference.update("adminVerified", "Rejected").await()
+    if (!sellersQuerySnapshot.isEmpty) {
+        val sellerDocumentSnapshot = sellersQuerySnapshot.documents[0]
+        val sellerReference = sellerDocumentSnapshot.reference
 
-            // Show a success message (you can replace this with your own UI logic)
-            println("Verification sent successfully!")
-        } catch (e: Exception) {
-            // Handle exceptions (e.g., FirebaseFirestoreException)
-            println("Failed to send verification: ${e.message}")
+        batch.update(sellerReference, "adminVerified", "Rejected")
+    }
+
+    // Update the "verified" field in the "stores" collection
+    val storesRef = firestore.collection("stores").whereEqualTo("sellerID", userId)
+    val storesQuerySnapshot = storesRef.get().await()
+
+    if (!storesQuerySnapshot.isEmpty) {
+        val storeDocumentSnapshots = storesQuerySnapshot.documents
+
+        for (storeDocumentSnapshot in storeDocumentSnapshots) {
+            val storeReference = storeDocumentSnapshot.reference
+            batch.update(storeReference, "verified", "Rejected")
         }
     }
+
+    try {
+        // Commit the batched write
+        batch.commit().await()
+
+        // Show a success message (you can replace this with your own UI logic)
+        println("Verification rejected successfully!")
+    } catch (e: Exception) {
+        // Handle exceptions (e.g., FirebaseFirestoreException)
+        println("Failed to reject verification: ${e.message}")
+    }
 }
+
+
+suspend fun banSeller() {
+    val userId = Firebase.auth.currentUser?.uid ?: return
+
+    val firestore = Firebase.firestore
+    val batch = firestore.batch()
+
+    // Update the "adminVerified" field in the "sellers" collection
+    val sellersRef = firestore.collection("sellers").whereEqualTo("sellerID", userId)
+    val sellersQuerySnapshot = sellersRef.get().await()
+
+    if (!sellersQuerySnapshot.isEmpty) {
+        val sellerDocumentSnapshot = sellersQuerySnapshot.documents[0]
+        val sellerReference = sellerDocumentSnapshot.reference
+
+        batch.update(sellerReference, "adminVerified", "Banned")
+    }
+
+    // Update the "verified" field in the "stores" collection
+    val storesRef = firestore.collection("stores").whereEqualTo("sellerID", userId)
+    val storesQuerySnapshot = storesRef.get().await()
+
+    if (!storesQuerySnapshot.isEmpty) {
+        val storeDocumentSnapshots = storesQuerySnapshot.documents
+
+        for (storeDocumentSnapshot in storeDocumentSnapshots) {
+            val storeReference = storeDocumentSnapshot.reference
+            batch.update(storeReference, "verified", "Banned")
+        }
+    }
+
+    try {
+        // Commit the batched write
+        batch.commit().await()
+
+        // Show a success message (you can replace this with your own UI logic)
+        println("Seller banned successfully!")
+    } catch (e: Exception) {
+        // Handle exceptions (e.g., FirebaseFirestoreException)
+        println("Failed to ban seller: ${e.message}")
+    }
+}
+
+
 suspend fun logoutUser(context: Context) {
     try {
         FirebaseAuth.getInstance().signOut()

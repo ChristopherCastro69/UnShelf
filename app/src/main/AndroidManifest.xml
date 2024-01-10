@@ -150,6 +150,11 @@
             android:exported="false"
             />
         <activity
+            android:name=".view.adminApproval.BannedMessage"
+            android:exported="false"
+            />
+
+        <activity
             android:name=".view.adminApproval.RejectedMessage"
             android:exported="false"
             />

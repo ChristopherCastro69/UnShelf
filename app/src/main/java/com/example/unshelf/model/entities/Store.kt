@@ -7,8 +7,11 @@ class Store ( // please add methods (example: getters or setters)
     var storeID : String,
     val sellerID : String,
     val address: String,
-    val rating : Long,
+    val rating : Double,
     val followers: Int,
     val isVerified : String,
+    val storeName : String,
+    val sellerName : String,
+    val thumbnail : String,
 )
 
