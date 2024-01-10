@@ -12,14 +12,12 @@ import com.example.unshelf.view.authentication.CustomerRegister
 import com.example.unshelf.view.RestaurantNearMe.RestaurantsNearMe
 
 import com.example.unshelf.view.product.product_main
-import com.example.unshelf.view.Wallet.Balance
+import com.example.unshelf.view.Wallet.Wallet
 import com.example.unshelf.view.checkout.CheckoutUI
 import com.example.unshelf.controller.seller.ui.MainNavigationActivitySeller
-import com.example.unshelf.view.checkout.PickUp
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 import com.example.unshelf.view.StartUI.MainUI
 import com.example.unshelf.view.productView.OrderTracking
-import com.example.unshelf.view.productView.ProductMainView
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
@@ -75,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testBtnPmain, product_main::class.java);
 //        UI_Tester_Helper.UI_Test(this, testBtnPmain, cart::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnCart, OrderTracking::class.java);
-        UI_Tester_Helper.UI_Test(this, testBtnWallet, Balance::class.java);
+        UI_Tester_Helper.UI_Test(this, testBtnWallet, Wallet::class.java);
         UI_Tester_Helper.UI_Test(this, testSellerScreen, MainNavigationActivitySeller::class.java);
         UI_Tester_Helper.UI_Test(this, testCheckoutScreen, CheckoutUI::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);

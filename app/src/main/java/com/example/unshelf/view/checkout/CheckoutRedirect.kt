@@ -15,12 +15,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.lifecycleScope
 import com.example.unshelf.controller.Checkout.CheckoutSessionController
 import com.example.unshelf.model.checkout.CheckoutResponse
-import com.example.unshelf.view.Wallet.Balance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class CheckoutRedirect : ComponentActivity() {
     var checkoutID: String = ""

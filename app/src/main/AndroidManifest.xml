@@ -75,7 +75,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".view.Wallet.Balance"
+            android:name=".view.Wallet.Wallet"
             android:exported="false" />
         <activity
             android:name=".view.checkout.CheckoutUI"

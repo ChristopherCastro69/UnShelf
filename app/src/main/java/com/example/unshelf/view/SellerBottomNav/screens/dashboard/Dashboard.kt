@@ -38,8 +38,6 @@
 
     import androidx.compose.foundation.Canvas
 
-    import androidx.compose.foundation.Canvas
-    import androidx.compose.foundation.background
     import androidx.compose.foundation.clickable
     import androidx.compose.foundation.layout.Box
     import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,13 +54,10 @@
     import androidx.compose.ui.graphics.nativeCanvas
     import androidx.compose.ui.graphics.toArgb
     import androidx.compose.ui.platform.LocalContext
-    import androidx.lifecycle.viewmodel.compose.viewModel
-    import com.example.unshelf.controller.OrderController
     import com.example.unshelf.ui.theme.Champagne
-    import com.example.unshelf.ui.theme.PalmLeaf
     import com.example.unshelf.ui.theme.WatermelonRed
     import com.example.unshelf.ui.theme.YellowGreen
-    import com.example.unshelf.view.Wallet.Balance
+    import com.example.unshelf.view.Wallet.Wallet
     import kotlin.random.Random
 
 
@@ -112,7 +107,8 @@
                     contentDescription = "Wallet",
                     tint = Color.Unspecified, // Add tint color if required
                     modifier = Modifier.size(35.dp).clickable {
-                        val intent = Intent(context, Balance::class.java)
+                        val intent = Intent(context, Wallet::class.java)
+                        intent.putExtra("user", "seller")
                         context.startActivity(intent)
                     }
                 )

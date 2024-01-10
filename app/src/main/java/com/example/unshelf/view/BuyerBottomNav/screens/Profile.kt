@@ -1,6 +1,7 @@
 package com.example.unshelf.view.BuyerBottomNav.screens
 
 import JostFontFamily
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +22,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.automirrored.filled.FactCheck
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.DeliveryDining
@@ -30,6 +35,7 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Wallet
@@ -54,9 +60,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.unshelf.R
+import com.example.unshelf.controller.User.UserController
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.view.SellerBottomNav.screens.store.ProfileOptionItem
 import com.example.unshelf.view.SellerBottomNav.screens.store.Store
+import com.example.unshelf.view.Wallet.Wallet
 
 @Composable
 fun Profile() {
@@ -111,6 +119,7 @@ fun BuyerProfileDetails () {
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(Modifier.height(25.dp))
         Row (
             horizontalArrangement = Arrangement.Start,
         ){
@@ -118,23 +127,26 @@ fun BuyerProfileDetails () {
                 modifier = Modifier,
             ) {
                 Spacer(Modifier.weight(0.2f))
-                Image(
-                    painter = painterResource(id = R.drawable.buyer_profile_pic),
+                Icon(
+                    imageVector = Icons.Filled.Person,
+                    tint = Color.White,
                     contentDescription = "Back",
                     modifier = Modifier
-                        .height(120.dp)
-                        .width(120.dp)
+                        .height(80.dp)
+                        .width(80.dp)
                         .padding(10.dp)
                         .align(Alignment.CenterVertically)
                 )
                 Column(
                     Modifier.align(Alignment.CenterVertically)
                 ) {
+                    val name = UserController.customer!!.fullName
                     Text(
-                        text = "John Doe",
+                        text = "${name}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(start = 5.dp)
                     )
                     Row (
                         modifier = Modifier
@@ -159,7 +171,9 @@ fun BuyerProfileDetails () {
                         Image(
                             painterResource(id = R.drawable.food_hero_ic),
                             contentDescription = "Foods Hero Icon",
-                            modifier = Modifier.align(Alignment.CenterVertically).padding(end = 8.dp, bottom = 5.dp)
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(end = 8.dp, bottom = 5.dp)
                         )
                     }
 
@@ -173,6 +187,7 @@ fun BuyerProfileDetails () {
             contentDescription = "Line Image",
             modifier = Modifier.fillMaxWidth(0.8f)
         )
+        val context = LocalContext.current
         Row (horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             for(i in 0..3) {
                 Column (
@@ -184,7 +199,13 @@ fun BuyerProfileDetails () {
                         contentDescription = "Buyer Icon",
                         modifier = Modifier
                             .width(35.dp)
-                            .height(35.dp)
+                            .height(35.dp).clickable {
+                                if(buyerNames[i].equals("Payment")) {
+                                    val intent = Intent(context, Wallet::class.java)
+                                    intent.putExtra("user", "buyer")
+                                    context.startActivity(intent)
+                                }
+                            }
                     )
                     Text (
                         text = buyerNames[i],
