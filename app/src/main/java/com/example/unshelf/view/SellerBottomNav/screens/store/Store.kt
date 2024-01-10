@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.unshelf.R
+import com.example.unshelf.model.admin.logoutBuyer
 import com.example.unshelf.model.admin.logoutUser
 import com.example.unshelf.ui.theme.DeepMossGreen
 import kotlinx.coroutines.launch
@@ -157,7 +158,7 @@ fun ProfileOptionItem(option: String, icon: ImageVector, context: Context) {
                 }
                 else if (option == "Log Out"){
                     coroutineScope.launch {
-                        logoutUser(context)
+                        logoutBuyer(context)
                     }
                 }
                 else {
