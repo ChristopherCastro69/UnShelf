@@ -2,6 +2,7 @@ package com.example.unshelf.view.authentication
 // SellerLoginView.kt
 // SellerLoginView.kt
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Patterns
@@ -36,8 +37,7 @@ class SellerLoginView(private val context: Context, private val binding: Activit
 
 
         binding.buttonBack.setOnClickListener{
-            val intent = Intent(context, Seller_Login::class.java)
-            context.startActivity(intent)
+            (context as? Activity)?.finish()
         }
         binding.buttonLogin.setOnClickListener {
             loginUser()

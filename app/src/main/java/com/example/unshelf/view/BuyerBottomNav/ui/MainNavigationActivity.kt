@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.unshelf.controller.Checkout.CheckoutSessionController
 import com.example.unshelf.controller.DataFetch.DataFetchController
+import com.example.unshelf.controller.User.UserController
 import com.example.unshelf.view.BuyerBottomNav.main.BuyerAppNavigation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -19,6 +20,7 @@ class MainNavigationActivityBuyer : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        UserController.getCustomerDetails()
         setContent{
             BuyerAppNavigation()
         }
