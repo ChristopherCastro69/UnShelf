@@ -21,11 +21,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Store
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,8 +48,11 @@ import com.example.unshelf.R
 import com.example.unshelf.model.admin.logoutBuyer
 import com.example.unshelf.model.admin.logoutUser
 import com.example.unshelf.ui.theme.DeepMossGreen
+import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.ui.theme.WatermelonRed
 import kotlinx.coroutines.launch
 
+var showLogoutConfirmationDialog = mutableStateOf(false)
 //@Preview
 @Composable
 fun Store() {
@@ -125,7 +134,7 @@ fun ProfileOptions(context: Context) {
         "Edit Profile" to Icons.Default.Store,
 
 //        "Delivery Settings" to Icons.Default.DeliveryDining,
-//        "Pickup Settings" to Icons.Default.ShoppingBag,
+        "Pickup Settings" to Icons.Default.ShoppingBag,
 //        "Store Locations" to Icons.Default.LocationOn,
 //        "Promotions" to Icons.Default.LocalOffer,
 //        "Settings" to Icons.Default.Settings,
@@ -144,26 +153,26 @@ fun ProfileOptions(context: Context) {
 @Composable
 fun ProfileOptionItem(option: String, icon: ImageVector, context: Context) {
     val coroutineScope = rememberCoroutineScope()
+    // State to track whether the logout confirmation dialog is shown
+
 
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-            /* Handle click */
+                /* Handle click */
                 if (option == "Edit Profile") {
                     // Launch the Profile activity using Intent
                     val intent = Intent(context, SellerProfile::class.java)
                     context.startActivity(intent)
-                }
-                else if (option == "Log Out"){
-                    coroutineScope.launch {
-                        logoutBuyer(context)
-                    }
-                }
-                else {
+                } else if (option == "Log Out") {
+                    // Show the confirmation dialog
+                    showLogoutConfirmationDialog.value = true
+                } else {
                     // Handle other options
-                }}
+                }
+            }
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -185,6 +194,47 @@ fun ProfileOptionItem(option: String, icon: ImageVector, context: Context) {
             contentDescription = "Go to $option",
             modifier = Modifier.size(20.dp),
             tint = DeepMossGreen
+        )
+    }
+
+    // Confirmation dialog
+    if (showLogoutConfirmationDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                // Dismiss the dialog if the user cancels
+                showLogoutConfirmationDialog.value = false
+            },
+            title = {
+                Text(text = "Logout")
+            },
+            text = {
+                Text(text = "Are you sure you want to log out?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        // Perform logout action
+                        coroutineScope.launch {
+                            logoutUser(context)
+                        }
+                        showLogoutConfirmationDialog.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
+                ) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        // Dismiss the dialog if the user cancels
+                        showLogoutConfirmationDialog.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = WatermelonRed)
+                ) {
+                    Text("No")
+                }
+            }
         )
     }
 }

@@ -16,9 +16,13 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,10 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.unshelf.R
+import com.example.unshelf.model.admin.logoutBuyer
 import com.example.unshelf.model.admin.logoutUser
 import com.example.unshelf.ui.theme.DeepMossGreen
+import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.ui.theme.WatermelonRed
 import kotlinx.coroutines.launch
 
+var showLogoutConfirmationDialogBuyer = mutableStateOf(false)
 @Composable
 fun Profile() {
     val coroutineScope = rememberCoroutineScope()
@@ -75,14 +83,56 @@ fun Profile() {
                     BuyerSettings(name) {
                         if (name == "Log out") {
                             // Call the logoutUser function here
-                            coroutineScope.launch {
-                                logoutUser(context)
-                            }
+//                            coroutineScope.launch {
+//                                logoutUser(context)
+//                            }
+                            // Show the confirmation dialog
+                            showLogoutConfirmationDialogBuyer.value = true
                         }
                     }
                 }
             }
         }
+    }
+
+    if (showLogoutConfirmationDialogBuyer.value) {
+        AlertDialog(
+            onDismissRequest = {
+                // Dismiss the dialog if the user cancels
+                showLogoutConfirmationDialogBuyer.value = false
+            },
+            title = {
+                Text(text = "Logout")
+            },
+            text = {
+                Text(text = "Are you sure you want to log out?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        // Perform logout action
+                        coroutineScope.launch {
+                            logoutBuyer(context)
+                        }
+                        showLogoutConfirmationDialogBuyer.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
+                ) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        // Dismiss the dialog if the user cancels
+                        showLogoutConfirmationDialogBuyer.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = WatermelonRed)
+                ) {
+                    Text("No")
+                }
+            }
+        )
     }
 }
 
@@ -196,7 +246,10 @@ fun BuyerSettings(option: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth(0.8f)
-            .clickable { /* Handle click */ }
+            .clickable {
+                // Handle click and invoke the provided onClick lambda
+                onClick.invoke()
+            }
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
