@@ -154,7 +154,12 @@ fun PageInAppBalance(user : String) {
             if(user.equals("buyer")) {
                 surfaceSize = 100.dp
             }
-            if(WalletController.isLoading.value == false) {
+            if(WalletController.isLoading.value == true && user.equals("buyer")) {
+                CircularProgressIndicator(color = PalmLeaf, modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(50.dp)
+                    .padding(top = 10.dp))
+            } else {
                 Surface(
                     modifier = Modifier
                         .offset(y = 20.dp)
@@ -275,11 +280,6 @@ fun PageInAppBalance(user : String) {
                         Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
-            } else {
-                CircularProgressIndicator(color = PalmLeaf, modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .size(50.dp)
-                    .padding(top = 10.dp))
             }
         }
 
@@ -393,6 +393,7 @@ fun PaymentMethodsList(sale : Order, user : String) {
                             fontSize = 13.sp
                         ),
                     )
+                    sale.paymentTimestamp.toString().substringAfter("_")
                     Text(
                         text = "${
                             if(user.equals("seller")){

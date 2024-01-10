@@ -44,7 +44,6 @@ object WalletController {
     }
 
     fun getPayments() {
-        isLoading.value = true
         salesList.value = emptyList()
         totalBalance.value = 0.0
         var copySalesList = mutableStateOf(listOf<Order>())
@@ -79,6 +78,7 @@ object WalletController {
                             (salesList.value as MutableList<Order>)[index] = order
                             index++
                         }
+                        isLoading.value = false
 
                     }
 
@@ -86,7 +86,7 @@ object WalletController {
         } catch (e : Exception) {
 
         }
-        isLoading.value = false
+
     }
 
 }

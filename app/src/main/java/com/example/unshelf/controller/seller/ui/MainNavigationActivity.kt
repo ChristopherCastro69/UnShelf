@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.example.unshelf.controller.User.UserController
 import com.example.unshelf.controller.seller.main.AppNavigation
 
 
@@ -24,6 +25,7 @@ class MainNavigationActivitySeller : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkAndRequestPermission()
+        UserController.getSellerDetails()
         setContent {
             AppNavigation()
         }

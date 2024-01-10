@@ -16,13 +16,13 @@ import kotlinx.coroutines.tasks.await
 object UserController {
     val userID = FirebaseAuth.getInstance().currentUser!!.uid
     var customer : Customer? = null
+    var seller : Seller? = null
     fun getCustomerDetails() : Customer? {
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 var user = Firebase.firestore.collection("customers").document(userID).get().await()
                 if(user.exists())
                     customer = user!!.toObject(Customer::class.java)
-                println("name: ${customer!!.fullName}")
             } catch (e : Exception) {
                 Log.e("Profile", "Error retrieving user information", e)
             }
@@ -31,13 +31,13 @@ object UserController {
     }
 
     fun getSellerDetails() : Seller? {
-        var seller : Seller? = null
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             try {
                 var user = Firebase.firestore.collection("sellers").document(userID).get().await()
-                seller = user.toObject(Seller::class.java)
+                if(user.exists())
+                    seller = user!!.toObject(Seller::class.java)
             } catch(e : Exception) {
-
+                Log.e("Profile", "Error retrieving user information", e)
             }
 
         }
