@@ -2,6 +2,8 @@ package com.example.unshelf.controller
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
+import com.example.unshelf.controller.Checkout.CheckoutSessionController
+import com.example.unshelf.controller.Wallet.RefundController
 import com.example.unshelf.model.entities.Order
 import com.example.unshelf.model.entities.Product
 import com.google.firebase.auth.FirebaseAuth
@@ -41,7 +43,6 @@ object OrderApprovalController {
         }
     }
 
-    fun rejectOrder(){
-
+    fun rejectOrder(order: Order){
     }
 }

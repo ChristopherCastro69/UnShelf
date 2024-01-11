@@ -64,7 +64,9 @@ object WalletController {
                             val convertedTimestamp: Long = order.paymentTimestamp!!.time
                             sortedValues.add(Pair(index, convertedTimestamp))
                             index++
-                            totalBalance.value += order.totalAmount
+                            if(order.orderStatus!="cancelled") {
+                                totalBalance.value += order.totalAmount
+                            }
                         }
 
                         sortedValues.sortByDescending { it.second }

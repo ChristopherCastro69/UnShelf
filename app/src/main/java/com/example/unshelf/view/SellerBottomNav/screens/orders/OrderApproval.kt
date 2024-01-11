@@ -149,7 +149,7 @@ fun OrderApproval(order: Order?) {
                             }
                             Button(
                                 onClick = {
-                                    OrderApprovalController.rejectOrder()
+                                    OrderApprovalController.rejectOrder(order)
                                     (context as? Activity)?.finish()
                                 },
                                 colors = ButtonDefaults.buttonColors(WatermelonRed),
