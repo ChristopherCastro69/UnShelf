@@ -3,6 +3,7 @@ package com.example.unshelf.view.productView
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -29,19 +30,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.model.checkout.OrderLineItem
+import com.example.unshelf.model.entities.Order
 import com.example.unshelf.model.entities.Product
+import com.example.unshelf.model.firestore.seller.orderTracking.OrderTracking_Orders
+import com.example.unshelf.model.firestore.seller.orderTracking.getOrders
+import com.example.unshelf.model.firestore.seller.orderTracking.getSellerName
+import com.example.unshelf.model.firestore.seller.orderTracking.sellerIDs
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
+
 
 class OrderTracking : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            OrderTrackingUI()
+
+        lifecycleScope.launch {
+            Log.d("USERRR", "Order Tracking ${getOrders()}")
+            getSellerName()
+            setContent {
+                OrderTrackingUI()
+            }
         }
+
+
     }
 }
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -55,8 +74,9 @@ fun OrderTrackingUI() {
             Column (modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(state = rememberScrollState())) {
-                repeat (2) {
-                    OrderItem()
+                Log.d("USERRR", "Order Tracking ${OrderTracking_Orders}")
+                OrderTracking_Orders.forEach { order ->
+                    OrderItem(order)
                 }
             }
 
@@ -91,8 +111,7 @@ fun MenuOT(modifier: Modifier = Modifier) {
                     .padding(start = 16.dp, end = 8.dp)
                     .align(Alignment.CenterVertically)
                     .clickable {
-                        val intent =
-                            Intent(context, MainNavigationActivityBuyer::class.java)
+                        val intent = Intent(context, MainNavigationActivityBuyer::class.java)
                         context.startActivity(intent)
                     }
             )
@@ -107,25 +126,7 @@ fun MenuOT(modifier: Modifier = Modifier) {
                     .align(Alignment.CenterVertically)
             )
         }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            DropdownMenuExample()
-            Image(
-                painter = painterResource(id = R.drawable.ic_pickup_sort),
-                contentDescription = "Sort",
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(50.dp)
-            )
-        }
-
-        // Spacer to create space
         Spacer(modifier = Modifier.height(16.dp))
-
-        // Colored Row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -201,15 +202,17 @@ fun DropdownMenuApp() {
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                DropdownMenuExample()
+//                DropdownMenuExample()
             }
         }
     )
 }
 
-@Preview
+
 @Composable
-fun OrderItem() {
+fun OrderItem(
+    OrderData : Order
+) {
     Surface(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -231,7 +234,7 @@ fun OrderItem() {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "John Doe's Market",
+                            text = "${sellerIDs.get(OrderData.sellerID)}",
                             fontSize = 20.sp,
                             color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
                         )
@@ -246,21 +249,11 @@ fun OrderItem() {
                     ) {
                         Text(
                             modifier = Modifier.padding(6.dp, 3.dp),
-                            text = "For Delivery",
+                            text = "For Pickup",
                             fontSize = 14.sp,
                             color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03))
                         )
                     }
-                }
-                Button(
-                    onClick = {
-
-                    },
-                    colors = ButtonDefaults.buttonColors(PalmLeaf)
-                ) {
-                    Text(
-                        text = "Add Review",
-                    )
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -279,23 +272,30 @@ fun OrderItem() {
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text ( text = "Rider: Rider Name",
+                    Text ( text = "Date: ${OrderData.paymentTimestamp.toString().substring(4, 11)} ${OrderData.paymentTimestamp.toString().substring(OrderData.paymentTimestamp.toString().length - 4)}",
+                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                        fontSize = 14.sp,)
+                    Text ( text = "Time: ${OrderData.paymentTimestamp.toString().substring(11, 19)}",
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                         fontSize = 14.sp,)
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text ( text = "Status: Parcel has...",
+                    Text ( text = "Status: ${OrderData.orderStatus}",
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                         fontSize = 14.sp,)
                     Spacer(modifier = Modifier.height(2.dp))
                     Text ( text = "Estimated delivery time: time",
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                         fontSize = 14.sp,)
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text ( text = "NOTE: Please present this pickup number: \n${OrderData.refNo} to the seller to claim order",
+                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                        fontSize = 14.sp,)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
             Image(painter = painterResource(id = R.drawable.ic_ot_line), contentDescription = "line")
-            repeat(2) {
-                OrderProduct()
+            OrderData.products.forEach { product ->
+                OrderProduct(product)
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row (
@@ -305,8 +305,9 @@ fun OrderItem() {
                 Text ( text = "Total: ₱",
                     color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
                     fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
                     )
-                Text ( text = "500.00",
+                Text ( text = "${OrderData.totalAmount}",
                     color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold)
@@ -315,22 +316,17 @@ fun OrderItem() {
     }
 }
 
-@Preview
+
 @Composable
 fun OrderProduct (
+    ProductObject : OrderLineItem
 ) {
     Surface() {
         Row (
             modifier = Modifier.padding(top = 10.dp, end = 10.dp)
         ) {
             Image(
-                painter = rememberImagePainter(
-                    data = null,
-                    builder = {
-                        crossfade(true)
-                        placeholder(R.drawable.fruit_salad_img) // Optional: Placeholder image resource
-                    }
-                ),
+                painter = rememberAsyncImagePainter(ProductObject.images.get(0)),
                 contentScale = ContentScale.Crop,
                 contentDescription = "Product Image",
                 modifier = Modifier
@@ -341,21 +337,17 @@ fun OrderProduct (
             Column(
                 modifier = Modifier.padding(top = 10.dp)
             ) {
-                Text (text = "Santol",
+                Text (text = "${ProductObject.name}",
                     color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                     fontSize = 20.sp,)
-                Text ( text = "Purchase by kilo",
-                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
-                    fontSize = 16.sp,)
-                Spacer(modifier = Modifier.height(10.dp))
-                Text ( text = "₱25.00/kilo",
+                Text ( text = "₱${ProductObject.amount}/kilo",
                     color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.weight(1f))
             Text ( modifier = Modifier.padding(top = 10.dp),
-                text = "x20",
+                text = "x${ProductObject.quantity}",
                 color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                 fontSize = 14.sp,)
         }

@@ -439,6 +439,7 @@ fun storeGrouped(
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                         .clickable {
+
                             val intent = Intent(context, PickUp::class.java)
                             context.startActivity(intent)
                         }

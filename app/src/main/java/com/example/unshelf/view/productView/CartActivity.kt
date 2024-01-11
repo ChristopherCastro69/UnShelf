@@ -242,8 +242,6 @@ fun CartCheckOut(modifier: Modifier = Modifier, totalAmount: Double = 380.0) {
         Spacer(modifier = Modifier.padding(end = 16.dp))
         Button(
             onClick = {
-//                val intent = Intent(context, CheckoutUI::class.java)
-//                context.startActivity(intent)
                 for (prod in checkoutProductList) {
                     println("Product:" + prod)
                 }

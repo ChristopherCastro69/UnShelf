@@ -1,6 +1,8 @@
 package com.example.unshelf.view.BuyerBottomNav.screens
 
 import JostFontFamily
+import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +40,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,20 +62,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.unshelf.R
+import com.example.unshelf.model.entities.Customer
+import com.example.unshelf.model.entities.Product
 import com.example.unshelf.ui.theme.DeepMossGreen
+import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
 import com.example.unshelf.view.SellerBottomNav.screens.store.ProfileOptionItem
 import com.example.unshelf.view.SellerBottomNav.screens.store.Store
+import com.example.unshelf.view.authentication.Customer_Login
+import com.example.unshelf.view.checkout.CheckoutUI
+import com.example.unshelf.view.productView.OrderTracking
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+
+
 
 @Composable
-fun Profile() {
+fun Profile(user : Customer?) {
+    val auth = FirebaseAuth.getInstance()
+    val currentUser = auth.currentUser
+
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
-//            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
-        BuyerProfileDetails()
+
+        BuyerProfileDetails(user)
         LazyColumn (
             Modifier.padding(bottom = 20.dp)
         ){
@@ -94,12 +121,11 @@ fun Profile() {
 }
 
 
-@Preview
 @Composable
-fun BuyerProfileDetails () {
+fun BuyerProfileDetails (user : Customer?) {
     val buyerImages = listOf(R.drawable.buyer_receipt_ic,R.drawable.buyer_payment_ic,R.drawable.buyer_location_ic,R.drawable.buyer_favorites_ic)
     val buyerNames = listOf("Activity", "Payment", "Order Tracking", "Favorites")
-
+    val context = LocalContext.current
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -126,12 +152,13 @@ fun BuyerProfileDetails () {
                         .width(120.dp)
                         .padding(10.dp)
                         .align(Alignment.CenterVertically)
+
                 )
                 Column(
                     Modifier.align(Alignment.CenterVertically)
                 ) {
                     Text(
-                        text = "John Doe",
+                        text = "${user?.fullName}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
@@ -179,13 +206,27 @@ fun BuyerProfileDetails () {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(top = 20.dp)
                 ) {
-                    Image(
-                        painterResource(id = buyerImages[i]),
-                        contentDescription = "Buyer Icon",
-                        modifier = Modifier
-                            .width(35.dp)
-                            .height(35.dp)
-                    )
+                    if (buyerNames[i] == "Order Tracking") {
+                        Image(
+                            painterResource(id = buyerImages[i]),
+                            contentDescription = "Buyer Icon",
+                            modifier = Modifier
+                                .width(35.dp)
+                                .height(35.dp)
+                                .clickable {
+                                    val intent = Intent(context, OrderTracking::class.java)
+                                    context.startActivity(intent)
+                                }
+                        )
+                    } else {
+                        Image(
+                            painterResource(id = buyerImages[i]),
+                            contentDescription = "Buyer Icon",
+                            modifier = Modifier
+                                .width(35.dp)
+                                .height(35.dp)
+                        )
+                    }
                     Text (
                         text = buyerNames[i],
                         color = Color.White
@@ -200,32 +241,61 @@ fun BuyerProfileDetails () {
 
 @Composable
 fun BuyerSettings(option: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .clickable { /* Handle click */ }
-            .padding(vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = option,
-            modifier = Modifier.weight(1f),
-            fontSize = 18.sp,
-            color = DeepMossGreen
-        )
-        Icon(
-            imageVector = Icons.Default.ArrowForwardIos,
-            contentDescription = "Go to $option",
-            modifier = Modifier.size(20.dp),
-            tint = DeepMossGreen
-        )
+    val context = LocalContext.current
+    if (option == "Log out") {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .clickable {
+                    val auth = FirebaseAuth.getInstance()
+                    auth.signOut()
+
+                    val intent = Intent(context, Customer_Login::class.java)
+                    context.startActivity(intent)
+                }
+                .padding(vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = option,
+                modifier = Modifier.weight(1f),
+                fontSize = 18.sp,
+                color = DeepMossGreen
+            )
+            Icon(
+                imageVector = Icons.Default.ArrowForwardIos,
+                contentDescription = "Go to $option",
+                modifier = Modifier.size(20.dp),
+                tint = DeepMossGreen
+            )
+        }
+    } else {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .clickable { /* Handle click */ }
+                .padding(vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = option,
+                modifier = Modifier.weight(1f),
+                fontSize = 18.sp,
+                color = DeepMossGreen
+            )
+            Icon(
+                imageVector = Icons.Default.ArrowForwardIos,
+                contentDescription = "Go to $option",
+                modifier = Modifier.size(20.dp),
+                tint = DeepMossGreen
+            )
+        }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun PreviewProfileScreen() {
+fun PreviewProfileScreen(user : Customer?) {
     Column  {
-        Profile()
+        Profile(user)
     }
 }
