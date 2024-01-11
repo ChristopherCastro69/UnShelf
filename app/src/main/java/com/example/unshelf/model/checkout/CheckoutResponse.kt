@@ -1,5 +1,7 @@
 package com.example.unshelf.model.checkout
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class CheckoutResponse(
     val data: SessionData
@@ -85,15 +87,17 @@ data class LineItem(
     constructor() : this(0.0, "", "", listOf(), "", 0)
 }
 
+@Parcelize
 data class OrderLineItem(
     var amount: Double,
     val currency: String,
     val images: List<String>,
     val name: String,
     val quantity: Int
-){
+) : Parcelable {
     constructor() : this(0.0, "", listOf(),"",  0)
 }
+
 
 
 
