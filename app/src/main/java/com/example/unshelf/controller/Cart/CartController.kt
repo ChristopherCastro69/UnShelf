@@ -25,6 +25,7 @@ object CartController {
     private val dataFetch = DataFetchRepository
     var storeMapped = mutableMapOf<String, MutableList<Product>>()
     var storeActiveState = mutableMapOf<String, MutableState<Boolean>>()
+    var isLoading = mutableStateOf(true)
 
     init {
         fetchCart()
@@ -39,7 +40,7 @@ object CartController {
                 } else {
                     cartList = CartModel(currentUser.uid, emptyList())
                 }
-
+                isLoading.value = false
             } catch (e: Exception) {
                 e.printStackTrace()
             }

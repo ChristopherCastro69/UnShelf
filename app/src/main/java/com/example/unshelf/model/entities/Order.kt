@@ -1,6 +1,5 @@
 package com.example.unshelf.model.entities
 
-import android.os.Parcelable
 import com.example.unshelf.model.checkout.LineItem
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.checkout.partLineItem
@@ -23,4 +22,4 @@ data class Order(
     val netAmount: Double = 0.0,
     val orderStatus: String = "",
     val paymentMethod: String = ""
-): Parcelable
+) : Parcelable

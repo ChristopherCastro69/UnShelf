@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.unshelf.R
 import com.example.unshelf.controller.OrderController
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.entities.Order
@@ -32,6 +34,7 @@ import com.example.unshelf.ui.theme.DarkMiddleGreenYellow
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.view.Wallet.Wallet
 
 
 //val ordersList = null
@@ -41,33 +44,42 @@ import com.example.unshelf.ui.theme.PalmLeaf
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun Orders() {
+fun Orders(navController: NavController) {
     val orderViewModel:OrderController = viewModel()
-
+    val context = LocalContext.current
     if(OrderController.orderList.value.isEmpty()) {
         OrderController.fetchOrder()
     }
+    //OrderController.fetchOrder()
+    val isLoading = remember { OrderController.isLoading }
     val orders = remember{ orderViewModel.orderList }
     var selectedTabIndex by remember { mutableStateOf(0) }
     val filterOptions = listOf("Pending", "Approved",  "Completed", "Cancelled", "Refunded")
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text("Orders",
-                        modifier = Modifier
-                            .padding(start = 5.dp),
-                        color = Color.White,
-                        fontFamily = JostFontFamily,
-                        fontWeight = FontWeight.Medium,
-                    ) },
-
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = PalmLeaf
-                ),
-
+            Row(modifier = Modifier.background(PalmLeaf).height(55.dp)) {
+                Text("Orders",
+                    modifier = Modifier
+                        .padding(start = 10.dp).align(Alignment.CenterVertically),
+                    color = Color.White,
+                    fontFamily = JostFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 23.sp
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(id = R.drawable.wallet),
+                    contentDescription = "Wallet",
+                    tint = Color.Unspecified, // Add tint color if required
+                    modifier = Modifier.align(Alignment.CenterVertically).padding(end = 10.dp)
+                        .clickable {
+                            val intent = Intent(context, Wallet::class.java)
+                            intent.putExtra("user", "seller")
+                            context.startActivity(intent)
+                        }
+                )
+            }
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -122,7 +134,7 @@ fun OrderCard(products: List<OrderLineItem>, order: Order) {
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     rememberAsyncImagePainter(model = product.images.get(0)),

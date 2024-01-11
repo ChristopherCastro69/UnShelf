@@ -1,5 +1,9 @@
 package com.example.unshelf.model.entities
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 class Customer(
     var customerID : String,
     override val email: String,
@@ -7,6 +11,8 @@ class Customer(
     override val phoneNumber: Long,
     override val fullName: String,
     override val address: String,
-) : User()
+) : User(), Parcelable {
+    constructor() : this("","","",0,"","")
+}
 
 

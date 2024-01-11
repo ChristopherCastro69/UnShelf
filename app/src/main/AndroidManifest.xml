@@ -75,7 +75,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".view.Wallet.Balance"
+            android:name=".view.Wallet.Wallet"
             android:exported="false" />
         <activity
             android:name=".view.checkout.CheckoutUI"
@@ -151,6 +151,10 @@
             />
         <activity
             android:name=".view.adminApproval.RejectedMessage"
+            android:exported="false"
+            />
+        <activity
+            android:name=".view.SellerBottomNav.screens.store.SellerProfile"
             android:exported="false"
             />
 

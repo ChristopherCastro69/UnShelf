@@ -66,7 +66,6 @@ class ProductMainView : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val user: Boolean = intent.getBooleanExtra("user",false)
         val product: Product? = intent.getParcelableExtra("product")
-
         setContent {
             // Your Compose UI goes here
             ProductMain(product, user)
@@ -193,6 +192,8 @@ fun PMMenu(product : Product?) {
             Button(
                 onClick = {
                     val intent = Intent(context, CheckoutUI::class.java)
+                    intent.putExtra("from", "buynow")
+                    intent.putExtra("buyNow", product)
                     context.startActivity(intent)
                 },
                 colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
@@ -371,7 +372,7 @@ fun PMContent(product: Product?) {
 
 @Composable
 fun itemQuantity(
-    qty: Int = 0
+    qty: Int = 1
 ) : Int {
     var (qty, setQty)  = remember { mutableStateOf(qty) }
     Row (
@@ -389,7 +390,7 @@ fun itemQuantity(
                 .weight(1F)
         )
         var isZero = false
-        if(qty==0) {
+        if(qty==1) {
             isZero = true
         }
         Image(
