@@ -64,29 +64,13 @@ class CheckoutSessionController() {
             val lineItem = partLineItem(
                 amount = (product.sellingPrice * 100).toInt(),
                 name = product.productName,
-                sellerID = product.sellerID,
+                sellerID = "Seller ID:" + product.sellerID + "Product ID:"+ product.productID,
                 quantity = product.quantity,
                 images = listOf(product.thumbnail),
             )
+            println("lineItemID: ${lineItem.sellerID}")
             checkoutList.add(lineItem)
         }
-//        val liSalad = partLineItem(
-//            amount = (products.get(0).price * 100).toInt(),
-//            name = products.get(0).productName,
-//            sellerID = products.get(0).storeName,
-//            quantity = 2,
-//            images = listOf(products.get(0).thumbnail),
-//        )
-//        val liSalad2 = partLineItem(
-//            amount = (products.get(1).price * 100).toInt(),
-//            name = products.get(1).productName,
-//            sellerID = products.get(1).storeName,
-//            quantity = 2,
-//            images = listOf(products.get(1).thumbnail),
-//        )
-//        val basketList: List<partLineItem> = listOf(
-//            liSalad, liSalad2
-//        )
         val att = partAttributes(
             billing = billing,
             line_items = checkoutList,
@@ -157,7 +141,8 @@ class CheckoutSessionController() {
             val products = checkoutResponse.data.attributes.lineItems
             var storeIDs = listOf<String>()
             for(product in products) {
-                val id = product.sellerID!!
+                val id = product.sellerID!!.substring(10..37)
+                println("id: ${id}")
                 if(!storeIDs.contains(id)) {
                     storeIDs = storeIDs + id
                 }
@@ -171,7 +156,8 @@ class CheckoutSessionController() {
                 for(product in filteredProducts) {
                     product.amount = product.amount / 100.0
                     totalAmount += (product.amount * product.quantity)
-                    finalProducts = finalProducts + (OrderLineItem(product.amount, product.currency, product.images, product.name, product.quantity))
+                    println("pID: ${product.sellerID!!.substringAfter("Product ID:")}")
+                    finalProducts = finalProducts + (OrderLineItem(product.amount, product.currency, product.images, product.name, product.quantity,product.sellerID!!.substringAfter("Product ID:")))
                 }
 
                 val timestamp = checkoutResponse.data.attributes.paidAt

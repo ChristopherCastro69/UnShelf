@@ -74,7 +74,7 @@ data class Address(
     val postalCode: String?,
     val state: String?
 )
-
+@Parcelize
 data class LineItem(
     var amount: Double,
     val currency: String,
@@ -83,7 +83,7 @@ data class LineItem(
     val images: List<String>,
     val name: String,
     val quantity: Int
-){
+) : Parcelable {
     constructor() : this(0.0, "", "", listOf(), "", 0)
 }
 @Parcelize
@@ -92,9 +92,10 @@ data class OrderLineItem(
     val currency: String,
     val images: List<String>,
     val name: String,
-    val quantity: Int
+    val quantity: Int,
+    val productID: String?,
 ) : Parcelable {
-    constructor() : this(0.0, "", listOf(),"",  0)
+    constructor() : this(0.0, "", listOf(),"",  0, "")
 }
 
 

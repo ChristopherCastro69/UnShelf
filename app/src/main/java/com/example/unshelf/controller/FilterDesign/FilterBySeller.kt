@@ -8,7 +8,8 @@ class FilterBySeller : Filter<LineItem> {
     override fun meetsCriteria(products: List<LineItem>): List<LineItem> {
         var filteredList : List<LineItem> = listOf()
         for(product in products) {
-            if(product.sellerID.equals(sellerID)) {
+            val sID = product.sellerID!!.substring(10..37)
+            if(sID.equals(sellerID)) {
                 filteredList = filteredList + product
             }
         }
