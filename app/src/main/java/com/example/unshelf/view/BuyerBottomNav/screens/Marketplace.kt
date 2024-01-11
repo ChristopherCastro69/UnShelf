@@ -135,7 +135,7 @@ fun MarketplaceContent(user: Boolean) {
                         contentScale = ContentScale.Inside,
                         modifier = Modifier
                             .height(200.dp)
-                            .padding(20.dp)
+                            .padding(20.dp).align(Alignment.CenterHorizontally)
                     )
                     Column{
                         CategoryUI()

@@ -48,8 +48,7 @@ class CustomerLoginView(private val context: Context, private val binding: Activ
         }
 
         binding.backButton.setOnClickListener{
-            val intent = Intent(context, MainActivity::class.java)
-            context.startActivity(intent)
+            (context as? Activity)?.finish()
         }
         binding.buttonLogin.setOnClickListener {
             loginUser()

@@ -30,6 +30,7 @@ import com.example.unshelf.view.SellerBottomNav.screens.dashboard.Dashboard
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.sellerId
 import com.example.unshelf.view.SellerBottomNav.screens.dashboard.storeId
 import com.example.unshelf.view.SellerBottomNav.screens.listings.Listings
+import com.example.unshelf.view.SellerBottomNav.screens.orders.OrderApproval
 
 import com.example.unshelf.view.SellerBottomNav.screens.orders.Orders
 import com.example.unshelf.view.SellerBottomNav.screens.store.Store
@@ -103,7 +104,7 @@ fun AppNavigation(){
             }
 
             composable(route = Screens.OrderScreen.name) {
-                Orders(navController)
+                Orders()
             }
 
             composable(route = Screens.ListingScreen.name) {
@@ -122,6 +123,7 @@ fun AppNavigation(){
             composable(route = "listings") {
                 Listings(navController, sellerId.value, storeId.value)
             }
+
         }
     }
 }

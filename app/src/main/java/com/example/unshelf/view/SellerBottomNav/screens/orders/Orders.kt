@@ -3,6 +3,7 @@ package com.example.unshelf.view.SellerBottomNav.screens.orders
 import JostFontFamily
 import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,58 +15,70 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.unshelf.R
 import com.example.unshelf.controller.OrderController
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.entities.Order
+import com.example.unshelf.ui.theme.DarkMiddleGreenYellow
+import com.example.unshelf.ui.theme.DeepMossGreen
+import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
+import com.example.unshelf.view.Wallet.Wallet
 
 
 //val ordersList = null
 // Add more orders as per your data
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun Orders(navController: NavController) {
+fun Orders() {
     val orderViewModel:OrderController = viewModel()
+    val context = LocalContext.current
     if(OrderController.orderList.value.isEmpty()) {
         OrderController.fetchOrder()
     }
-
-
-
+    //OrderController.fetchOrder()
+    val isLoading = remember { OrderController.isLoading }
     val orders = remember{ orderViewModel.orderList }
     var selectedTabIndex by remember { mutableStateOf(0) }
     val filterOptions = listOf("Pending", "Approved",  "Completed", "Cancelled", "Refunded")
 
-    for(order in orders.value) {
-        println("Order " + order.checkoutID + " amount: " + order.netAmount)
-    }
-
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text("Orders",
-                        modifier = Modifier
-                            .padding(start = 5.dp),
-                        color = Color.White,
-                        fontFamily = JostFontFamily,
-                        fontWeight = FontWeight.Medium,
-                    ) },
-
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = PalmLeaf
-                ),
-
+            Row(modifier = Modifier.background(PalmLeaf).height(55.dp)) {
+                Text("Orders",
+                    modifier = Modifier
+                        .padding(start = 10.dp).align(Alignment.CenterVertically),
+                    color = Color.White,
+                    fontFamily = JostFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 23.sp
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(id = R.drawable.wallet),
+                    contentDescription = "Wallet",
+                    tint = Color.Unspecified, // Add tint color if required
+                    modifier = Modifier.align(Alignment.CenterVertically).padding(end = 10.dp)
+                        .clickable {
+                            val intent = Intent(context, Wallet::class.java)
+                            intent.putExtra("user", "seller")
+                            context.startActivity(intent)
+                        }
+                )
+            }
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -96,21 +109,24 @@ fun Orders(navController: NavController) {
 
 @Composable
 fun OrderCard(products: List<OrderLineItem>, order: Order) {
-    val context = LocalContext.current;
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable {
-                val intent = Intent(context, OrderApprovalView::class.java)
+            .clickable{
+            val intent = Intent(context, OrderApprovalView::class.java)
+                intent.putExtra("order", order)
                 context.startActivity(intent)
             },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        colors = CardColors(containerColor = Color.White, DeepMossGreen,Color.Gray,Color.Gray),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
-        Column(modifier = Modifier
-            .padding(start = 16.dp, top = 20.dp)){
-            Text(text = "Order ID: ${order.checkoutID}", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-            Text(text = "Order Date: ${order.paymentTimestamp}", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+        Row(modifier = Modifier
+            .padding(start = 16.dp, top = 20.dp)
+        ){
+            Text(text = "Order ID:", fontWeight = FontWeight.Bold, fontSize = 16.sp, fontFamily = JostFontFamily)
+            Text(text = " ${order.checkoutID.substring(3..26)}", fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = JostFontFamily, color = Color.Gray)
         }
         for(product in products){
             Row(
@@ -132,17 +148,74 @@ fun OrderCard(products: List<OrderLineItem>, order: Order) {
                         .weight(1f)
                         .padding(end = 16.dp) // Padding to ensure text does not touch the edge of the screen
                 ) {
-                    Text(text = "${product.name}", fontWeight = FontWeight.Bold)
+                    Text(text = "${product.name}",
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = JostFontFamily,
+                        fontSize = 16.sp,
+                        color = DeepMossGreen)
                 }
                 Column(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier.fillMaxHeight()
                 ) {
-                    Text(text = "₱${String.format("%.2f", product.amount)}", fontWeight = FontWeight.Bold)
-                    Text(text = "${order.orderStatus}", color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
+                    Text(text = "₱${String.format("%.2f", product.amount)}",
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = JostFontFamily,
+                        color = DeepMossGreen)
+                    Text(text = "x${product.quantity}",
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = JostFontFamily,
+                        color = DeepMossGreen)
                 }
             }
         }
+        Row(modifier = Modifier
+            .padding(start = 16.dp, top = 15.dp),
+            verticalAlignment = Alignment.CenterVertically){
+            Text(text = "Status:",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                fontFamily = JostFontFamily)
+            Text(text = " ${order.orderStatus}",
+                fontWeight = FontWeight.Normal,
+                fontSize = 18.sp,
+                fontFamily = JostFontFamily,
+                color = Color.Gray,
+                modifier = Modifier.weight(1f))
+            Text(text = "Total: ",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                fontFamily = JostFontFamily,
+                modifier = Modifier.padding(end = 20.dp),
+                textAlign = TextAlign.End,
+            )
+            Text(text = "₱${order.totalAmount}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                fontFamily = JostFontFamily,
+                modifier = Modifier.padding(end = 20.dp),
+                textAlign = TextAlign.End,
+                color = DeepMossGreen,
+            )
+        }
+        Row(
+            modifier = Modifier.padding(start = 16.dp)
+        ){
+            Text(text = "Date:",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                fontFamily = JostFontFamily
+            )
+            Text(text = " ${order.paymentTimestamp}",
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                fontFamily = JostFontFamily,
+                modifier = Modifier.padding(bottom = 10.dp),
+                color = Color.Gray,
+                )
+        }
+
     }
 }
+
 
