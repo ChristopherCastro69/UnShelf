@@ -23,23 +23,25 @@ object OrderApprovalController {
             val storeProducts = order.products
             val status = hashMapOf("orderStatus" to "accepted")
             for(product in storeProducts){
-                val p_id = product.productID
-                val data = db.collection("products").document("p_id").get().await()
+                val p_id = product.productID!!
+                val data = db.collection("products").document(p_id).get().await()
                 if(data.exists()){
                     var productFetch = data.toObject(Product::class.java)!!
-                    if(productFetch.quantity - product.quantity < 0){
+                    if(productFetch.quantity < product.quantity){
                         quantityLow.value = true
                         return@launch
                     }
+                    //println("P_ID" + p_id + " -> " + productFetch.quantity + " -> " + product.quantity)
                     productFetch.quantity -= product.quantity
-                    db.collection("products").document("p_id").set(productFetch, SetOptions.merge()).await()
+                    db.collection("products").document(p_id).set(productFetch, SetOptions.merge()).await()
                 }
+                db.collection("orders").document(order.orderID).set(status, SetOptions.merge()).await()
             }
 
         }
     }
 
-    fun rejectOrder(orderId: String){
+    fun rejectOrder(){
 
     }
 }

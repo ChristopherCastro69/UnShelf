@@ -41,6 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.controller.OrderApprovalController
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.entities.Order
 import com.example.unshelf.model.entities.Product
@@ -135,7 +136,9 @@ fun OrderApproval(order: Order?) {
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Button(
-                                onClick = {  },
+                                onClick = {
+                                    OrderApprovalController.acceptOrder(order)
+                                    (context as? Activity)?.finish() },
                                 colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
                                 modifier = Modifier
                                     .padding(0.dp, 0.dp, 10.dp, 0.dp)
@@ -145,7 +148,10 @@ fun OrderApproval(order: Order?) {
                                 Text("Yes")
                             }
                             Button(
-                                onClick = {  },
+                                onClick = {
+                                    OrderApprovalController.rejectOrder()
+                                    (context as? Activity)?.finish()
+                                },
                                 colors = ButtonDefaults.buttonColors(WatermelonRed),
                                 modifier = Modifier
                                     .padding(0.dp, 0.dp, 10.dp, 0.dp)
@@ -257,5 +263,4 @@ fun OrderDetails(products: List<OrderLineItem>) {
         }
     }
 }
-
 
