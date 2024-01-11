@@ -38,10 +38,10 @@ import com.example.unshelf.R
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.entities.Order
 import com.example.unshelf.model.entities.Product
-import com.example.unshelf.model.firestore.seller.orderTracking.OrderTracking_Orders
-import com.example.unshelf.model.firestore.seller.orderTracking.getOrders
-import com.example.unshelf.model.firestore.seller.orderTracking.getSellerName
-import com.example.unshelf.model.firestore.seller.orderTracking.sellerIDs
+import com.example.unshelf.controller.orderTracking.OrderTracking_Orders
+import com.example.unshelf.controller.orderTracking.getOrders
+import com.example.unshelf.controller.orderTracking.getSellerName
+import com.example.unshelf.controller.orderTracking.sellerIDs
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
@@ -75,8 +75,9 @@ fun OrderTrackingUI() {
             Column (modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(state = rememberScrollState())) {
-                Log.d("USERRR", "Order Tracking ${OrderTracking_Orders}")
-                OrderTracking_Orders.forEach { order ->
+                Log.d("USERRR", "Order Tracking $OrderTracking_Orders")
+                val sortedOrders = OrderTracking_Orders.sortedByDescending { it.paymentTimestamp }
+                sortedOrders.forEach { order ->
                     OrderItem(order)
                 }
             }
@@ -274,7 +275,7 @@ fun OrderItem(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text ( text = "Date: ${OrderData.paymentTimestamp.toString().substring(4, 11)} ${OrderData.paymentTimestamp.toString().substring(OrderData.paymentTimestamp.toString().length - 4)}",
+                    Text ( text = "Date: ${OrderData.paymentTimestamp.toString().substring(4, 10)}, ${OrderData.paymentTimestamp.toString().substring(OrderData.paymentTimestamp.toString().length - 4)}",
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                         fontSize = 14.sp,)
                     Text ( text = "Time: ${OrderData.paymentTimestamp.toString().substring(11, 19)}",
@@ -285,10 +286,6 @@ fun OrderItem(
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                         fontSize = 14.sp,)
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text ( text = "Estimated delivery time: time",
-                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
-                        fontSize = 14.sp,)
-                    Spacer(modifier = Modifier.height(2.dp))
                     Text ( text = "NOTE: Please present this pickup number: \n${OrderData.refNo} to the seller to claim order",
                         color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                         fontSize = 14.sp,)
@@ -296,6 +293,7 @@ fun OrderItem(
             }
             Spacer(modifier = Modifier.height(8.dp))
             Image(painter = painterResource(id = R.drawable.ic_ot_line), contentDescription = "line")
+
             OrderData.products.forEach { product ->
                 OrderProduct(product)
             }
@@ -344,9 +342,10 @@ fun OrderProduct (
                 Text (text = "${ProductObject.name}",
                     color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
                     fontSize = 20.sp,)
-                Text ( text = "₱${ProductObject.amount}/kilo",
+                Spacer( modifier = Modifier.height(10.dp))
+                Text ( text = "₱${ProductObject.amount}",
                     color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
-                    fontSize = 16.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.weight(1f))
