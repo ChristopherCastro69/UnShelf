@@ -7,6 +7,8 @@ import com.example.unshelf.model.entities.Order
 import com.example.unshelf.model.entities.Product
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -170,8 +172,10 @@ class CheckoutSessionController() {
                 val method = checkoutResponse.data.attributes.paymentMethodUsed
                 val status = checkoutResponse.data.attributes.payments.get(0).attributes.status
 
-                val order = Order(refNo, checkoutID,paymentID,date,customerID.toString(),storeID,finalProducts,totalAmount,paymongoFee,unshelfFee, netAmount,status,method)
-                db.collection("orders").add(order).await()
+                val orderDocument = FirebaseFirestore.getInstance().collection("orders").document()
+                val order = Order(orderDocument.id, refNo, checkoutID,paymentID,date,customerID.toString(),storeID,finalProducts,totalAmount,paymongoFee,unshelfFee, netAmount,status,method)
+
+                orderDocument.set(order).await()
             }
         }
     }

@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 import java.util.Date
 @Parcelize
 class Order(
+    val orderID: String = "",
     val refNo: String = "",
     val checkoutID: String = "",
     val paymentID: String = "",
