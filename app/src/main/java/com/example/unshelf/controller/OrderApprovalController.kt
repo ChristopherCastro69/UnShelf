@@ -19,7 +19,6 @@ object OrderApprovalController {
     val db = FirebaseFirestore.getInstance()
     var quantityLow = mutableStateOf(false)
     fun acceptOrder(order: Order){
-        val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
         CoroutineScope(Dispatchers.Default).launch{
             quantityLow.value = false
             val storeProducts = order.products
@@ -37,12 +36,20 @@ object OrderApprovalController {
                     productFetch.quantity -= product.quantity
                     db.collection("products").document(p_id).set(productFetch, SetOptions.merge()).await()
                 }
-                db.collection("orders").document(order.orderID).set(status, SetOptions.merge()).await()
             }
-
+            db.collection("orders").document(order.orderID).set(status, SetOptions.merge()).await()
         }
     }
 
     fun rejectOrder(order: Order){
+        CoroutineScope(Dispatchers.Default).launch{
+            val storeProducts = order.products
+            val status = hashMapOf("orderStatus" to "cancelled")
+            db.collection("orders").document(order.orderID).set(status, SetOptions.merge()).await()
+        }
+    }
+
+    fun rejectOrder(){
+
     }
 }
