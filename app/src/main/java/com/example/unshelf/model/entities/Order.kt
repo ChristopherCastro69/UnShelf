@@ -5,9 +5,7 @@ import com.example.unshelf.model.checkout.LineItem
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.checkout.partLineItem
 import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
 import java.util.Date
-
 @Parcelize
 data class Order(
     val refNo: String = "",

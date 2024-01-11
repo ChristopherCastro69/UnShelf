@@ -14,10 +14,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 object UserController {
-    val userID = FirebaseAuth.getInstance().currentUser!!.uid
     var customer : Customer? = null
     var seller : Seller? = null
     fun getCustomerDetails() : Customer? {
+        val userID = FirebaseAuth.getInstance().currentUser!!.uid
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 var user = Firebase.firestore.collection("customers").document(userID).get().await()
@@ -31,6 +31,7 @@ object UserController {
     }
 
     fun getSellerDetails() : Seller? {
+        val userID = FirebaseAuth.getInstance().currentUser!!.uid
         CoroutineScope(Dispatchers.Main).launch {
             try {
                 var user = Firebase.firestore.collection("sellers").document(userID).get().await()
