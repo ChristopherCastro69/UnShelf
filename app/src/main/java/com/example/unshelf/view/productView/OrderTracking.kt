@@ -1,14 +1,19 @@
 package com.example.unshelf.view.productView
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
@@ -26,29 +31,60 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.model.checkout.OrderLineItem
+import com.example.unshelf.model.entities.Order
+import com.example.unshelf.model.entities.Product
+import com.example.unshelf.controller.orderTracking.OrderTracking_Orders
+import com.example.unshelf.controller.orderTracking.getOrders
+import com.example.unshelf.controller.orderTracking.getSellerName
+import com.example.unshelf.controller.orderTracking.sellerIDs
 import com.example.unshelf.ui.theme.MiddleGreenYellow
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.view.BuyerBottomNav.ui.MainNavigationActivityBuyer
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
+
 
 class OrderTracking : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            OrderTrackingUI()
+
+        lifecycleScope.launch {
+            Log.d("USERRR", "Order Tracking ${getOrders()}")
+            getSellerName()
+            setContent {
+                OrderTrackingUI()
+            }
         }
+
+
     }
 }
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview
 @Composable
 fun OrderTrackingUI() {
     Scaffold(
-        topBar = {
+    ) {
+        Column() {
             MenuOT()
+            Column (modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(state = rememberScrollState())) {
+                Log.d("USERRR", "Order Tracking $OrderTracking_Orders")
+                val sortedOrders = OrderTracking_Orders.sortedByDescending { it.paymentTimestamp }
+                sortedOrders.forEach { order ->
+                    OrderItem(order)
+                }
+            }
 
         }
-    ) {it
-        // Content of the OrderTracking screen
+
+
     }
 }
 
@@ -77,9 +113,9 @@ fun MenuOT(modifier: Modifier = Modifier) {
                     .padding(start = 16.dp, end = 8.dp)
                     .align(Alignment.CenterVertically)
                     .clickable {
-                        val intent =
-                            Intent(context, MainNavigationActivityBuyer::class.java)
-                        context.startActivity(intent)
+                        (context as? Activity)?.finish()
+//                        val intent = Intent(context, MainNavigationActivityBuyer::class.java)
+//                        context.startActivity(intent)
                     }
             )
 
@@ -93,25 +129,7 @@ fun MenuOT(modifier: Modifier = Modifier) {
                     .align(Alignment.CenterVertically)
             )
         }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            DropdownMenuExample()
-            Image(
-                painter = painterResource(id = R.drawable.ic_pickup_sort),
-                contentDescription = "Sort",
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(50.dp)
-            )
-        }
-
-        // Spacer to create space
         Spacer(modifier = Modifier.height(16.dp))
-
-        // Colored Row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -187,60 +205,154 @@ fun DropdownMenuApp() {
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                DropdownMenuExample()
+//                DropdownMenuExample()
             }
         }
     )
 }
 
-@Preview
+
 @Composable
-fun OrderItem() {
-    Surface (
+fun OrderItem(
+    OrderData : Order
+) {
+    Surface(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row (
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Column (
-                modifier = Modifier
-                    .fillMaxWidth(0.6f)
+        Column(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_ot_shop),
-                        contentDescription = "Shop Icon",
-
-                        )
-                    Text(
-                        text = "John Doe's Market",
-                        fontSize = 20.sp,
-                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row (
-                    modifier = Modifier.paint(
-                        painterResource(id = R.drawable.ic_order_button),
-                        contentScale = ContentScale.FillBounds
-                    ),
-                    horizontalArrangement = Arrangement.Center
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
                 ) {
-                    Text( text = "For Delivery")
+                    Row {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_ot_shop),
+                            contentDescription = "Shop Icon",
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "${sellerIDs.get(OrderData.sellerID)}",
+                            fontSize = 20.sp,
+                            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.paint(
+                            painterResource(id = R.drawable.ic_order_button),
+                            contentScale = ContentScale.FillBounds
+                        ),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(6.dp, 3.dp),
+                            text = "For Pickup",
+                            fontSize = 14.sp,
+                            color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03))
+                        )
+                    }
                 }
             }
-            Button(
-                onClick = {
-
-                },
-                colors = ButtonDefaults.buttonColors(PalmLeaf)
+            Spacer(modifier = Modifier.height(8.dp))
+            Image(painter = painterResource(id = R.drawable.ic_ot_line), contentDescription = "line")
+            Spacer(modifier = Modifier.height(8.dp))
+            Row (
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(
-                    text = "Add Review",
-                )
+                Image(painter = painterResource(id = R.drawable.ic_motor), contentDescription = "motor")
+                Spacer(modifier = Modifier.width(20.dp))
+                Column () {
+                    Text (
+                        text = "Pickup Details",
+                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                        fontSize = 19.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text ( text = "Date: ${OrderData.paymentTimestamp.toString().substring(4, 10)}, ${OrderData.paymentTimestamp.toString().substring(OrderData.paymentTimestamp.toString().length - 4)}",
+                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                        fontSize = 14.sp,)
+                    Text ( text = "Time: ${OrderData.paymentTimestamp.toString().substring(11, 19)}",
+                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                        fontSize = 14.sp,)
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text ( text = "Status: ${OrderData.orderStatus}",
+                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                        fontSize = 14.sp,)
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text ( text = "NOTE: Please present this pickup number: \n${OrderData.refNo} to the seller to claim order",
+                        color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                        fontSize = 14.sp,)
+                }
             }
-        }
+            Spacer(modifier = Modifier.height(8.dp))
+            Image(painter = painterResource(id = R.drawable.ic_ot_line), contentDescription = "line")
 
+            OrderData.products.forEach { product ->
+                OrderProduct(product)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text ( text = "Total: ₱",
+                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green02)),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                    )
+                Text ( text = "${OrderData.totalAmount}",
+                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Image(painter = painterResource(id = R.drawable.ic_ot_line), contentDescription = "line")
+        }
+    }
+}
+
+
+@Composable
+fun OrderProduct (
+    ProductObject : OrderLineItem
+) {
+    Surface() {
+        Row (
+            modifier = Modifier.padding(top = 10.dp, end = 10.dp)
+        ) {
+            Image(
+                painter = rememberAsyncImagePainter(ProductObject.images.get(0)),
+                contentScale = ContentScale.Crop,
+                contentDescription = "Product Image",
+                modifier = Modifier
+                    .height(120.dp)
+                    .width(120.dp)
+            )
+            Spacer( modifier = Modifier.width(10.dp))
+            Column(
+                modifier = Modifier.padding(top = 10.dp)
+            ) {
+                Text (text = "${ProductObject.name}",
+                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                    fontSize = 20.sp,)
+                Spacer( modifier = Modifier.height(10.dp))
+                Text ( text = "₱${ProductObject.amount}",
+                    color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Text ( modifier = Modifier.padding(top = 10.dp),
+                text = "x${ProductObject.quantity}",
+                color = Color(ContextCompat.getColor(LocalContext.current, R.color.green03)),
+                fontSize = 14.sp,)
+        }
     }
 }

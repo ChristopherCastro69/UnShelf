@@ -79,7 +79,6 @@ class MainActivity : AppCompatActivity() {
         UI_Tester_Helper.UI_Test(this, testBtnSetUserLoc, AddressManager::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnMenu, marketplaceMain::class.java);
         UI_Tester_Helper.UI_Test(this, testBtnBuyer, MainNavigationActivityBuyer::class.java);
-
     }
 
 

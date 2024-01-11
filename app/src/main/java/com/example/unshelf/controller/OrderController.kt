@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 
 object OrderController : ViewModel() {
     val db = FirebaseFirestore.getInstance()
-    val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
     var orderList = mutableStateOf(listOf<Order>())
     var isLoading = mutableStateOf(true)
 
@@ -21,6 +20,7 @@ object OrderController : ViewModel() {
     }
 
     fun fetchOrder(){
+        val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
         CoroutineScope(Dispatchers.Main).launch {
             try {
                 db.collection("orders").whereEqualTo("sellerID", currentUser)
@@ -42,7 +42,7 @@ object OrderController : ViewModel() {
                                 index++
                             }
 
-                            sortedValues.sortByDescending { it.second }
+                            sortedValues.sortByDescending {it.second}
 
                             index = 0
 

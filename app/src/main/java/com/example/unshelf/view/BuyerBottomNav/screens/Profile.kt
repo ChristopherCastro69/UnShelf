@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.unshelf.R
+import com.example.unshelf.controller.Cart.CartController
 import com.example.unshelf.model.admin.logoutBuyer
 import com.example.unshelf.model.admin.logoutUser
 import com.example.unshelf.controller.User.UserController
@@ -65,6 +66,7 @@ import kotlinx.coroutines.launch
 import com.example.unshelf.view.SellerBottomNav.screens.store.ProfileOptionItem
 import com.example.unshelf.view.SellerBottomNav.screens.store.Store
 import com.example.unshelf.view.Wallet.Wallet
+import com.example.unshelf.view.productView.OrderTracking
 
 var showLogoutConfirmationDialogBuyer = mutableStateOf(false)
 @Composable
@@ -77,13 +79,13 @@ fun Profile() {
 //            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         BuyerProfileDetails()
         LazyColumn (
             Modifier.padding(bottom = 20.dp)
         ){
             item {
-                val strings_1 = listOf("Addresses", "Subscriptions", "Referals", "Vouchers")
+                val strings_1 = listOf("Addresses", "Vouchers")
                 val strings_2 = listOf("Help Center", "Settings", "Customer Support", "Log out")
                 strings_1.forEach { name ->
                     BuyerSettings(name){
@@ -134,6 +136,7 @@ fun Profile() {
                     onClick = {
                         // Perform logout action
                         coroutineScope.launch {
+                            CartController.clearCart()
                             logoutBuyer(context)
                         }
                         showLogoutConfirmationDialogBuyer.value = false
@@ -246,6 +249,7 @@ fun BuyerProfileDetails () {
         val context = LocalContext.current
         Row (horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             for(i in 0..3) {
+
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(top = 20.dp)
@@ -259,6 +263,10 @@ fun BuyerProfileDetails () {
                                 if(buyerNames[i].equals("Payments")) {
                                     val intent = Intent(context, Wallet::class.java)
                                     intent.putExtra("user", "buyer")
+                                    context.startActivity(intent)
+                                }
+                                else if (buyerNames[i].equals("Order Tracking")) {
+                                    val intent = Intent(context, OrderTracking::class.java)
                                     context.startActivity(intent)
                                 }
                             }

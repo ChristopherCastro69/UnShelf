@@ -78,7 +78,7 @@ fun PageInAppBalance(user : String) {
                 .fillMaxWidth(),
             contentScale = ContentScale.Crop
         )
-        Column {
+        Column(modifier = Modifier.align(Alignment.TopCenter)) {
             Box (
                 modifier = Modifier
                     .fillMaxWidth(0.92f)
@@ -86,7 +86,7 @@ fun PageInAppBalance(user : String) {
                     .height(height = 48.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
-                Row {
+                Row(modifier = Modifier.align(Alignment.CenterStart)) {
                     IconButton(
                         modifier = Modifier
                             .width(35.dp),
@@ -400,9 +400,13 @@ fun PaymentMethodsList(sale : Order, user : String) {
                             fontSize = 13.sp
                         ),
                     )
+                    var statusColor = PalmLeaf
+                    if(sale.orderStatus.equals("cancelled")) {
+                        statusColor = WatermelonRed
+                    }
                     Text(
                         text = "${sale.orderStatus}",
-                        color = PalmLeaf,
+                        color = statusColor,
                         style = TextStyle(
                             fontSize = 15.sp,
                         ),

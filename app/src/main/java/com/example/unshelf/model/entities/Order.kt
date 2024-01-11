@@ -7,7 +7,8 @@ import com.example.unshelf.model.checkout.partLineItem
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 @Parcelize
-class Order(
+data class Order(
+    val orderID: String = "",
     val refNo: String = "",
     val checkoutID: String = "",
     val paymentID: String = "",

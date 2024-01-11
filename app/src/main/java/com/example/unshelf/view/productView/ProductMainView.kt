@@ -129,21 +129,16 @@ fun PMMenu(product : Product?) {
     var isButtonClicked by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    println("pleasseeee re compose")
+
     LaunchedEffect(isButtonClicked) {
-        println("should work right?")
+
         if (isButtonClicked) {
-            // Coroutine is launched when isButtonClicked becomes true
             withContext(Dispatchers.IO) {
-                println("Or did it?")
-                // Call your suspend function here, e.g., updateCart
                 updateCart(fetchUser()?.uid, product?.productID)
             }
-
-            // Reset the flag after the coroutine is executed
             isButtonClicked = !isButtonClicked
         } else {
-            println("were do you go")
+
         }
     }
     Column {

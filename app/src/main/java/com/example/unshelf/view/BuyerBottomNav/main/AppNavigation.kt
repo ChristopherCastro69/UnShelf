@@ -55,13 +55,13 @@ fun BuyerAppNavigation(){
                 tonalElevation = 5.dp,
 
 
-            ) {
+                ) {
 
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
                 listOfBuyerNavItems.forEach{
-                    buyerNavItem ->
+                        buyerNavItem ->
                     NavigationBarItem(
                         selected = currentDestination?.hierarchy?.any {
                             it.route == buyerNavItem.route
@@ -90,9 +90,9 @@ fun BuyerAppNavigation(){
                                 color = if (currentDestination?.hierarchy?.any {
                                         it.route == buyerNavItem.route
                                     } == true) {
-                                        DeepMossGreen
+                                    DeepMossGreen
                                 } else {
-                                    PalmLeaf 
+                                    PalmLeaf
                                 }
                             )
                         },
@@ -100,7 +100,7 @@ fun BuyerAppNavigation(){
 
                             indicatorColor = White,
 
-                        )
+                            )
                     )
 
                 }
@@ -133,5 +133,3 @@ fun BuyerAppNavigation(){
 
 
 }
-
-
