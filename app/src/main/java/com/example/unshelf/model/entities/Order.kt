@@ -1,5 +1,6 @@
 package com.example.unshelf.model.entities
 
+import android.os.Parcelable
 import com.example.unshelf.model.checkout.LineItem
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.checkout.partLineItem

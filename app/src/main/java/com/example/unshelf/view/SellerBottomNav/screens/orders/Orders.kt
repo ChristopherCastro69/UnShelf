@@ -40,11 +40,10 @@ import com.example.unshelf.view.Wallet.Wallet
 //val ordersList = null
 // Add more orders as per your data
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun Orders(navController: NavController) {
+fun Orders() {
     val orderViewModel:OrderController = viewModel()
     val context = LocalContext.current
     if(OrderController.orderList.value.isEmpty()) {
@@ -127,7 +126,7 @@ fun OrderCard(products: List<OrderLineItem>, order: Order) {
             .padding(start = 16.dp, top = 20.dp)
         ){
             Text(text = "Order ID:", fontWeight = FontWeight.Bold, fontSize = 16.sp, fontFamily = JostFontFamily)
-            Text(text = " ${order.checkoutID.substringAfter("_")}", fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = JostFontFamily, color = Color.Gray)
+            Text(text = " ${order.checkoutID.substring(3..26)}", fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = JostFontFamily, color = Color.Gray)
         }
         for(product in products){
             Row(

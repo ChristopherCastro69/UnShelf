@@ -1,6 +1,7 @@
 package com.example.unshelf.view.SellerBottomNav.screens.orders
 
 import JostFontFamily
+import android.app.Activity
 import android.content.ClipData.Item
 import android.content.Intent
 import android.os.Build
@@ -54,6 +55,7 @@ class OrderApprovalView: ComponentActivity(){
         super.onCreate(savedInstanceState)
         setContent {
             val order: Order? = intent.getParcelableExtra("order")
+
             OrderApproval(order)
         }
     }
@@ -62,6 +64,7 @@ class OrderApprovalView: ComponentActivity(){
 @Composable
 fun OrderApproval(order: Order?) {
     val products = order!!.products
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -77,7 +80,9 @@ fun OrderApproval(order: Order?) {
                 ),
 
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        (context as? Activity)?.finish()
+                    }) {
                         Icon(Icons.Filled.ArrowBack, "Back Button", tint = Color.White)
                     }
                 }
@@ -168,7 +173,7 @@ fun OrderApproval(order: Order?) {
                     textAlign = TextAlign.Center,
                     color = DeepMossGreen,
                     modifier = Modifier.padding(top = 25.dp))
-                Text(text = " ${order.checkoutID}",
+                Text(text = " ${order.checkoutID.substring(3..26)}",
                     fontFamily = JostFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
@@ -252,3 +257,5 @@ fun OrderDetails(products: List<OrderLineItem>) {
         }
     }
 }
+
+
