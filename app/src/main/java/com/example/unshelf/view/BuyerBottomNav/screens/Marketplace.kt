@@ -137,7 +137,7 @@ fun MarketplaceContent(user: Boolean) {
                             .height(200.dp)
                             .padding(20.dp).align(Alignment.CenterHorizontally)
                     )
-                    Column{
+                    Column(modifier = Modifier.align(Alignment.CenterHorizontally)){
                         CategoryUI()
                         val products by viewModel.products
                         val isLoading by viewModel.isLoading

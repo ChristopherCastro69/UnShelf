@@ -20,7 +20,6 @@ import kotlinx.coroutines.tasks.await
 
 object CartController {
     val db = FirebaseFirestore.getInstance()
-    private val currentUser = FirebaseAuth.getInstance().currentUser
     var cartList: CartModel = CartModel()
     private val dataFetch = DataFetchRepository
     var storeMapped = mutableMapOf<String, MutableList<Product>>()
@@ -33,6 +32,7 @@ object CartController {
 
     fun fetchCart() {
         CoroutineScope(Dispatchers.Main).launch {
+            val currentUser = FirebaseAuth.getInstance().currentUser
             try {
                 val cartRetrieve = db.collection("carts").document(currentUser!!.uid).get().await()
                 if (cartRetrieve.exists()) {
@@ -48,6 +48,7 @@ object CartController {
     }
 
     fun addToCart(product: Product, source: String) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 val item = CartItemModel(
@@ -132,5 +133,12 @@ object CartController {
         for((storeID, _) in storeMapped) {
             storeActiveState.getOrPut(storeID) { mutableStateOf(true) }
         }
+    }
+
+    fun clearCart() {
+        cartList = CartModel()
+        storeMapped.clear()
+        storeActiveState.clear()
+        isLoading.value = true
     }
 }

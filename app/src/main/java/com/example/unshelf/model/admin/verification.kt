@@ -2,6 +2,8 @@ package com.example.unshelf.model.admin
 
 import android.content.Context
 import android.content.Intent
+import com.example.unshelf.controller.Cart.CartController
+import com.example.unshelf.controller.OrderController
 import com.example.unshelf.view.authentication.Customer_Login
 import com.example.unshelf.view.authentication.SellerLoginView
 import com.example.unshelf.view.authentication.Seller_Login
@@ -97,7 +99,6 @@ suspend fun logoutBuyer(context: Context) {
     try {
         FirebaseAuth.getInstance().signOut()
         // Add any additional cleanup or logic you need after logout
-
         // Navigate to the SellerLoginView
         val intent = Intent(context, Customer_Login::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)

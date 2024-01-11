@@ -84,7 +84,7 @@ fun Profile() {
             Modifier.padding(bottom = 20.dp)
         ){
             item {
-                val strings_1 = listOf("Addresses", "Subscriptions", "Referals", "Vouchers")
+                val strings_1 = listOf("Addresses", "Vouchers")
                 val strings_2 = listOf("Help Center", "Settings", "Customer Support", "Log out")
                 strings_1.forEach { name ->
                     BuyerSettings(name){
