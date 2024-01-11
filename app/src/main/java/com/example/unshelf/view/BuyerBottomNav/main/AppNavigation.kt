@@ -24,7 +24,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.unshelf.model.entities.Customer
 import com.example.unshelf.ui.theme.DeepMossGreen
 import com.example.unshelf.ui.theme.PalmLeaf
 import com.example.unshelf.ui.theme.White
@@ -33,15 +32,17 @@ import com.example.unshelf.view.BuyerBottomNav.screens.PreviewProfileScreen
 import com.example.unshelf.view.BuyerBottomNav.screens.Profile
 
 
-//@Preview
-//@Composable
-//fun BuyerAppNavigationPreview() {
-//    BuyerAppNavigation() // This will show a preview of your AppNavigation composable
-//}
+@Preview
+@Composable
+fun BuyerAppNavigationPreview() {
+
+    BuyerAppNavigation() // This will show a preview of your AppNavigation composable
+
+}
 
 
 @Composable
-fun BuyerAppNavigation(user : Customer?){
+fun BuyerAppNavigation(){
     val navController = rememberNavController()
 
     Scaffold (
@@ -54,13 +55,13 @@ fun BuyerAppNavigation(user : Customer?){
                 tonalElevation = 5.dp,
 
 
-            ) {
+                ) {
 
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
                 listOfBuyerNavItems.forEach{
-                    buyerNavItem ->
+                        buyerNavItem ->
                     NavigationBarItem(
                         selected = currentDestination?.hierarchy?.any {
                             it.route == buyerNavItem.route
@@ -89,9 +90,9 @@ fun BuyerAppNavigation(user : Customer?){
                                 color = if (currentDestination?.hierarchy?.any {
                                         it.route == buyerNavItem.route
                                     } == true) {
-                                        DeepMossGreen
+                                    DeepMossGreen
                                 } else {
-                                    PalmLeaf 
+                                    PalmLeaf
                                 }
                             )
                         },
@@ -99,7 +100,7 @@ fun BuyerAppNavigation(user : Customer?){
 
                             indicatorColor = White,
 
-                        )
+                            )
                     )
 
                 }
@@ -120,7 +121,7 @@ fun BuyerAppNavigation(user : Customer?){
             }
             composable(route = BuyerScreens.Profile.name){
                 //Listings(navController, sellerId.value, storeId.value)
-                PreviewProfileScreen(user)
+                PreviewProfileScreen()
             }
             // composable("addProduct/{productId}") { backStackEntry ->
             //     val productId = backStackEntry.arguments?.getString("productId")
@@ -132,5 +133,3 @@ fun BuyerAppNavigation(user : Customer?){
 
 
 }
-
-

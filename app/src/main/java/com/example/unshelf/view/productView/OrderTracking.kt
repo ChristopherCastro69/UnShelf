@@ -1,6 +1,7 @@
 package com.example.unshelf.view.productView
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -111,8 +112,9 @@ fun MenuOT(modifier: Modifier = Modifier) {
                     .padding(start = 16.dp, end = 8.dp)
                     .align(Alignment.CenterVertically)
                     .clickable {
-                        val intent = Intent(context, MainNavigationActivityBuyer::class.java)
-                        context.startActivity(intent)
+                        (context as? Activity)?.finish()
+//                        val intent = Intent(context, MainNavigationActivityBuyer::class.java)
+//                        context.startActivity(intent)
                     }
             )
 
@@ -312,6 +314,8 @@ fun OrderItem(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold)
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            Image(painter = painterResource(id = R.drawable.ic_ot_line), contentDescription = "line")
         }
     }
 }

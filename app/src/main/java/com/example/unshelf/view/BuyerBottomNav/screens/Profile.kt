@@ -65,6 +65,7 @@ import kotlinx.coroutines.launch
 import com.example.unshelf.view.SellerBottomNav.screens.store.ProfileOptionItem
 import com.example.unshelf.view.SellerBottomNav.screens.store.Store
 import com.example.unshelf.view.Wallet.Wallet
+import com.example.unshelf.view.productView.OrderTracking
 
 var showLogoutConfirmationDialogBuyer = mutableStateOf(false)
 @Composable
@@ -77,7 +78,7 @@ fun Profile() {
 //            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
         BuyerProfileDetails()
         LazyColumn (
             Modifier.padding(bottom = 20.dp)
@@ -246,6 +247,7 @@ fun BuyerProfileDetails () {
         val context = LocalContext.current
         Row (horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             for(i in 0..3) {
+
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(top = 20.dp)
@@ -259,6 +261,10 @@ fun BuyerProfileDetails () {
                                 if(buyerNames[i].equals("Payments")) {
                                     val intent = Intent(context, Wallet::class.java)
                                     intent.putExtra("user", "buyer")
+                                    context.startActivity(intent)
+                                }
+                                else if (buyerNames[i].equals("Order Tracking")) {
+                                    val intent = Intent(context, OrderTracking::class.java)
                                     context.startActivity(intent)
                                 }
                             }
