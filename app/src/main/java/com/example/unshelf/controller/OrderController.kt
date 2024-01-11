@@ -42,7 +42,7 @@ object OrderController : ViewModel() {
                                 index++
                             }
 
-                            sortedValues.sortByDescending { it.second }
+                            sortedValues.sortByDescending {it.second}
 
                             index = 0
 
