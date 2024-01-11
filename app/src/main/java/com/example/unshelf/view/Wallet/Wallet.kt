@@ -400,9 +400,13 @@ fun PaymentMethodsList(sale : Order, user : String) {
                             fontSize = 13.sp
                         ),
                     )
+                    var statusColor = PalmLeaf
+                    if(sale.orderStatus.equals("cancelled")) {
+                        statusColor = WatermelonRed
+                    }
                     Text(
                         text = "${sale.orderStatus}",
-                        color = PalmLeaf,
+                        color = statusColor,
                         style = TextStyle(
                             fontSize = 15.sp,
                         ),

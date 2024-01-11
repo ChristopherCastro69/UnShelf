@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.unshelf.R
+import com.example.unshelf.controller.Cart.CartController
 import com.example.unshelf.model.admin.logoutBuyer
 import com.example.unshelf.model.admin.logoutUser
 import com.example.unshelf.controller.User.UserController
@@ -135,6 +136,7 @@ fun Profile() {
                     onClick = {
                         // Perform logout action
                         coroutineScope.launch {
+                            CartController.clearCart()
                             logoutBuyer(context)
                         }
                         showLogoutConfirmationDialogBuyer.value = false
