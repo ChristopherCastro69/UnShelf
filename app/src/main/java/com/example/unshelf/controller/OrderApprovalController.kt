@@ -2,6 +2,7 @@ package com.example.unshelf.controller
 
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import com.example.unshelf.controller.Checkout.CheckoutSessionController
 import com.example.unshelf.controller.Wallet.RefundController
 import com.example.unshelf.model.entities.Order
@@ -43,13 +44,18 @@ object OrderApprovalController {
 
     fun rejectOrder(order: Order){
         CoroutineScope(Dispatchers.Default).launch{
-            val storeProducts = order.products
             val status = hashMapOf("orderStatus" to "cancelled")
             db.collection("orders").document(order.orderID).set(status, SetOptions.merge()).await()
         }
     }
 
-    fun rejectOrder(){
-
+    fun completeOrder(order: Order, code: String){
+        CoroutineScope(Dispatchers.Default).launch{
+            if(order.refNo == code){
+                val status = hashMapOf("orderStatus" to "completed")
+                db.collection("orders").document(order.orderID).set(status, SetOptions.merge()).await()
+            }
+        }
     }
+
 }
