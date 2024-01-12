@@ -29,7 +29,7 @@ class MapViewModel @Inject constructor(): ViewModel() {
                 ZoneClusterItem(
                     id = "zone-1",
                     title = "Unshelf Store",
-                    snippet = "CIT-U, Cebu, Philippines",
+                    snippet = "North Reclamation Area, Cebu, Philippines",
                     polygonOptions = polygonOptions {
                         // Coordinates for CIT-U in Cebu, Philippines
                         add(LatLng(10.3080, 123.9180))
@@ -42,7 +42,7 @@ class MapViewModel @Inject constructor(): ViewModel() {
                 ZoneClusterItem(
                     id = "zone-2",
                     title = "SaveMore Store",
-                    snippet = "Lapu Lapu City, Cebu, Philippines",
+                    snippet = "Maribago Street, Cebu, Philippines",
                     polygonOptions = polygonOptions {
                         // Coordinates for SM Seaside Cebu
                         add(LatLng(10.2725, 123.9883))
@@ -51,7 +51,22 @@ class MapViewModel @Inject constructor(): ViewModel() {
                         add(LatLng(10.2710, 123.9858))
                         fillColor(POLYGON_FILL_COLOR)
                     }
-                )
+                ),
+                ZoneClusterItem(
+                    id = "zone-1",
+                    title = "Wildcats Store",
+                    snippet = "N. Bacalso Ave, Cebu City, Philippines",
+                    polygonOptions = polygonOptions {
+                        // Coordinates for CIT-U in Cebu, Philippines
+                        add(LatLng(10.2945, 123.8811))  // Center coordinates for CIT-U
+                        // Adjust the following coordinates to match the exact boundaries of CIT-U
+                        add(LatLng(10.2955, 123.8821))
+                        add(LatLng(10.2935, 123.8831))
+                        add(LatLng(10.2925, 123.8801))
+                        add(LatLng(10.2945, 123.8811))  // Close the polygon
+                        fillColor(POLYGON_FILL_COLOR)
+                    }
+                ),
             )
         )
     )
