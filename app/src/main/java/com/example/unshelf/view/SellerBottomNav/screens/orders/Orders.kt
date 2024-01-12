@@ -107,7 +107,7 @@ fun Orders() {
                 OutlinedTextField(
                     value = code ,
                     onValueChange = {code = it},
-                    modifier = Modifier.clip(RoundedCornerShape(5.dp)),
+                    modifier = Modifier.clip(RoundedCornerShape(5.dp)).weight(1f),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = PalmLeaf,
                         unfocusedBorderColor = DeepMossGreen)
@@ -129,7 +129,7 @@ fun Orders() {
                         }
                     },
                     shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier.clip(shape = RectangleShape).height(55.dp).padding(start = 5.dp),
+                    modifier = Modifier.clip(shape = RectangleShape).height(55.dp).padding(start = 5.dp).weight(0.5f),
                     colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
                 ) {
                     Text(text = "Confirm")
