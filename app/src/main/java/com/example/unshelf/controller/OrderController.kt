@@ -46,7 +46,6 @@ object OrderController : ViewModel() {
 
                             index = 0
 
-
                             for ((sortedIndex, value) in sortedValues) {
                                 copyOrderList[index] = tempOrderList.get(sortedIndex)
                                 index++
@@ -61,5 +60,6 @@ object OrderController : ViewModel() {
         }
 
     }
+
 
 }

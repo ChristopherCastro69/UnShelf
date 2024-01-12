@@ -8,12 +8,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.res.painterResource
@@ -27,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.controller.OrderApprovalController
 import com.example.unshelf.controller.OrderController
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.entities.Order
@@ -57,10 +61,13 @@ fun Orders() {
 
     Scaffold(
         topBar = {
-            Row(modifier = Modifier.background(PalmLeaf).height(55.dp)) {
+            Row(modifier = Modifier
+                .background(PalmLeaf)
+                .height(55.dp)) {
                 Text("Orders",
                     modifier = Modifier
-                        .padding(start = 10.dp).align(Alignment.CenterVertically),
+                        .padding(start = 10.dp)
+                        .align(Alignment.CenterVertically),
                     color = Color.White,
                     fontFamily = JostFontFamily,
                     fontWeight = FontWeight.Medium,
@@ -71,7 +78,9 @@ fun Orders() {
                     painter = painterResource(id = R.drawable.wallet),
                     contentDescription = "Wallet",
                     tint = Color.Unspecified, // Add tint color if required
-                    modifier = Modifier.align(Alignment.CenterVertically).padding(end = 10.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(end = 10.dp)
                         .clickable {
                             val intent = Intent(context, Wallet::class.java)
                             intent.putExtra("user", "seller")
@@ -90,6 +99,42 @@ fun Orders() {
                         text = { Text(text, color = if (selectedTabIndex == index) PalmLeaf else Color.LightGray) }
                     )
                 }
+            }
+            Row(
+                modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+            ){
+                var code by remember{ mutableStateOf("") }
+                OutlinedTextField(
+                    value = code ,
+                    onValueChange = {code = it},
+                    modifier = Modifier.clip(RoundedCornerShape(5.dp)),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = PalmLeaf,
+                        unfocusedBorderColor = DeepMossGreen)
+                    )
+                Button(
+                    onClick = {
+                        if(code.isNotEmpty()) {
+                            for (order in orders.value) {
+                                if (order.refNo == code) {
+                                    val intent = Intent(context, OrderApprovalView::class.java)
+                                    intent.putExtra("order", order)
+                                    intent.putExtra("code", code)
+                                    OrderApprovalController.completeOrder(order, code)
+                                    context.startActivity(intent)
+                                    println("Code " + code)
+                                    break;
+                                }
+                            }
+                        }
+                    },
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier.clip(shape = RectangleShape).height(55.dp).padding(start = 5.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
+                ) {
+                    Text(text = "Confirm")
+                }
+
             }
             if(orders.value.isNotEmpty()) {
                 LazyColumn {
@@ -114,8 +159,8 @@ fun OrderCard(products: List<OrderLineItem>, order: Order) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable{
-            val intent = Intent(context, OrderApprovalView::class.java)
+            .clickable {
+                val intent = Intent(context, OrderApprovalView::class.java)
                 intent.putExtra("order", order)
                 context.startActivity(intent)
             },
@@ -126,7 +171,7 @@ fun OrderCard(products: List<OrderLineItem>, order: Order) {
             .padding(start = 16.dp, top = 20.dp)
         ){
             Text(text = "Order ID:", fontWeight = FontWeight.Bold, fontSize = 16.sp, fontFamily = JostFontFamily)
-            Text(text = " ${order.checkoutID.substring(3..26)}", fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = JostFontFamily, color = Color.Gray)
+            Text(text = " ${order.orderID}", fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = JostFontFamily, color = Color.Gray)
         }
         for(product in products){
             Row(
