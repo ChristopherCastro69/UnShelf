@@ -1,21 +1,18 @@
-package com.codingwithmitch.composegooglemaps.compose
+package com.example.unshelf.view.RestaurantNearMe.compose
 
 import android.content.Context
 import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.codingwithmitch.composegooglemaps.MapState
-import com.codingwithmitch.composegooglemaps.clusters.ZoneClusterManager
-import com.example.unshelf.view.SellerBottomNav.screens.listings.AddProducts
-import com.example.unshelf.view.SellerBottomNav.screens.listings.productID
+
+import com.example.unshelf.view.RestaurantNearMe.MapState
+import com.example.unshelf.view.RestaurantNearMe.clusters.ZoneClusterManager
+
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -24,6 +21,7 @@ import com.google.maps.android.compose.*
 import kotlinx.coroutines.launch
 
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun MapScreen(
     state: MapState,

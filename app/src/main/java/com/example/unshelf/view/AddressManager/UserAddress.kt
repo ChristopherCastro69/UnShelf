@@ -1,5 +1,6 @@
 package com.example.unshelf.view.AddressManager
 
+import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.widget.Button
@@ -7,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
+import com.example.unshelf.view.RestaurantNearMe.MapActivity
 import com.example.unshelf.view.adminApproval.VerificationS
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -42,6 +44,11 @@ class UserAddress : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_user_address)
         initializeUI() // Initialize UI elements
         initializeMap() // Initialize Google Maps
+
+        btnConfirmLocation.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            this.startActivity(intent)
+        }
     }
 
     private fun initializeUI() {
@@ -52,7 +59,7 @@ class UserAddress : AppCompatActivity(), OnMapReadyCallback {
         specificAddress = findViewById(R.id.tvSpecificAddress)
         currentCity = findViewById(R.id.tvCity)
 
-        UI_Tester_Helper.UI_Test(this, btnConfirmLocation, VerificationS::class.java)
+        UI_Tester_Helper.UI_Test(this, btnConfirmLocation, MapActivity::class.java)
     }
 
     private fun addMapListeners() {

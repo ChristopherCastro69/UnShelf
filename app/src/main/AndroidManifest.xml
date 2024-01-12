@@ -163,6 +163,10 @@
             android:name=".view.SellerBottomNav.screens.store.SellerProfile"
             android:exported="false"
             />
+        <activity
+            android:name=".view.RestaurantNearMe.MapActivity"
+            android:exported="false"
+            />
 
 
     </application>
