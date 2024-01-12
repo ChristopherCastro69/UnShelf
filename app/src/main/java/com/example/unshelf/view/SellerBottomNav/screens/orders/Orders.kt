@@ -143,10 +143,17 @@ fun Orders() {
                     }
                 }
             } else {
-                CircularProgressIndicator(color = PalmLeaf, modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .size(50.dp)
-                    .padding(top = 10.dp))
+//                CircularProgressIndicator(color = PalmLeaf, modifier = Modifier
+//                    .align(Alignment.CenterHorizontally)
+//                    .size(50.dp)
+//                    .padding(top = 10.dp))
+                Text(
+                    text = "No orders available.",
+                    fontSize = 20.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(16.dp)
+                )
+
             }
         }
     }

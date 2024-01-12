@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -38,7 +39,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDHIvC5E-XqbNMoSWJxgrxTYpeVg_zxvEM" />
+            android:value="${GOOGLE_MAPS_API_KEY}" />
 
         <activity
             android:name=".view.marketplaceMain.marketplaceMain"

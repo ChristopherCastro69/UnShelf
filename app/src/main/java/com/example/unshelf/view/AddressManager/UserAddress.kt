@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unshelf.R
 import com.example.unshelf.helper.UI_Tester_Helper
+import com.example.unshelf.view.adminApproval.VerificationS
 import com.example.unshelf.view.marketplaceMain.marketplaceMain
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -51,7 +52,7 @@ class UserAddress : AppCompatActivity(), OnMapReadyCallback {
         specificAddress = findViewById(R.id.tvSpecificAddress)
         currentCity = findViewById(R.id.tvCity)
 
-        UI_Tester_Helper.UI_Test(this, btnConfirmLocation, marketplaceMain::class.java)
+        UI_Tester_Helper.UI_Test(this, btnConfirmLocation, VerificationS::class.java)
     }
 
     private fun addMapListeners() {
