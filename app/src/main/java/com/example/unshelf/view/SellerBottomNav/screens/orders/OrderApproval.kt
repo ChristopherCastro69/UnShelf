@@ -16,6 +16,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -234,52 +235,54 @@ fun OrderDetails(products: List<OrderLineItem>) {
             .fillMaxWidth(1f),
         colors = CardColors(containerColor = Color.White, PalmLeaf,Color.Gray, Color.Gray)
     ) {
-        for (product in products) {
-            Row(
-                modifier = Modifier
-                    .padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Image(
-                    rememberAsyncImagePainter(model = product.images.get(0)),
-                    contentDescription = "product image",
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            for (product in products) {
+                Row(
                     modifier = Modifier
-                        .border(
-                            BorderStroke(1.dp, PalmLeaf),
-                            RoundedCornerShape(5.dp)
-
-                        )
-                        .size(120.dp)
-                        .clip(MaterialTheme.shapes.small),
-                    contentScale = ContentScale.Crop
-                    )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(
-                    horizontalAlignment = Alignment.Start,
+                        .padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text(
-                        text = "${product.name}",
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = JostFontFamily,
-                        fontSize = 18.sp
-                    )
-                    Row(
+                    Image(
+                        rememberAsyncImagePainter(model = product.images.get(0)),
+                        contentDescription = "product image",
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 15.dp, top = 10.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .border(
+                                BorderStroke(1.dp, PalmLeaf),
+                                RoundedCornerShape(5.dp)
+
+                            )
+                            .size(120.dp)
+                            .clip(MaterialTheme.shapes.small),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column(
+                        horizontalAlignment = Alignment.Start,
                     ) {
                         Text(
-                            text = "₱${product.amount}",
+                            text = "${product.name}",
                             fontWeight = FontWeight.Bold,
                             fontFamily = JostFontFamily,
+                            fontSize = 18.sp
                         )
-                        Text(
-                            text = "x${product.quantity}",
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = JostFontFamily,
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 15.dp, top = 10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "₱${product.amount}",
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = JostFontFamily,
+                            )
+                            Text(
+                                text = "x${product.quantity}",
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = JostFontFamily,
+                            )
+                        }
                     }
                 }
             }
