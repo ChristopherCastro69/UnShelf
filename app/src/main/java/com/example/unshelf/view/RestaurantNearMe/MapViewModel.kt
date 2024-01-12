@@ -1,4 +1,4 @@
-package com.codingwithmitch.composegooglemaps
+package com.example.unshelf.view.RestaurantNearMe
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,10 +6,11 @@ import android.graphics.Color
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.codingwithmitch.composegooglemaps.clusters.ZoneClusterItem
-import com.codingwithmitch.composegooglemaps.clusters.ZoneClusterManager
-import com.codingwithmitch.composegooglemaps.clusters.calculateCameraViewPoints
-import com.codingwithmitch.composegooglemaps.clusters.getCenterOfPolygon
+import com.example.unshelf.view.RestaurantNearMe.clusters.ZoneClusterItem
+import com.example.unshelf.view.RestaurantNearMe.clusters.ZoneClusterManager
+import com.example.unshelf.view.RestaurantNearMe.clusters.calculateCameraViewPoints
+import com.example.unshelf.view.RestaurantNearMe.clusters.getCenterOfPolygon
+
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -27,31 +28,50 @@ class MapViewModel @Inject constructor(): ViewModel() {
             clusterItems = listOf(
                 ZoneClusterItem(
                     id = "zone-1",
-                    title = "Zone 1",
-                    snippet = "This is Zone 1.",
+                    title = "Unshelf Store",
+                    snippet = "North Reclamation Area, Cebu, Philippines",
                     polygonOptions = polygonOptions {
-                        add(LatLng(49.105, -122.524))
-                        add(LatLng(49.101, -122.529))
-                        add(LatLng(49.092, -122.501))
-                        add(LatLng(49.1, -122.506))
+                        // Coordinates for CIT-U in Cebu, Philippines
+                        add(LatLng(10.3080, 123.9180))
+                        add(LatLng(10.3050, 123.9200))
+                        add(LatLng(10.3030, 123.9120))
+                        add(LatLng(10.3100, 123.9110))
                         fillColor(POLYGON_FILL_COLOR)
                     }
                 ),
                 ZoneClusterItem(
                     id = "zone-2",
-                    title = "Zone 2",
-                    snippet = "This is Zone 2.",
+                    title = "SaveMore Store",
+                    snippet = "Maribago Street, Cebu, Philippines",
                     polygonOptions = polygonOptions {
-                        add(LatLng(49.110, -122.554))
-                        add(LatLng(49.107, -122.559))
-                        add(LatLng(49.103, -122.551))
-                        add(LatLng(49.112, -122.549))
+                        // Coordinates for SM Seaside Cebu
+                        add(LatLng(10.2725, 123.9883))
+                        add(LatLng(10.2715, 123.9889))
+                        add(LatLng(10.2700, 123.9865))
+                        add(LatLng(10.2710, 123.9858))
                         fillColor(POLYGON_FILL_COLOR)
                     }
-                )
+                ),
+                ZoneClusterItem(
+                    id = "zone-1",
+                    title = "Wildcats Store",
+                    snippet = "N. Bacalso Ave, Cebu City, Philippines",
+                    polygonOptions = polygonOptions {
+                        // Coordinates for CIT-U in Cebu, Philippines
+                        add(LatLng(10.2945, 123.8811))  // Center coordinates for CIT-U
+                        // Adjust the following coordinates to match the exact boundaries of CIT-U
+                        add(LatLng(10.2955, 123.8821))
+                        add(LatLng(10.2935, 123.8831))
+                        add(LatLng(10.2925, 123.8801))
+                        add(LatLng(10.2945, 123.8811))  // Close the polygon
+                        fillColor(POLYGON_FILL_COLOR)
+                    }
+                ),
             )
         )
     )
+
+
 
     @SuppressLint("MissingPermission")
     fun getDeviceLocation(

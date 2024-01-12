@@ -1,7 +1,8 @@
-package com.codingwithmitch.composegooglemaps
+package com.example.unshelf.view.RestaurantNearMe
 
 import android.location.Location
-import com.codingwithmitch.composegooglemaps.clusters.ZoneClusterItem
+
+import com.example.unshelf.view.RestaurantNearMe.clusters.ZoneClusterItem
 
 data class MapState(
     val lastKnownLocation: Location?,
