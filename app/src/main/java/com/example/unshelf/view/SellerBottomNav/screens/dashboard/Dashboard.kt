@@ -221,7 +221,7 @@
                     AnalyticsItem("To-Process Orders", 9)
                     AnalyticsItem("Refund Requests", 8)
                     AnalyticsItem("Unlisted Products", 4)
-                    AnalyticsItem("Pending Campaign", 0)
+//                    AnalyticsItem("Pending Campaign", 0)
                 }
             }
         }
