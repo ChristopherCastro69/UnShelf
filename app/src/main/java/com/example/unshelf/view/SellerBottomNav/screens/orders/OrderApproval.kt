@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ModifierInfo
@@ -56,13 +57,14 @@ class OrderApprovalView: ComponentActivity(){
         super.onCreate(savedInstanceState)
         setContent {
             val order: Order? = intent.getParcelableExtra("order")
-            OrderApproval(order)
+            val ref = intent.getStringExtra("code")
+            OrderApproval(order, ref)
         }
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrderApproval(order: Order?) {
+fun OrderApproval(order: Order?, ref: String?) {
     val products = order!!.products
     val context = LocalContext.current
     Scaffold(
@@ -119,58 +121,60 @@ fun OrderApproval(order: Order?) {
                 ) {
                     Card(
                         modifier = Modifier
-                               .fillMaxWidth(1f)
-                               .size(60.dp),
+                            .fillMaxWidth(1f)
+                            .size(60.dp),
                         colors = CardColors(containerColor = Color.White, PalmLeaf,Color.Gray, Color.Gray),
 
                         ) {
                             if(order.orderStatus == "paid") {
-                            Row(
-                                modifier = Modifier
-                                    .padding(5.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = "Accept Order?",
-                                    fontFamily = JostFontFamily,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    modifier = Modifier
-                                        .padding(10.dp, 0.dp, 40.dp, 0.dp),
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-                                Button(
-                                    onClick = {
-                                        OrderApprovalController.acceptOrder(order)
-                                        (context as? Activity)?.finish()
-                                    },
-                                    colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
-                                    modifier = Modifier
-                                        .padding(0.dp, 0.dp, 10.dp, 0.dp)
-                                        .size(75.dp),
-                                )
-                                {
+                                Row(
+                                 modifier = Modifier
+                                     .padding(5.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                    Text(
+                                        text = "Accept Order?",
+                                        fontFamily = JostFontFamily,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        modifier = Modifier
+                                            .padding(10.dp, 0.dp, 40.dp, 0.dp),
+                                        )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Button(
+                                        onClick = {
+                                            OrderApprovalController.acceptOrder(order)
+                                            (context as? Activity)?.finish()
+                                        },
+                                        colors = ButtonDefaults.buttonColors(DarkPalmLeaf),
+                                        modifier = Modifier
+                                            .padding(0.dp, 0.dp, 10.dp, 0.dp)
+                                            .size(75.dp),
+                                    )
+                                    {
                                     Text("Yes")
+                                    }
+                                    Button(
+                                        onClick = {
+                                            OrderApprovalController.rejectOrder(order)
+                                            (context as? Activity)?.finish()
+                                                  },
+                                        colors = ButtonDefaults.buttonColors(WatermelonRed),
+                                        modifier = Modifier
+                                            .padding(0.dp, 0.dp, 10.dp, 0.dp)
+                                            .size(75.dp),
+                                        )
+                                    {
+                                        Text("No")
+                                    }
                                 }
-                                Button(
-                                    onClick = {
-                                        OrderApprovalController.rejectOrder(order)
-                                        (context as? Activity)?.finish()
-                                    },
-                                    colors = ButtonDefaults.buttonColors(WatermelonRed),
-                                    modifier = Modifier
-                                        .padding(0.dp, 0.dp, 10.dp, 0.dp)
-                                        .size(75.dp),
-                                )
-                                {
-                                    Text("No")
-                                }
-                            }
-                        }
-                            else{
+                            }else{
                                 var color = PalmLeaf
                                 if(order.orderStatus == "cancelled"){
                                     color = WatermelonRed
+                                }
+                                if(order.orderStatus == "completed"){
+                                    color = DeepMossGreen
                                 }
                                 Text(text = "Order ${order.orderStatus}",
                                     fontFamily = JostFontFamily,

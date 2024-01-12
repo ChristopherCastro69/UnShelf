@@ -8,12 +8,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
@@ -28,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.unshelf.R
+import com.example.unshelf.controller.OrderApprovalController
 import com.example.unshelf.controller.OrderController
 import com.example.unshelf.model.checkout.OrderLineItem
 import com.example.unshelf.model.entities.Order
@@ -104,14 +107,34 @@ fun Orders() {
                 OutlinedTextField(
                     value = code ,
                     onValueChange = {code = it},
+                    modifier = Modifier.clip(RoundedCornerShape(5.dp)),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = PalmLeaf,
+                        unfocusedBorderColor = DeepMossGreen)
                     )
                 Button(
                     onClick = {
-                              OrderController.getreference()
+                        if(code.isNotEmpty()) {
+                            for (order in orders.value) {
+                                if (order.refNo == code) {
+                                    val intent = Intent(context, OrderApprovalView::class.java)
+                                    intent.putExtra("order", order)
+                                    intent.putExtra("code", code)
+                                    OrderApprovalController.completeOrder(order, code)
+                                    context.startActivity(intent)
+                                    println("Code " + code)
+                                    break;
+                                }
+                            }
+                        }
                     },
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier.clip(shape = RectangleShape).height(55.dp).padding(start = 5.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PalmLeaf)
                 ) {
-                    Text("Confirm")
+                    Text(text = "Confirm")
                 }
+
             }
             if(orders.value.isNotEmpty()) {
                 LazyColumn {
