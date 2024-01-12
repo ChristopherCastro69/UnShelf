@@ -140,10 +140,7 @@ dependencies {
     implementation ("androidx.compose.material:material:1.5.4")
     implementation ("androidx.compose.ui:ui-tooling-preview:1.5.4")
 
-    //restaurants near me
-    implementation ("com.google.maps:google-maps-services:0.16.4")
-    implementation ("com.google.android.gms:play-services-maps:18.2.0")
-    implementation ("com.google.android.libraries.places:places:3.3.0")
+
 
 
 

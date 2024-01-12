@@ -44,5 +44,4 @@ class RestaurantsNearMe : AppCompatActivity() {
         }
         recyclerView.adapter = AdapterRestaurantNearMe(restaurantNearMeList)
     }
-
 }
